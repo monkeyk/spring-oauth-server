@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cc.wdcy.infrastructure.mybatis.OauthRepositoryMyBatis">
+
+    <resultMap type="OauthClientDetails" id="oauthClientDetailsMap">
+        <id property="clientId" column="client_id"/>
+
+        <result property="resourceIds" column="resource_ids"/>
+        <result property="clientSecret" column="client_secret"/>
+        <result property="scope" column="scope"/>
+
+        <result property="authorizedGrantTypes" column="authorized_grant_types"/>
+        <result property="webServerRedirectUri" column="web_server_redirect_uri"/>
+        <result property="authorities" column="authorities"/>
+
+        <result property="accessTokenValidity" column="access_token_validity"/>
+        <result property="refreshTokenValidity" column="refresh_token_validity"/>
+        <result property="additionalInformation" column="additional_information"/>
+
+        <result property="createTime" column="create_time"/>
+        <result property="archived" column="archived"/>
+        <result property="trusted" column="trusted"/>
+
+    </resultMap>
+
+    <select id="findOauthClientDetails" parameterType="String" resultMap="oauthClientDetailsMap">
+         select * from oauth_client_details
+         where  client_id = #{clientId}
+	</select>
+
+    <select id="findAllOauthClientDetails" resultMap="oauthClientDetailsMap">
+         select * from oauth_client_details
+	</select>
+
+    <update id="updateOauthClientDetailsArchive">
+         update oauth_client_details set archived = #{archive}
+         where client_id = #{clientId}
+	</update>
+
+
+    <insert id="saveOauthClientDetails" parameterType="OauthClientDetails">
+         insert into oauth_client_details(client_id,resource_ids,client_secret,scope,authorized_grant_types,web_server_redirect_uri,
+         authorities,access_token_validity,refresh_token_validity,additional_information,trusted)
+         values
+         (#{clientId},#{resourceIds},#{clientSecret},#{scope},#{authorizedGrantTypes}, #{webServerRedirectUri},
+         #{authorities},#{accessTokenValidity},#{refreshTokenValidity},#{additionalInformation}, #{trusted})
+	</insert>
+
+
+</mapper>

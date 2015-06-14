@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+    <settings>
+        <setting name="lazyLoadingEnabled" value="false"/>
+        <setting name="useGeneratedKeys" value="true"/>
+    </settings>
+    <typeAliases>
+        <typeAlias alias="User" type="cc.wdcy.domain.user.User"/>
+        <typeAlias alias="Privilege" type="cc.wdcy.domain.user.Privilege"/>
+        <typeAlias alias="OauthClientDetails" type="cc.wdcy.domain.oauth.OauthClientDetails"/>
+
+    </typeAliases>
+
+    <mappers>
+        <mapper resource="cc/wdcy/infrastructure/mybatis/UserMapper.xml"/>
+        <mapper resource="cc/wdcy/infrastructure/mybatis/OauthMapper.xml"/>
+
+    </mappers>
+
+</configuration>

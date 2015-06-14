@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cc.wdcy.infrastructure.mybatis.UserRepositoryMyBatis">
+
+    <resultMap type="User" id="userMap">
+        <id property="id" column="id"/>
+        <result property="guid" column="guid"/>
+        <result property="archived" column="archived"/>
+        <result property="createTime" column="create_time"/>
+
+        <result property="email" column="email"/>
+        <result property="phone" column="phone"/>
+        <result property="defaultUser" column="default_user"/>
+
+        <result property="password" column="password"/>
+        <result property="username" column="username"/>
+        <result property="lastLoginTime" column="last_login_time"/>
+
+        <collection property="privileges" column="id" select="findPrivilegesByUserId" ofType="Privilege"/>
+
+    </resultMap>
+
+
+    <select id="findByGuid" parameterType="String" resultMap="userMap">
+         select * from user_ where  guid = #{guid}
+	</select>
+
+    <select id="findUserById" parameterType="Integer" resultMap="userMap">
+         select * from user_ where id = #{id}
+	</select>
+
+    <select id="findPrivilegesByUserId" parameterType="Integer" resultType="Privilege">
+         select privilege from user_privilege where user_id = #{userId}
+	</select>
+
+    <select id="findByUsername" parameterType="String" resultMap="userMap">
+         select * from user_
+         where username = #{username}
+         and archived = 0
+	</select>
+
+
+    <insert id="saveUser" parameterType="User" useGeneratedKeys="true" keyProperty="id">
+        insert into user_(guid,archived,create_time,email,password,username,phone, last_login_time)
+        values
+        (#{guid},#{archived},#{createTime},#{email},#{password},#{username}, #{phone}, #{lastLoginTime})
+    </insert>
+
+    <update id="updateUser" parameterType="User" flushCache="true">
+        update user_ set
+        username = #{username},
+        password = #{password},
+        phone = #{phone},
+        email = #{email}
+        where guid = #{guid}
+    </update>
+
+</mapper>
