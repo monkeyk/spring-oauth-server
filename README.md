@@ -16,4 +16,17 @@ Deep Integrate Spring Security &amp; Oauth2
     <li><p>access_token, code save to database(replace save to memory)</p></li>
 </ol>
 
+<hr/>
+
+<div>
+    <h3>Dependency Framework, version</h3>
+    <ul>
+        <li>Spring (3.1.1.RELEASE)</li>
+        <li>Spring Security (3.1.0.RELEASE)</li>
+        <li>MyBatis (3.2.1)</li>
+        <li>spring-security-oauth2 (1.0.5.RELEASE)</li>
+        <li>Log4j (1.2.14)</li>
+    </ul>
+</div>
+
 
