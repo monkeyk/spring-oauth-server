@@ -11,6 +11,9 @@ Deep Integrate Spring Security &amp; Oauth2
     <li><p>Save Spring Security User data to database</p></li>
     <li><p>Save ClientDetails to database, and manage it</p></li>
     <li><p>Extend ClientDetails fields, add <code>trusted</code> field for check the client is trust or not</p></li>
+    <li><p>Cancel unnecessary configuration</p></li>
+    <li><p>Different resources config different roles</p></li>
+    <li><p>access_token, code save to database(replace save to memory)</p></li>
 </ol>
 
 
