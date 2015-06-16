@@ -26,6 +26,7 @@ Deep Integrate Spring Security &amp; Oauth2
         <li>MyBatis (3.2.1)</li>
         <li>spring-security-oauth2 (1.0.5.RELEASE)</li>
         <li>Log4j (1.2.14)</li>
+        <li>MySql (5.0+)</li>
     </ul>
 </div>
 
@@ -36,7 +37,7 @@ Deep Integrate Spring Security &amp; Oauth2
     <ol>
         <li><p>
             Download or clone the project source code to local computer,
-            the computer install development environment(JDK,Maven,Tomcat,IDE...)
+            make sure the computer install JAVA development environment(JDK,Maven,Tomcat,IDE...)
         </p></li>
         <li><p>
             Create MySql(5.0+) Database: <em>oauth2</em>, run SQL script files(position: /others/database),
@@ -58,4 +59,17 @@ Deep Integrate Spring Security &amp; Oauth2
             and testing step by step(Browser default URL: http://localhost:8080/spring-oauth-server).
         </p></li>
     </ol>
+</div>
+
+<hr/>
+
+<div>
+    <h3>Database table,column explain</h3>
+    <p>
+        <em>db_table_description.html</em>(position: /others) is explain the SQL file <code>oauth.ddl</code> all tables, columns,
+        tell how to use and where use.
+        <br/>
+        Online visit address
+        <a href="http://andaily.com/spring-oauth-server/db_table_description.html">http://andaily.com/spring-oauth-server/db_table_description.html</a>(Chinese).
+    </p>
 </div>
