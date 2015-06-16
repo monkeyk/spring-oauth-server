@@ -29,4 +29,33 @@ Deep Integrate Spring Security &amp; Oauth2
     </ul>
 </div>
 
+<hr/>
 
+<div>
+    <h3>How to use</h3>
+    <ol>
+        <li><p>
+            Download or clone the project source code to local computer,
+            the computer install development environment(JDK,Maven,Tomcat,IDE...)
+        </p></li>
+        <li><p>
+            Create MySql(5.0+) Database: <em>oauth2</em>, run SQL script files(position: /others/database),
+            run script order: initial_db.ddl -> oauth.ddl -> initial_data.ddl.
+        </p></li>
+        <li><p>
+            Config <code>spring-oauth-server.properties</code> (position: src/main/resources), update database
+            connection information(username, password).
+        </p></li>
+        <li><p>
+            Use Maven import local project to IDE(for example: Intellij IDEA), Add Servlet-Container-Server(Tomcat),
+            startup the server(make sure set project contextPath = 'spring-oauth-server').
+            <br/>
+            Besides, use maven command <code>mvn package</code> compile the project(generate 'spring-oauth-server.war'),
+            copy the war to Tomcat(make sure add 'spring-oauth-server.properties' to classpath) and startup.
+        </p></li>
+        <li><p>
+            Visit <a href="https://github.com/monkeyk/spring-oauth-server/blob/master/others/oauth_test.txt">oauth_test.txt</a> (position: others)
+            and testing step by step(Browser default URL: http://localhost:8080/spring-oauth-server).
+        </p></li>
+    </ol>
+</div>
