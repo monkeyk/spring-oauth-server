@@ -73,3 +73,13 @@ Deep Integrate Spring Security &amp; Oauth2
         <a href="http://andaily.com/spring-oauth-server/db_table_description.html">http://andaily.com/spring-oauth-server/db_table_description.html</a>(Chinese).
     </p>
 </div>
+
+
+<hr/>
+<div>
+    <h3>More...</h3>
+    <p>Project Blog address: <a href="http://andaily.com/blog/?cat=19">http://andaily.com/blog/?cat=19</a>(Chinese)</p>
+    <p>More mysql open-source projects: <a href="http://andaily.com/my_projects.html">http://andaily.com/my_projects.html</a></p>
+    <p>More help please contact: <a href="mailto:shengzhao@shengzhaoli.com">shengzhao@shengzhaoli.com</a></p>
+    <p>Expect your joining...</p>
+</div>
