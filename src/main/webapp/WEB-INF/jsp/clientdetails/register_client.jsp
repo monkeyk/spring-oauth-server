@@ -11,7 +11,7 @@
 <html>
 <head>
     <title>注册client</title>
-    <script src="http://cdn.bootcss.com/angular.js/1.1.5/angular.min.js"></script>
+    <script src="${contextPath}/resources/angular.min.js"></script>
 
 </head>
 <body>
@@ -73,8 +73,7 @@
                     <form:select path="scope" id="scope" cssClass="form-control">
                         <form:option value="read">read</form:option>
                         <form:option value="write">write</form:option>
-                        <form:option value="trust">trust</form:option>
-                        <form:option value="read,write">read,write</form:option>
+                        <form:option value="read,write">read write</form:option>
                     </form:select>
 
                     <p class="help-block">scope必须选择</p>

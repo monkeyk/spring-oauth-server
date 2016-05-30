@@ -4,15 +4,20 @@
 --%>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE HTML>
 <html>
 <head>
     <title>Home</title>
+    <c:set var="contextPath" value="${pageContext.request.contextPath}" scope="application"/>
+
 </head>
 <body>
 <h2>Spring Security&Oauth2 is work!</h2>
 
 <p>
+    <a href="${contextPath}/login.jsp">Login</a>
+    &nbsp;|&nbsp;
     <a href="${contextPath}/logout.do">Logout</a>
 </p>
 
@@ -21,7 +26,7 @@
     <ol>
         <li>
             <p>
-                菜单 User 是不需要Oauth 验证即可访问的(即公开的resource)
+                菜单 User 是不需要Oauth 验证即可访问的(即公开的resource); 用于管理用户信息(添加,删除等).
             </p>
         </li>
         <li>
@@ -49,13 +54,13 @@
 菜单
 <ul>
     <li>
-        <a href="${contextPath}/user/overview.htm">User</a>
+        <a href="${contextPath}/user/overview">User</a>
     </li>
     <li>
-        <a href="${contextPath}/unity/dashboard.htm">Unity</a>
+        <a href="${contextPath}/unity/dashboard">Unity</a>
     </li>
     <li>
-        <a href="${contextPath}/m/dashboard.htm">Mobile</a>
+        <a href="${contextPath}/m/dashboard">Mobile</a>
     </li>
 </ul>
 </body>
