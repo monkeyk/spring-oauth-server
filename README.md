@@ -22,6 +22,8 @@ Deep Integrate Spring Security &amp; Oauth2
 <div>
     <h3>Dependency Framework, version</h3>
     <ul>
+        <li>JDK (1.8.0_40)</li>
+        <li>Servlet API (3.1.0)</li>
         <li>Spring (4.1.6.RELEASE)</li>
         <li>Spring Security (4.0.1.RELEASE)</li>
         <li>spring-security-oauth2 (2.0.7.RELEASE)</li>
