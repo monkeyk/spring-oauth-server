@@ -22,7 +22,7 @@
         </thead>
         <tbody>
         <tr>
-            <td rowspan="14">oauth_client_details</td>
+            <td rowspan="15">oauth_client_details</td>
             <td>client_id</td>
             <td>
                 主键,必须唯一,不能为空.
@@ -186,6 +186,16 @@
                 若该字段为1,则在登录后不需要再让用户Approve同意授权(因为是受信任的).
                 <br/>
                 对该字段的具体使用请参考<code>OauthUserApprovalHandler.java</code>. (扩展字段)
+            </td>
+        </tr>
+        <tr>
+            <td>autoapprove</td>
+            <td>
+                设置用户是否自动Approval操作, 默认值为 'false', 可选值包括 'true','false', 'read','write'.
+                <br/>
+                该字段只适用于grant_type="authorization_code"的情况,当用户登录成功后,若该值为'true'或支持的scope值,则会跳过用户Approve的页面, 直接授权.
+                <br/>
+                该字段与 trusted 有类似的功能, 是 spring-security-oauth2 的 2.0 版本后添加的新属性.
             </td>
         </tr>
         <tr>
@@ -361,7 +371,7 @@
     </table>
 
     <p class="text-muted">
-        &copy; <a href="http://git.oschina.net/shengzhao/spring-oauth-server" target="_blank">spring-oauth-server</a>
+        &copy; 2013 - 2015 <a href="http://git.oschina.net/shengzhao/spring-oauth-server" target="_blank">spring-oauth-server</a>
     </p>
 </div>
 

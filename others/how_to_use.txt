@@ -1,14 +1,13 @@
 
 
 使用的主要技术与版本号
-*Spring (3.1.1.RELEASE)
-*Spring Security (3.1.0.RELEASE)
-*MyBatis (3.2.1)
-*spring-security-oauth2 (1.0.5.RELEASE)
+*Spring (4.1.6.RELEASE)
+*Spring Security (4.0.1.RELEASE)
+*spring-security-oauth2 (2.0.7.RELEASE)
 
 
 如何使用?
-1.项目是Maven管理的, 需要本地安装maven(开发用的maven版本号为3.1.0), 还有MySql(开发用的mysql版本号为5.5)
+1.项目是Maven管理的, 需要本地安装maven(开发用的maven版本号为3.1.0), 还有MySql(开发用的mysql版本号为5.6)
 
 2.下载(或clone)项目到本地
 
@@ -17,7 +16,7 @@
 
 4.修改spring-oauth-server.properties(位于src/resources目录)中的数据库连接信息(包括username, password等)
 
-5.将本地项目导入到IDE(如Intellij IDEA)中,配置Tomcat(或类似的servelt运行服务器), 并启动Tomcat(默认端口为8080)
+5.将本地项目导入到IDE(如Intellij IDEA)中,配置Tomcat(或类似的servlet运行服务器), 并启动Tomcat(默认端口为8080)
    另: 也可通过maven package命令将项目编译为war文件(spring-oauth-server.war),
          将war放在Tomcat中并启动(注意: 这种方式需要将spring-oauth-server.properties加入到classpath中并正确配置数据库连接信息).
 

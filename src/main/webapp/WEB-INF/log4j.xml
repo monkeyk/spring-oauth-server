@@ -12,17 +12,17 @@
     </appender>
 
 
+    <!--&lt;!&ndash;spring logger&ndash;&gt;-->
+    <!--<logger name="org.springframework" additivity="false">-->
+    <!--<level value="WARN"/>-->
+    <!--<appender-ref ref="Console"/>-->
+    <!--</logger>-->
+
+
     <root>
-        <level value="DEBUG"/>
+        <level value="INFO"/>
         <appender-ref ref="Console"/>
     </root>
-
-
-    <!--spring logger-->
-    <logger name="org.springframework" additivity="false">
-        <level value="WARN"/>
-        <appender-ref ref="Console"/>
-    </logger>
 
 
 </log4j:configuration>
