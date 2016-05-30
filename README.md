@@ -14,6 +14,7 @@ Deep Integrate Spring Security &amp; Oauth2
     <li><p>Cancel unnecessary configuration</p></li>
     <li><p>Different resources config different roles</p></li>
     <li><p>access_token, code save to database(replace save to memory)</p></li>
+    <li><p>Add Restful OAuth API, see <code>OAuthRestController</code></p></li>
 </ol>
 
 <hr/>
@@ -21,12 +22,11 @@ Deep Integrate Spring Security &amp; Oauth2
 <div>
     <h3>Dependency Framework, version</h3>
     <ul>
-        <li>Spring (3.1.1.RELEASE)</li>
-        <li>Spring Security (3.1.0.RELEASE)</li>
-        <li>MyBatis (3.2.1)</li>
-        <li>spring-security-oauth2 (1.0.5.RELEASE)</li>
+        <li>Spring (4.1.6.RELEASE)</li>
+        <li>Spring Security (4.0.1.RELEASE)</li>
+        <li>spring-security-oauth2 (2.0.7.RELEASE)</li>
         <li>Log4j (1.2.14)</li>
-        <li>MySql (5.0+)</li>
+        <li>MySQL (5.6.23)</li>
     </ul>
 </div>
 
