@@ -10,7 +10,7 @@
 <head>
     <title>Test [${clientDetailsDto.clientId}]</title>
 
-    <script src="http://cdn.bootcss.com/angular.js/1.1.5/angular.min.js"></script>
+    <script src="${contextPath}/resources/angular.min.js"></script>
 
 </head>
 <body>
@@ -41,18 +41,25 @@
                                 <a href="${contextPath}/oauth/authorize?client_id={{clientId}}&redirect_uri={{redirectUri}}&response_type=code&scope={{scope}}"
                                    target="_blank">
                                     /oauth/authorize?client_id={{clientId}}&redirect_uri={{redirectUri}}&response_type=code&scope={{scope}}</a>
+                                <span class="label label-info">GET</span>
                             </p>
                         </li>
                         <li>
-                            <p>
-                                <code>用 'code' 换取 'access_token'</code>
-                                <br/>
-                                输入第一步获取的code: <input type="text" name="code" value="" ng-model="code"
-                                                     required="required"/>
-                                <br/>
-                                <a href="${contextPath}/oauth/token?client_id={{clientId}}&client_secret={{clientSecret}}&grant_type=authorization_code&code={{code}}&redirect_uri={{redirectUri}}"
-                                   target="_blank">/oauth/token?client_id={{clientId}}&client_secret={{clientSecret}}&grant_type=authorization_code&code={{code}}&redirect_uri={{redirectUri}}</a>
-                            </p>
+                            <code>用 'code' 换取 'access_token'</code>
+                            <br/>
+                            输入第一步获取的code: <input type="text" name="code" value="" ng-model="code"
+                                                 required="required"/>
+                            <br/>
+
+                            <form action="${contextPath}/oauth/token?client_id={{clientId}}&client_secret={{clientSecret}}&grant_type=authorization_code&code={{code}}&redirect_uri={{redirectUri}}"
+                                  method="post" target="_blank">
+                                    <%--<a href="${contextPath}/oauth/token?client_id={{clientId}}&client_secret={{clientSecret}}&grant_type=authorization_code&code={{code}}&redirect_uri={{redirectUri}}"--%>
+                                    <%--target="_blank">/oauth/token?client_id={{clientId}}&client_secret={{clientSecret}}&grant_type=authorization_code&code={{code}}&redirect_uri={{redirectUri}}</a>--%>
+                                <button class="btn btn-link" type="submit">
+                                    /oauth/token?client_id={{clientId}}&client_secret={{clientSecret}}&grant_type=authorization_code&code={{code}}&redirect_uri={{redirectUri}}
+                                </button>
+                                <span class="label label-warning">POST</span>
+                            </form>
                         </li>
                     </ol>
                 </div>
@@ -68,10 +75,17 @@
                     <br/>
                     password: <input type="text" required="required" ng-model="password"/>
 
-                    <p>
-                        <a href="${contextPath}/oauth/token?client_id={{clientId}}&client_secret={{clientSecret}}&grant_type=password&scope={{scope}}&username={{username}}&password={{password}}"
-                           target="_blank">/oauth/token?client_id={{clientId}}&client_secret={{clientSecret}}&grant_type=password&scope={{scope}}&username={{username}}&password={{password}}</a>
-                    </p>
+                    <br/>
+
+                    <form action="${contextPath}/oauth/token?client_id={{clientId}}&client_secret={{clientSecret}}&grant_type=password&scope={{scope}}&username={{username}}&password={{password}}"
+                          method="post" target="_blank">
+                            <%--<a href="${contextPath}/oauth/token?client_id={{clientId}}&client_secret={{clientSecret}}&grant_type=password&scope={{scope}}&username={{username}}&password={{password}}"--%>
+                            <%--target="_blank">/oauth/token?client_id={{clientId}}&client_secret={{clientSecret}}&grant_type=password&scope={{scope}}&username={{username}}&password={{password}}</a>--%>
+                        <button class="btn btn-link" type="submit">
+                            /oauth/token?client_id={{clientId}}&client_secret={{clientSecret}}&grant_type=password&scope={{scope}}&username={{username}}&password={{password}}
+                        </button>
+                        <span class="label label-warning">POST</span>
+                    </form>
                 </div>
             </div>
         </c:if>
@@ -87,6 +101,7 @@
                     <p>
                         <a href="${contextPath}/oauth/authorize?client_id={{clientId}}&client_secret={{clientSecret}}&response_type=token&scope={{scope}}&redirect_uri={{implicitRedirectUri}}"
                                 >/oauth/authorize?client_id={{clientId}}&client_secret={{clientSecret}}&response_type=token&scope={{scope}}&redirect_uri={{implicitRedirectUri}}</a>
+                        <span class="label label-info">GET</span>
                     </p>
                 </div>
             </div>
@@ -98,10 +113,16 @@
                 <div class="panel-body">
                     <p class="text-muted">点击链接地址即可测试</p>
 
-                    <p>
-                        <a href="${contextPath}/oauth/token?client_id={{clientId}}&client_secret={{clientSecret}}&grant_type=client_credentials&scope={{scope}}"
-                           target="_blank">/oauth/token?client_id={{clientId}}&client_secret={{clientSecret}}&grant_type=client_credentials&scope={{scope}}</a>
-                    </p>
+
+                    <form action="${contextPath}/oauth/token?client_id={{clientId}}&client_secret={{clientSecret}}&grant_type=client_credentials&scope={{scope}}"
+                          method="post" target="_blank">
+                            <%--<a href="${contextPath}/oauth/token?client_id={{clientId}}&client_secret={{clientSecret}}&grant_type=client_credentials&scope={{scope}}"--%>
+                            <%--target="_blank">/oauth/token?client_id={{clientId}}&client_secret={{clientSecret}}&grant_type=client_credentials&scope={{scope}}</a>--%>
+                        <button class="btn btn-link" type="submit">
+                            /oauth/token?client_id={{clientId}}&client_secret={{clientSecret}}&grant_type=client_credentials&scope={{scope}}
+                        </button>
+                        <span class="label label-warning">POST</span>
+                    </form>
                 </div>
             </div>
         </c:if>
@@ -113,10 +134,17 @@
                     <p class="text-muted">输入refresh_token 后点击链接地址.</p>
                     refresh_token: <input type="text" ng-model="refreshToken" required="required" size="70"/>
 
-                    <p>
-                        <a href="${contextPath}/oauth/token?client_id={{clientId}}&client_secret={{clientSecret}}&grant_type=refresh_token&refresh_token={{refreshToken}}"
-                           target="_blank">/oauth/token?client_id={{clientId}}&client_secret={{clientSecret}}&grant_type=refresh_token&refresh_token={{refreshToken}}</a>
-                    </p>
+                    <br/>
+
+                    <form action="${contextPath}/oauth/token?client_id={{clientId}}&client_secret={{clientSecret}}&grant_type=refresh_token&refresh_token={{refreshToken}}"
+                          method="post" target="_blank">
+                            <%--<a href="${contextPath}/oauth/token?client_id={{clientId}}&client_secret={{clientSecret}}&grant_type=refresh_token&refresh_token={{refreshToken}}"--%>
+                            <%--target="_blank">/oauth/token?client_id={{clientId}}&client_secret={{clientSecret}}&grant_type=refresh_token&refresh_token={{refreshToken}}</a>--%>
+                        <button class="btn btn-link" type="submit">
+                            /oauth/token?client_id={{clientId}}&client_secret={{clientSecret}}&grant_type=refresh_token&refresh_token={{refreshToken}}
+                        </button>
+                        <span class="label label-warning">POST</span>
+                    </form>
                 </div>
             </div>
         </c:if>
@@ -131,11 +159,11 @@
     var TestClientCtrl = ["$scope", function ($scope) {
         $scope.clientId = "${clientDetailsDto.clientId}";
         $scope.clientSecret = "${clientDetailsDto.clientSecret}";
-        $scope.scope = "${clientDetailsDto.scope}";
+        $scope.scope = "${clientDetailsDto.scopeWithBlank}";
 
         <c:if test="${empty clientDetailsDto.webServerRedirectUri}" var="eptRedUri">
         $scope.implicitRedirectUri = location.href;
-        $scope.redirectUri = "http://localhost:8080/spring-oauth-server/unity/dashboard.htm";
+        $scope.redirectUri = "http://localhost:8080/spring-oauth-server/unity/dashboard";
         </c:if>
         <c:if test="${not eptRedUri}">
         $scope.implicitRedirectUri = "${clientDetailsDto.webServerRedirectUri}";

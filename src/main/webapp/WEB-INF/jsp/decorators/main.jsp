@@ -14,10 +14,11 @@
 
     <meta name="viewport" content="width=device-width,user-scalable=no"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <link rel="shortcut icon" href="${contextPath}/resources/favicon.ico"/>
 
     <title><decorator:title default=""/> - Spring Security&Oauth2</title>
 
-    <link href="http://cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="${contextPath}/resources/bootstrap.min.css" rel="stylesheet"/>
     <decorator:head/>
 
 </head>
@@ -28,8 +29,9 @@
     </div>
     <div>
         <hr/>
-        <p>
-            <a href="mailto:monkeyk1987@gmail.com">monkeyk1987@gmail.com</a>, from <a
+        <p class="text-center text-muted">
+            &copy; 2013 - 2016
+            <a href="mailto:sz@monkeyk.com">sz@monkeyk.com</a> from <a
                 href="http://git.oschina.net/shengzhao/spring-oauth-server" target="_blank">spring-oauth-server</a>
         </p>
     </div>
