@@ -1,5 +1,9 @@
 # spring-oauth-server
-Deep Integrate Spring Security &amp; Oauth2
+Deep Integrate Spring Security &amp; OAuth2
+
+<p>
+    Latest <a href="http://git.oschina.net/shengzhao/spring-oauth-server">http://git.oschina.net/shengzhao/spring-oauth-server</a>
+</p>
 
 <p>
     spring-oauth-server is based on
