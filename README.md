@@ -85,8 +85,9 @@ Deep Integrate Spring Security &amp; OAuth2
 <div>
     <h3>More...</h3>
     <p>Project Blog address: <a href="http://andaily.com/blog/?cat=19">http://andaily.com/blog/?cat=19</a>(Chinese)</p>
-    <p>More mysql open-source projects: <a href="http://andaily.com/my_projects.html">http://andaily.com/my_projects.html</a></p>
+    <p>More my open-source projects: <a href="http://andaily.com/my_projects.html">http://andaily.com/my_projects.html</a></p>
     <p>More help please contact: <a href="mailto:shengzhao@shengzhaoli.com">shengzhao@shengzhaoli.com</a></p>
     <p>项目中文GIT库地址: <a href="http://git.oschina.net/shengzhao/spring-oauth-server">http://git.oschina.net/shengzhao/spring-oauth-server</a></p>
+    <p>Spring Security OAuth2 开发指南[中文] <a href="https://www.oschina.net/translate/spring-security-oauth-docs-oauth2">https://www.oschina.net/translate/spring-security-oauth-docs-oauth2</a></p>
     <p>Expect your joining...</p>
 </div>
