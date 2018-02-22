@@ -16,7 +16,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
     <link rel="shortcut icon" href="${contextPath}/resources/favicon.ico"/>
 
-    <title><decorator:title default=""/> - Spring Security&Oauth2</title>
+    <title><decorator:title default=""/> - Spring Security&OAuth2</title>
 
     <link href="${contextPath}/resources/bootstrap.min.css" rel="stylesheet"/>
     <decorator:head/>
@@ -30,9 +30,9 @@
     <div>
         <hr/>
         <p class="text-center text-muted">
-            &copy; 2013 - 2016
+            &copy; 2013 - 2018
             <a href="mailto:sz@monkeyk.com">sz@monkeyk.com</a> from <a
-                href="http://git.oschina.net/shengzhao/spring-oauth-server" target="_blank">spring-oauth-server</a>
+                href="https://github.com/monkeyk/spring-oauth-server" target="_blank">spring-oauth-server</a>
         </p>
     </div>
 </div>

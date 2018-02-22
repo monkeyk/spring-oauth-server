@@ -8,10 +8,10 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <title>Oauth Login</title>
+    <title>OAuth Login</title>
 </head>
 <body>
-<h2 class="page-header">Oauth Login</h2>
+<h2 class="page-header">OAuth Login</h2>
 
 <div class="row">
     <div class="col-md-4">
