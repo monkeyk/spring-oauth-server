@@ -2,8 +2,8 @@
 
 使用的主要技术与版本号
 *Spring (4.1.6.RELEASE)
-*Spring Security (4.0.1.RELEASE)
-*spring-security-oauth2 (2.0.7.RELEASE)
+*Spring Security (4.0.4.RELEASE)
+*spring-security-oauth2 (2.0.14.RELEASE)
 
 
 如何使用?
