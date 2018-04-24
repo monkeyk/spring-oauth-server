@@ -1,8 +1,8 @@
 -- ###############
 --    create MySQL database , if need create, cancel the comment
 -- ###############
--- create database if not exists oauth2 default character set utf8;
--- use oauth2 set default character = utf8;
+-- create database if not exists oauth2_boot default character set utf8;
+-- use oauth2_boot set default character = utf8;
 
 -- ###############
 --    grant privileges  to oauth2/oauth2

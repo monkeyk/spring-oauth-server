@@ -10,7 +10,7 @@
 <head>
     <title>Test [${clientDetailsDto.clientId}]</title>
 
-    <script src="${contextPath}/resources/angular.min.js"></script>
+    <script src="${contextPath}/static/angular.min.js"></script>
 
 </head>
 <body>
@@ -21,10 +21,15 @@
 
     <p>
         针对不同的<code>grant_type</code>提供不同的测试URL,
-        完整的Oauth测试请访问<a href="http://git.oschina.net/mkk/spring-oauth-client" target="_blank">spring-oauth-client</a>项目.
+        完整的OAuth测试请访问<a href="https://gitee.com/mkk/spring-oauth-client" target="_blank">spring-oauth-client</a>项目.
     </p>
 
     <div ng-controller="TestClientCtrl">
+        <div>
+            请先输入client_secret: <input type="text" value="" placeholder="client_secret" ng-model="clientSecret"
+                                      size="100" required="required"/>
+        </div>
+        <hr/>
         <c:if test="${clientDetailsDto.containsAuthorizationCode}">
             <div class="panel panel-default">
                 <div class="panel-heading">Test [authorization_code]</div>
@@ -100,7 +105,8 @@
 
                     <p>
                         <a href="${contextPath}/oauth/authorize?client_id={{clientId}}&client_secret={{clientSecret}}&response_type=token&scope={{scope}}&redirect_uri={{implicitRedirectUri}}"
-                                >/oauth/authorize?client_id={{clientId}}&client_secret={{clientSecret}}&response_type=token&scope={{scope}}&redirect_uri={{implicitRedirectUri}}</a>
+                           target="_blank"
+                        >/oauth/authorize?client_id={{clientId}}&client_secret={{clientSecret}}&response_type=token&scope={{scope}}&redirect_uri={{implicitRedirectUri}}</a>
                         <span class="label label-info">GET</span>
                     </p>
                 </div>
@@ -158,7 +164,7 @@
 <script>
     var TestClientCtrl = ["$scope", function ($scope) {
         $scope.clientId = "${clientDetailsDto.clientId}";
-        $scope.clientSecret = "${clientDetailsDto.clientSecret}";
+        $scope.clientSecret = "";
         $scope.scope = "${clientDetailsDto.scopeWithBlank}";
 
         <c:if test="${empty clientDetailsDto.webServerRedirectUri}" var="eptRedUri">

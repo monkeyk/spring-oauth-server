@@ -1,6 +1,6 @@
 package com.monkeyk.sos.infrastructure;
 
-import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 /**
  * 2016/3/25
@@ -14,8 +14,8 @@ public abstract class PasswordHandler {
     }
 
 
-    public static String md5(String password) {
-        Md5PasswordEncoder encoder = new Md5PasswordEncoder();
-        return encoder.encodePassword(password, null);
+    public static String encode(String password) {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        return encoder.encode(password);
     }
 }

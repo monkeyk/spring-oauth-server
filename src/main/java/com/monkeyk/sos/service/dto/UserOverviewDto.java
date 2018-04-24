@@ -1,4 +1,4 @@
-package com.monkeyk.sos.domain.dto;
+package com.monkeyk.sos.service.dto;
 
 import java.io.Serializable;
 import java.util.ArrayList;

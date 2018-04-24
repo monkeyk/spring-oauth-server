@@ -1,6 +1,6 @@
 package com.monkeyk.sos.web.controller;
 
-import com.monkeyk.sos.domain.dto.OauthClientDetailsDto;
+import com.monkeyk.sos.service.dto.OauthClientDetailsDto;
 import com.monkeyk.sos.service.OauthService;
 import com.monkeyk.sos.web.oauth.OauthClientDetailsDtoValidator;
 import org.springframework.beans.factory.annotation.Autowired;

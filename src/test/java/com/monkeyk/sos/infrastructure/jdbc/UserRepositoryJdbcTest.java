@@ -14,14 +14,14 @@ package com.monkeyk.sos.infrastructure.jdbc;
 import com.monkeyk.sos.domain.user.User;
 import com.monkeyk.sos.domain.user.UserRepository;
 import com.monkeyk.sos.infrastructure.AbstractRepositoryTest;
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.testng.annotations.Test;
+
 
 import java.util.List;
 
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertNotNull;
-import static org.testng.AssertJUnit.assertNull;
+import static org.junit.Assert.*;
+
 
 /*
   * @author Shengzhao Li
@@ -97,7 +97,7 @@ public class UserRepositoryJdbcTest extends AbstractRepositoryTest {
     /*
     * Run the test must initial db firstly
     * */
-    @Test(enabled = false)
+//    @Test()
     public void testPrivilege() {
 
         String guid = "55b713df1c6f423e842ad68668523c49";

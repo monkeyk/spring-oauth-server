@@ -1,4 +1,4 @@
-package com.monkeyk.sos.domain.dto;
+package com.monkeyk.sos.service.dto;
 
 import com.monkeyk.sos.domain.user.Privilege;
 import com.monkeyk.sos.domain.user.User;

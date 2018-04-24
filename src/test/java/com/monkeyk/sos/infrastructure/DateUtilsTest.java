@@ -11,14 +11,15 @@
  */
 package com.monkeyk.sos.infrastructure;
 
-import org.testng.annotations.Test;
+
+import org.junit.Test;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
+import static org.junit.Assert.*;
+
 
 /*
   * @author Shengzhao Li

@@ -1,8 +1,8 @@
 package com.monkeyk.sos.service;
 
-import com.monkeyk.sos.domain.dto.UserFormDto;
-import com.monkeyk.sos.domain.dto.UserJsonDto;
-import com.monkeyk.sos.domain.dto.UserOverviewDto;
+import com.monkeyk.sos.service.dto.UserFormDto;
+import com.monkeyk.sos.service.dto.UserJsonDto;
+import com.monkeyk.sos.service.dto.UserOverviewDto;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 /**

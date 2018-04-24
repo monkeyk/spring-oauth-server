@@ -17,7 +17,7 @@
 
 <h2>Add User</h2>
 
-<form:form commandName="formDto" cssClass="form-horizontal">
+<form:form modelAttribute="formDto" cssClass="form-horizontal">
     <div class="form-group">
         <label class="col-sm-2 control-label">Username<em class="text-danger">*</em></label>
 

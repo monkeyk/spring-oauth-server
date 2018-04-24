@@ -1,6 +1,6 @@
 package com.monkeyk.sos.web.controller;
 
-import com.monkeyk.sos.domain.dto.UserFormDto;
+import com.monkeyk.sos.service.dto.UserFormDto;
 import com.monkeyk.sos.domain.user.Privilege;
 import com.monkeyk.sos.service.UserService;
 import org.apache.commons.lang.StringUtils;

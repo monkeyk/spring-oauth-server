@@ -9,7 +9,7 @@
  * it only in accordance with the terms of the license agreement you
  * entered into with MONKEYK Information Technology Co. Ltd.
  */
-package com.monkeyk.sos.domain.dto;
+package com.monkeyk.sos.service.dto;
 
 import com.monkeyk.sos.domain.user.Privilege;
 import com.monkeyk.sos.domain.user.User;

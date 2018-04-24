@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * @author Shengzhao Li
  */
-public class WdcyUserDetails implements UserDetails {
+public class SOSUserDetails implements UserDetails {
 
     private static final long serialVersionUID = 3957586021470480642L;
 
@@ -24,10 +24,10 @@ public class WdcyUserDetails implements UserDetails {
 
     protected List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
 
-    public WdcyUserDetails() {
+    public SOSUserDetails() {
     }
 
-    public WdcyUserDetails(User user) {
+    public SOSUserDetails(User user) {
         this.user = user;
         initialAuthorities();
     }
@@ -35,15 +35,10 @@ public class WdcyUserDetails implements UserDetails {
     private void initialAuthorities() {
         //Default, everyone have it
         this.grantedAuthorities.add(DEFAULT_USER_ROLE);
-        //default user have all privileges
-        if (user.defaultUser()) {
-            this.grantedAuthorities.add(new SimpleGrantedAuthority(ROLE_PREFIX + Privilege.UNITY.name()));
-            this.grantedAuthorities.add(new SimpleGrantedAuthority(ROLE_PREFIX + Privilege.MOBILE.name()));
-        } else {
-            final List<Privilege> privileges = user.privileges();
-            for (Privilege privilege : privileges) {
-                this.grantedAuthorities.add(new SimpleGrantedAuthority(ROLE_PREFIX + privilege.name()));
-            }
+
+        final List<Privilege> privileges = user.privileges();
+        for (Privilege privilege : privileges) {
+            this.grantedAuthorities.add(new SimpleGrantedAuthority(ROLE_PREFIX + privilege.name()));
         }
     }
 

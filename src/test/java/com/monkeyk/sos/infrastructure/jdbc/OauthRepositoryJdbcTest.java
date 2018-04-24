@@ -15,12 +15,14 @@ import com.monkeyk.sos.domain.oauth.OauthClientDetails;
 import com.monkeyk.sos.domain.oauth.OauthRepository;
 import com.monkeyk.sos.domain.shared.GuidGenerator;
 import com.monkeyk.sos.infrastructure.AbstractRepositoryTest;
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.testng.annotations.Test;
+
 
 import java.util.List;
 
-import static org.testng.Assert.*;
+import static org.junit.Assert.*;
+
 
 /*
   * @author Shengzhao Li

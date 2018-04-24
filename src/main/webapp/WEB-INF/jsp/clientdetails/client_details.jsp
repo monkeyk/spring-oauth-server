@@ -52,7 +52,7 @@
 
                 <div class="list-group-item-text text-muted">
                     client_id: <span class="text-danger">${cli.clientId}</span>&nbsp;
-                    client_secret: <span class="text-primary">${cli.clientSecret}</span>&nbsp;
+                    client_secret: <span class="text-primary">***</span>&nbsp;
                     <br/>
                     authorized_grant_types: <span class="text-primary">${cli.authorizedGrantTypes}</span>&nbsp;
                     resource_ids: <span class="text-primary">${cli.resourceIds}</span>&nbsp;

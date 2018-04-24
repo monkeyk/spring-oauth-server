@@ -7,6 +7,7 @@ public enum Privilege {
 
     USER,          //Default privilege
 
+    ADMIN,     //admin
     UNITY,
     MOBILE
 }

@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.http.ResponseEntity;
@@ -59,7 +60,10 @@ public class OAuthRestController implements InitializingBean, ApplicationContext
 
     @Autowired
     private ClientDetailsService clientDetailsService;
+
+    // consumerTokenServices,defaultAuthorizationServerTokenServices
     @Autowired
+    @Qualifier("defaultAuthorizationServerTokenServices")
     private AuthorizationServerTokenServices tokenServices;
     @Autowired
     private AuthorizationCodeServices authorizationCodeServices;
@@ -72,7 +76,7 @@ public class OAuthRestController implements InitializingBean, ApplicationContext
     private WebResponseExceptionTranslator providerExceptionHandler = new DefaultWebResponseExceptionTranslator();
 
 
-    @RequestMapping(value = "/oauth2/rest_token", method = RequestMethod.POST)
+    @RequestMapping(value = "/oauth/rest_token", method = RequestMethod.POST)
     @ResponseBody
     public OAuth2AccessToken postAccessToken(@RequestBody Map<String, String> parameters) {
 
@@ -82,7 +86,7 @@ public class OAuthRestController implements InitializingBean, ApplicationContext
 
         TokenRequest tokenRequest = oAuth2RequestFactory.createTokenRequest(parameters, authenticatedClient);
 
-        if (clientId != null && !"".equals(clientId)) {
+        if (clientId != null && !clientId.equals("")) {
             // Only validate the client details if a client authenticated during this
             // request.
             if (!clientId.equals(tokenRequest.getClientId())) {
@@ -100,7 +104,7 @@ public class OAuthRestController implements InitializingBean, ApplicationContext
         if (!StringUtils.hasText(grantType)) {
             throw new InvalidRequestException("Missing grant type");
         }
-        if ("implicit".equals(grantType)) {
+        if (grantType.equals("implicit")) {
             throw new InvalidGrantException("Implicit grant type not supported from token endpoint");
         }
 
@@ -165,6 +169,7 @@ public class OAuthRestController implements InitializingBean, ApplicationContext
     }
 
 
+
     private boolean isRefreshTokenRequest(Map<String, String> parameters) {
         return "refresh_token".equals(parameters.get("grant_type")) && parameters.get("refresh_token") != null;
     }
@@ -199,7 +204,7 @@ public class OAuthRestController implements InitializingBean, ApplicationContext
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         if (this.authenticationManager == null) {
-            this.authenticationManager = (AuthenticationManager) applicationContext.getBean("authenticationManager");
+            this.authenticationManager = (AuthenticationManager) applicationContext.getBean("authenticationManagerBean");
         }
     }
 }

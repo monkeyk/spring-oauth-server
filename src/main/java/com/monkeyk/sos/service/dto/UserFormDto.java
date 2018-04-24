@@ -1,4 +1,4 @@
-package com.monkeyk.sos.domain.dto;
+package com.monkeyk.sos.service.dto;
 
 import com.monkeyk.sos.domain.user.Privilege;
 import com.monkeyk.sos.domain.user.User;
@@ -36,7 +36,7 @@ public class UserFormDto extends UserDto {
                 .username(getUsername())
                 .phone(getPhone())
                 .email(getEmail())
-                .password(PasswordHandler.md5(getPassword()));
+                .password(PasswordHandler.encode(getPassword()));
         user.privileges().addAll(getPrivileges());
         return user;
     }
