@@ -13,6 +13,8 @@ import java.util.List;
 public class UserJsonDto implements Serializable {
 
 
+    private static final long serialVersionUID = -704681024783524371L;
+
     private String guid;
     private boolean archived;
 

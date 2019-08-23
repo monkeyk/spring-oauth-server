@@ -1,6 +1,7 @@
 package com.monkeyk.sos.config;
 
 import com.monkeyk.sos.service.UserService;
+import com.monkeyk.sos.web.context.SOSContextHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -97,4 +98,14 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
     }
 
 
+    /**
+     * SOSContextHolder bean
+     *
+     * @return SOSContextHolder bean
+     * @since 2.0.1
+     */
+    @Bean
+    public SOSContextHolder sosContextHolder() {
+        return new SOSContextHolder();
+    }
 }

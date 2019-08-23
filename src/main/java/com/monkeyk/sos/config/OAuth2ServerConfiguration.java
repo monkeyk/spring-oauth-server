@@ -67,7 +67,7 @@ public class OAuth2ServerConfiguration {
                     .requestMatchers().antMatchers("/unity/**")
                     .and()
                     .authorizeRequests()
-                    .antMatchers("/unity/**").access("#oauth2.hasScope('read') and hasRole('ROLE_UNITY')");
+                    .antMatchers("/unity/**").access("#oauth2.hasScope('read') and hasRole('UNITY')");
 
         }
 
@@ -93,7 +93,7 @@ public class OAuth2ServerConfiguration {
                     .requestMatchers().antMatchers("/m/**")
                     .and()
                     .authorizeRequests()
-                    .antMatchers("/m/**").access("#oauth2.hasScope('read') and hasRole('ROLE_MOBILE')");
+                    .antMatchers("/m/**").access("#oauth2.hasScope('read') and hasRole('MOBILE')");
 
         }
 
@@ -136,10 +136,24 @@ public class OAuth2ServerConfiguration {
         }
 
 
+        /*
+         * JDBC TokenStore
+         */
         @Bean
         public TokenStore tokenStore(DataSource dataSource) {
             return new JdbcTokenStore(dataSource);
         }
+
+        /*
+         * Redis TokenStore
+         */
+//        @Bean
+//        public TokenStore tokenStore(RedisConnectionFactory connectionFactory) {
+//            final RedisTokenStore redisTokenStore = new RedisTokenStore(connectionFactory);
+//            //prefix
+//            redisTokenStore.setPrefix(RESOURCE_ID);
+//            return redisTokenStore;
+//        }
 
 
         @Bean

@@ -33,7 +33,7 @@
     <div>
         <hr/>
         <p class="text-center text-muted">
-            &copy; 2013 - 2018 <a href="https://gitee.com/shengzhao/spring-oauth-server" target="_blank">spring-oauth-server</a>.
+            &copy; 2013 - 2019 <a href="https://gitee.com/shengzhao/spring-oauth-server" target="_blank">spring-oauth-server</a>.
             V${mainVersion}
         </p>
     </div>

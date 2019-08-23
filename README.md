@@ -25,9 +25,8 @@ base on <strong>Spring-Boot</strong>
     <h3>Dependency Framework, version</h3>
     <ul>
         <li>JDK (1.8.0_40)</li>
-        <li>Servlet API (3.1.0)</li>
-        <li>Spring Boot(2.0.1.RELEASE)</li>
-        <li>spring-security-oauth2 (2.3.0.RELEASE)</li>
+        <li>Spring Boot(2.0.2.RELEASE)</li>
+        <li>spring-security-oauth2 (2.3.4.RELEASE)</li>
     </ul>
 </div>
 

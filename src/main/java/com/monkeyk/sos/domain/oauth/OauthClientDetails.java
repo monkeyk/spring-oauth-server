@@ -19,6 +19,9 @@ public class OauthClientDetails implements Serializable {
     private String clientId;
     private String resourceIds;
 
+    /**
+     * Encrypted
+     */
     private String clientSecret;
     /**
      * Available values: read,write
@@ -149,7 +152,6 @@ public class OauthClientDetails implements Serializable {
         sb.append(", archived=").append(archived);
         sb.append(", clientId='").append(clientId).append('\'');
         sb.append(", resourceIds='").append(resourceIds).append('\'');
-        sb.append(", clientSecret='").append(clientSecret).append('\'');
         sb.append(", scope='").append(scope).append('\'');
         sb.append(", authorizedGrantTypes='").append(authorizedGrantTypes).append('\'');
         sb.append(", webServerRedirectUri='").append(webServerRedirectUri).append('\'');

@@ -12,6 +12,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class SpringOauthServerApplication {
 
+    /**
+     * 不能直接运行 main
+     * 详细 请参考 others/how_to_use.txt 文件
+     *
+     * @param args args
+     */
     public static void main(String[] args) {
         SpringApplication.run(SpringOauthServerApplication.class, args);
     }

@@ -16,6 +16,8 @@ import java.util.List;
 public class OauthClientDetailsDto implements Serializable {
 
 
+    private static final long serialVersionUID = 4011292111995231569L;
+
     private String createTime;
     private boolean archived;
 
