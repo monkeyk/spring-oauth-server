@@ -22,7 +22,16 @@ Base on Spring-Boot
 <h3>授权协议</h3>
 <em><a href="https://gitee.com/shengzhao/spring-oauth-server/tree/master/LICENSE">GPL-2.0</a></em>
 
+<hr/>
 <h3>技术视频</h3>
+<ol>
+    <li> <a href="https://v.youku.com/v_show/id_XMzgyNjQwMjA4OA==.html?f=51900110&o=1">spring-oauth-server开源项目背景</a> </li>
+    <li> <a href="https://v.youku.com/v_show/id_XMzgyNzYzNjAzMg==.html?f=51900110&o=1">如何在本地运行spring-oauth-server(传统版本) </a> </li>
+    <li> <a href="https://v.youku.com/v_show/id_XMzg1NDM2NjU0MA==.html?f=51900110&o=1">如何在本地运行spring-oauth-server(config版本)</a> </li>
+    <li> <a href="https://v.youku.com/v_show/id_XMzg2Mjk0Mjk0MA==.html?f=51900110&o=1">在线测试环境的使用</a> </li>
+    <li> <a href="https://v.youku.com/v_show/id_XNDMwMTg4MTQ5Mg==.html?f=51900110&o=1">spring-oauth-server v2.0.1更新内容简介</a> </li>
+</ol>
+<br/>
 <a href="http://list.youku.com/albumlist/show/id_51900110.html" target="_blank">http://list.youku.com/albumlist/show/id_51900110.html</a>
 (持续更新...)
 <br/>
