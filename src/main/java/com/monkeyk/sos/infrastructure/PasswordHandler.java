@@ -11,8 +11,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public abstract class PasswordHandler {
 
 
-//    private PasswordEncoder passwordEncoder = SOSContextHolder.getBean(PasswordEncoder.class);
-
 
     private PasswordHandler() {
     }
@@ -20,7 +18,6 @@ public abstract class PasswordHandler {
 
     public static String encode(String password) {
         PasswordEncoder passwordEncoder = SOSContextHolder.getBean(PasswordEncoder.class);
-//        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         return passwordEncoder.encode(password);
     }
 }

@@ -4,12 +4,15 @@ import com.monkeyk.sos.domain.user.Privilege;
 import com.monkeyk.sos.domain.user.User;
 import com.monkeyk.sos.infrastructure.PasswordHandler;
 
+import java.io.Serial;
+
 /**
  * 2016/3/25
  *
  * @author Shengzhao Li
  */
 public class UserFormDto extends UserDto {
+    @Serial
     private static final long serialVersionUID = 7959857016962260738L;
 
 

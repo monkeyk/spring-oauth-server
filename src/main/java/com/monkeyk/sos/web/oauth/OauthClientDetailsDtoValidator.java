@@ -2,7 +2,8 @@ package com.monkeyk.sos.web.oauth;
 
 import com.monkeyk.sos.service.dto.OauthClientDetailsDto;
 import com.monkeyk.sos.service.OauthService;
-import org.apache.commons.lang.StringUtils;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;

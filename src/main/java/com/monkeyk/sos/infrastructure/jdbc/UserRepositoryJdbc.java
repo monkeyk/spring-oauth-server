@@ -14,7 +14,7 @@ package com.monkeyk.sos.infrastructure.jdbc;
 import com.monkeyk.sos.domain.user.Privilege;
 import com.monkeyk.sos.domain.user.User;
 import com.monkeyk.sos.domain.user.UserRepository;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -42,7 +42,7 @@ public class UserRepositoryJdbc implements UserRepository {
     @Override
     public User findByGuid(String guid) {
         final String sql = " select * from user_ where  guid = ? ";
-        final List<User> list = this.jdbcTemplate.query(sql, new Object[]{guid}, userRowMapper);
+        final List<User> list = this.jdbcTemplate.query(sql, userRowMapper, guid);
 
         User user = null;
         if (!list.isEmpty()) {
@@ -53,9 +53,9 @@ public class UserRepositoryJdbc implements UserRepository {
         return user;
     }
 
-    private Collection<Privilege> findPrivileges(int userId) {
+    private Collection<Privilege> findPrivileges(long userId) {
         final String sql = " select privilege from user_privilege where user_id = ? ";
-        final List<String> strings = this.jdbcTemplate.queryForList(sql, new Object[]{userId}, String.class);
+        final List<String> strings = this.jdbcTemplate.queryForList(sql, String.class, userId);
 
         List<Privilege> privileges = new ArrayList<>(strings.size());
         privileges.addAll(strings.stream().map(Privilege::valueOf).collect(Collectors.toList()));

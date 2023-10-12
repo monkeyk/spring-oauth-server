@@ -1,11 +1,14 @@
 package com.monkeyk.sos.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.security.oauth2.common.OAuth2AccessToken;
-import org.springframework.security.oauth2.common.OAuth2RefreshToken;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.oauth2.core.OAuth2AccessToken;
+import org.springframework.security.oauth2.core.OAuth2RefreshToken;
 
+
+import java.io.Serial;
 import java.io.Serializable;
+import java.time.temporal.ChronoField;
 
 /**
  * 2019/7/5
@@ -16,6 +19,7 @@ import java.io.Serializable;
  * @since 2.0.1
  */
 public class AccessTokenDto implements Serializable {
+    @Serial
     private static final long serialVersionUID = -8894979171517528312L;
 
 
@@ -40,16 +44,24 @@ public class AccessTokenDto implements Serializable {
 
 
     public AccessTokenDto(OAuth2AccessToken token) {
-        this.accessToken = token.getValue();
-        this.expiresIn = token.getExpiresIn();
+        this(token, null);
+    }
 
-        this.scope = StringUtils.join(token.getScope(), ",");
-        this.tokenType = token.getTokenType();
+    /**
+     * @since 3.0.0
+     */
+    public AccessTokenDto(OAuth2AccessToken token, OAuth2RefreshToken refreshToken) {
+        this.accessToken = token.getTokenValue();
+        this.expiresIn = token.getExpiresAt().get(ChronoField.SECOND_OF_DAY);
 
-        final OAuth2RefreshToken oAuth2RefreshToken = token.getRefreshToken();
-        if (oAuth2RefreshToken != null) {
-            this.refreshToken = oAuth2RefreshToken.getValue();
-        }
+        this.scope = StringUtils.join(token.getScopes(), ",");
+        this.tokenType = token.getTokenType().getValue();
+
+        this.refreshToken = refreshToken != null ? refreshToken.getTokenValue() : null;
+//        final OAuth2RefreshToken oAuth2RefreshToken = token.getRefreshToken();
+//        if (oAuth2RefreshToken != null) {
+//            this.refreshToken = oAuth2RefreshToken.getValue();
+//        }
     }
 
 

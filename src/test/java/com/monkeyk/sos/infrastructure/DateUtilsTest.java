@@ -12,13 +12,14 @@
 package com.monkeyk.sos.infrastructure;
 
 
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 /*

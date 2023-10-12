@@ -24,6 +24,10 @@ public class OauthClientDetails implements Serializable {
     private boolean archived = false;
 
     private String clientId;
+
+    /**
+     * @deprecated OAuth2.1 not used from v3.0.0
+     */
     private String resourceIds;
 
     /**
@@ -181,6 +185,9 @@ public class OauthClientDetails implements Serializable {
         return this;
     }
 
+    /**
+     * @deprecated OAuth2.1 not used from v3.0.0
+     */
     public OauthClientDetails resourceIds(String resourceIds) {
         this.resourceIds = resourceIds;
         return this;

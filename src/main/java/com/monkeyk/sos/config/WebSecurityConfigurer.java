@@ -1,20 +1,17 @@
 package com.monkeyk.sos.config;
 
-import com.monkeyk.sos.service.UserService;
 import com.monkeyk.sos.web.context.SOSContextHolder;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 
 /**
  * 2016/4/3
@@ -23,69 +20,81 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  *
  * @author Shengzhao Li
  */
-@Configuration
 @EnableWebSecurity
-public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
+@Configuration(proxyBeanMethods = false)
+public class WebSecurityConfigurer {
 
 
-    @Autowired
-    private UserService userService;
+    /**
+     * 需要调试时 可把此配置参数换为 true
+     *
+     * @since 3.0.0
+     */
+    @Value("${sos.spring.web.security.debug:false}")
+    private boolean springWebSecurityDebug;
 
 
-    @Override
+    /**
+     * 扩展默认的 Web安全配置项
+     * <p>
+     * defaultSecurityFilterChain
+     *
+     * @throws Exception e
+     * @since 3.0.0
+     */
     @Bean
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
+    @Order(2)
+    public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
 
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        //Ignore, public
-        web.ignoring().antMatchers("/public/**", "/static/**");
-    }
+        http.csrf(csrfConfigurer -> {
+//            csrfConfigurer.ignoringRequestMatchers("/oauth/authorize", "/oauth/token", "/oauth/rest_token");
+            csrfConfigurer.ignoringRequestMatchers("/oauth/rest_token");
+        });
 
+        http.authorizeHttpRequests(matcherRegistry -> {
+            // permitAll() 的URL路径属于公开访问，不需要权限
+            matcherRegistry.requestMatchers("/favicon.ico*", "/oauth/rest_token*", "/bootstrap/**", "*.css").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/login*").anonymous()
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().ignoringAntMatchers("/oauth/authorize", "/oauth/token", "/oauth/rest_token");
+                    // /user/ 开头的URL需要 ADMIN 权限
+                    .requestMatchers("/user/**").hasAnyRole("ADMIN")
+                    // anyRequest() 放最后
+                    .anyRequest().authenticated();
+        });
 
-        http.authorizeRequests()
-                // permitAll() 的URL路径属于公开访问，不需要权限
-                .antMatchers("/public/**").permitAll()
-                .antMatchers("/static/**").permitAll()
-                .antMatchers("/oauth/rest_token*").permitAll()
-                .antMatchers("/login*").permitAll()
+        http.formLogin(formLoginConfigurer -> {
+            formLoginConfigurer
+                    .loginPage("/login")
+                    .loginProcessingUrl("/signin")
+                    .failureUrl("/login?error=1")
+//                    .defaultSuccessUrl("/")
+                    .usernameParameter("oidc_user")
+                    .passwordParameter("oidcPwd");
 
-                // /user/ 开头的URL需要 ADMIN 权限
-                .antMatchers("/user/**").hasAnyRole("ADMIN")
+        });
 
-                .antMatchers(HttpMethod.GET, "/login*").anonymous()
-                .anyRequest().authenticated()
-                .and()
-                .formLogin()
-                .loginPage("/login")
-                .loginProcessingUrl("/signin")
-                .failureUrl("/login?error=1")
-                .usernameParameter("oidc_user")
-                .passwordParameter("oidcPwd")
-                .and()
-                .logout()
-                .logoutUrl("/signout")
-                .deleteCookies("JSESSIONID")
-                .logoutSuccessUrl("/")
-                .and()
-                .exceptionHandling();
+        http.logout(logoutConfigurer -> {
+            logoutConfigurer.logoutUrl("/signout")
+                    .deleteCookies("JSESSIONID")
+                    .logoutSuccessUrl("/");
+        });
 
-        http.authenticationProvider(authenticationProvider());
+//        http.sessionManagement(configurer -> {
+//            configurer.maximumSessions(1).maxSessionsPreventsLogin(true);
+//        });
+        return http.build();
     }
 
 
+    /**
+     * 安全配置自定义扩展
+     *
+     * @return WebSecurityCustomizer
+     * @since 3.0.0
+     */
     @Bean
-    public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-        daoAuthenticationProvider.setUserDetailsService(userService);
-        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
-        return daoAuthenticationProvider;
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return web -> web.debug(this.springWebSecurityDebug);
     }
 
 

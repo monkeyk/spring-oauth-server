@@ -14,6 +14,7 @@ package com.monkeyk.sos.service.dto;
 import com.monkeyk.sos.domain.user.Privilege;
 import com.monkeyk.sos.domain.user.User;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ import java.util.List;
  * @author Shengzhao Li
  */
 public class UserDto implements Serializable {
+    @Serial
     private static final long serialVersionUID = -2502329463915439215L;
 
 

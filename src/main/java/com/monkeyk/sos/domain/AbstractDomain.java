@@ -3,6 +3,7 @@ package com.monkeyk.sos.domain;
 import com.monkeyk.sos.domain.shared.GuidGenerator;
 import com.monkeyk.sos.infrastructure.DateUtils;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -11,11 +12,12 @@ import java.time.LocalDateTime;
  */
 public abstract class AbstractDomain implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 6569365774429340632L;
     /**
      * Database id
      */
-    protected int id;
+    protected long id;
 
     protected boolean archived;
     /**
@@ -31,11 +33,11 @@ public abstract class AbstractDomain implements Serializable {
     public AbstractDomain() {
     }
 
-    public int id() {
+    public long id() {
         return id;
     }
 
-    public void id(int id) {
+    public void id(long id) {
         this.id = id;
     }
 

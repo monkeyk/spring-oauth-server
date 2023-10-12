@@ -1,35 +1,43 @@
 package com.monkeyk.sos.config;
 
 
-import com.monkeyk.sos.domain.oauth.CustomJdbcClientDetailsService;
-import com.monkeyk.sos.service.OauthService;
-import com.monkeyk.sos.service.UserService;
-import com.monkeyk.sos.web.oauth.OauthUserApprovalHandler;
+import com.nimbusds.jose.jwk.source.JWKSource;
+import com.nimbusds.jose.jwk.source.JWKSourceBuilder;
+import com.nimbusds.jose.proc.SecurityContext;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.core.annotation.Order;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
-import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
-import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
-import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
-import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
-import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
-import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
-import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
-import org.springframework.security.oauth2.provider.ClientDetailsService;
-import org.springframework.security.oauth2.provider.OAuth2RequestFactory;
-import org.springframework.security.oauth2.provider.approval.UserApprovalHandler;
-import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
-import org.springframework.security.oauth2.provider.code.JdbcAuthorizationCodeServices;
-import org.springframework.security.oauth2.provider.request.DefaultOAuth2RequestFactory;
-import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
-import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.core.oidc.OidcScopes;
+import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
+import org.springframework.security.oauth2.jwt.JwtClaimsSet;
+import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationConsentService;
+import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationService;
+import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
+import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
+import org.springframework.security.oauth2.server.authorization.client.JdbcRegisteredClientRepository;
+import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
+import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
+import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
+import org.springframework.security.oauth2.server.authorization.oidc.OidcProviderConfiguration;
+import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
+import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 
-import javax.sql.DataSource;
+import java.io.IOException;
+import java.util.UUID;
+import java.util.function.Consumer;
+
+import static com.monkeyk.sos.domain.shared.SOSConstants.CUSTOM_CONSENT_PAGE_URI;
 
 /**
  * 2018/2/8
@@ -43,177 +51,163 @@ import javax.sql.DataSource;
 public class OAuth2ServerConfiguration {
 
 
-    /*Fixed,  resource-id */
+    /**
+     * Fixed,  resource-id
+     *
+     * @deprecated Not used from v3.0.0
+     */
     public static final String RESOURCE_ID = "sos-resource";
 
 
     /**
-     * // unity resource
-     * UNITY 资源的访问权限配置
+     * keystore file name
+     *
+     * @since 3.0.0
      */
-    @Configuration
-    @EnableResourceServer
-    protected static class UnityResourceServerConfiguration extends ResourceServerConfigurerAdapter {
+    public static String KEYSTORE_NAME = "jwks.json";
 
-        @Override
-        public void configure(ResourceServerSecurityConfigurer resources) {
-            resources.resourceId(RESOURCE_ID).stateless(false);
-        }
 
-        @Override
-        public void configure(HttpSecurity http) throws Exception {
-            http
-                    // Since we want the protected resources to be accessible in the UI as well we need
-                    // session creation to be allowed (it's disabled by default in 2.0.6)
-                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                    .and()
+    /**
+     * @since 3.0.0
+     */
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+
+    /**
+     * authorizationServerSecurityFilterChain
+     *
+     * @since 3.0.0
+     */
+    @Bean
+    @Order(1)
+    public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
+
+        http.sessionManagement(sessionManagementConfigurer -> {
+            sessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
+        });
+
+        http.authorizeHttpRequests(registry -> {
+            registry
                     // 所有以 /unity/  开头的 URL属于此资源
-                    .requestMatchers().antMatchers("/unity/**")
-                    .and()
-                    .authorizeRequests()
-                    .antMatchers("/unity/**").access("#oauth2.hasScope('read') and hasRole('UNITY')");
+                    .requestMatchers("/unity/**").hasAnyRole("UNITY")
+                    // 所有以 /m/  开头的 URL属于此资源
+                    .requestMatchers("/m/**").hasAnyRole("MOBILE");
+        });
 
-        }
+        OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
 
+        http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
+//                .deviceAuthorizationEndpoint(deviceAuthorizationEndpoint ->
+//                        deviceAuthorizationEndpoint.verificationUri("/activate")
+//                )
+                .deviceVerificationEndpoint(deviceVerificationEndpoint ->
+                        deviceVerificationEndpoint.consentPage(CUSTOM_CONSENT_PAGE_URI)
+                )
+                .authorizationEndpoint(authorizationEndpoint ->
+                        authorizationEndpoint.consentPage(CUSTOM_CONSENT_PAGE_URI))
+                // Enable OpenID Connect 1.0
+                .oidc(oidcConfigurer -> {
+                    oidcConfigurer.providerConfigurationEndpoint(endpointConfigurer -> {
+                        //扩展oidc默认能力
+                        endpointConfigurer.providerConfigurationCustomizer(oidcProviderConfigurationCustomizer());
+                    });
+                });
+
+        http
+                .exceptionHandling((exceptions) -> exceptions
+                        .defaultAuthenticationEntryPointFor(
+                                new LoginUrlAuthenticationEntryPoint("/login"),
+                                new MediaTypeRequestMatcher(MediaType.TEXT_HTML)
+                        )
+                )
+                .oauth2ResourceServer(oauth2ResourceServer ->
+                        //ext jwt
+                        oauth2ResourceServer.jwt(Customizer.withDefaults()));
+
+        return http.build();
     }
 
 
     /**
-     * // mobile resource
-     * MOBILE 资源的访问权限配置
+     * 扩展 oidc 的默认能力配置项
+     *
+     * @since 3.0.0
      */
-    @Configuration
-    @EnableResourceServer
-    protected static class MobileResourceServerConfiguration extends ResourceServerConfigurerAdapter {
-
-        @Override
-        public void configure(ResourceServerSecurityConfigurer resources) {
-            resources.resourceId(RESOURCE_ID).stateless(false);
-        }
-
-        @Override
-        public void configure(HttpSecurity http) throws Exception {
-            http
-                    // Since we want the protected resources to be accessible in the UI as well we need
-                    // session creation to be allowed (it's disabled by default in 2.0.6)
-                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                    .and()
-                    // 所有以 /m/  开头的 URL属于此资源
-                    .requestMatchers().antMatchers("/m/**")
-                    .and()
-                    .authorizeRequests()
-                    .antMatchers("/m/**").access("#oauth2.hasScope('read') and hasRole('MOBILE')");
-
-        }
-
+    private Consumer<OidcProviderConfiguration.Builder> oidcProviderConfigurationCustomizer() {
+        return builder -> {
+            builder.idTokenSigningAlgorithms(strings -> {
+                strings.add(SignatureAlgorithm.ES256.getName());
+            }).scopes(strings -> {
+                strings.add(OidcScopes.PROFILE);
+                strings.add(OidcScopes.EMAIL);
+                strings.add(OidcScopes.PHONE);
+            });
+        };
     }
 
-    @Configuration
-    @EnableAuthorizationServer
-    protected static class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
+
+    /**
+     * 注册客户端管理
+     *
+     * @return RegisteredClientRepository
+     * @since 3.0.0
+     */
+    @Bean
+    public RegisteredClientRepository registeredClientRepository() {
+//        return new InMemoryRegisteredClientRepository(client);
+        return new JdbcRegisteredClientRepository(this.jdbcTemplate);
+    }
+
+    /**
+     * 授权准许存储配置, jdbc实现
+     *
+     * @since 3.0.0
+     */
+    @Bean
+    public OAuth2AuthorizationConsentService oAuth2AuthorizationConsentService(RegisteredClientRepository registeredClientRepository) {
+        return new JdbcOAuth2AuthorizationConsentService(this.jdbcTemplate, registeredClientRepository);
+    }
 
 
-        @Autowired
-        private TokenStore tokenStore;
-
-        @Autowired
-        private DefaultTokenServices tokenServices;
-
-
-        @Autowired
-        private ClientDetailsService clientDetailsService;
-
-
-        @Autowired
-        private OauthService oauthService;
+    /**
+     * 授权信息存储配置, jdbc实现
+     *
+     * @since 3.0.0
+     */
+    @Bean
+    public OAuth2AuthorizationService oAuth2AuthorizationService(RegisteredClientRepository registeredClientRepository) {
+        return new JdbcOAuth2AuthorizationService(this.jdbcTemplate, registeredClientRepository);
+    }
 
 
-        @Autowired
-        private AuthorizationCodeServices authorizationCodeServices;
+    /**
+     * 提供加密/解密的 source
+     * 可多个 key, 根据不同的需要来选择使用
+     *
+     * @return JWKSource
+     * @since 3.0.0
+     */
+    @Bean
+    public JWKSource<SecurityContext> jwkSource() throws IOException {
+
+        Resource resource = new ClassPathResource(KEYSTORE_NAME);
+        return JWKSourceBuilder.create(resource.getURL()).build();
+    }
 
 
-        @Autowired
-        private UserService userDetailsService;
-
-
-        @Autowired
-        @Qualifier("authenticationManagerBean")
-        private AuthenticationManager authenticationManager;
-
-
-        @Override
-        public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-
-            clients.withClientDetails(clientDetailsService);
-        }
-
-
-//        /*
-//         * JDBC TokenStore
-//         */
-//        @Bean
-//        public TokenStore tokenStore(DataSource dataSource) {
-//            return new JdbcTokenStore(dataSource);
-//        }
-
-        /*
-         * Redis TokenStore (有Redis场景时使用)
-         */
-//        @Bean
-//        public TokenStore tokenStore(RedisConnectionFactory connectionFactory) {
-//            final RedisTokenStore redisTokenStore = new RedisTokenStore(connectionFactory);
-//            //prefix
-//            redisTokenStore.setPrefix(RESOURCE_ID);
-//            return redisTokenStore;
-//        }
-
-
-        @Bean
-        public ClientDetailsService clientDetailsService(DataSource dataSource) {
-            return new CustomJdbcClientDetailsService(dataSource);
-        }
-
-
-        @Bean
-        public AuthorizationCodeServices authorizationCodeServices(DataSource dataSource) {
-            return new JdbcAuthorizationCodeServices(dataSource);
-        }
-
-
-        @Override
-        public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-            endpoints.tokenServices(tokenServices)
-                    .tokenStore(tokenStore)
-                    .authorizationCodeServices(authorizationCodeServices)
-                    .userDetailsService(userDetailsService)
-                    .userApprovalHandler(userApprovalHandler())
-                    .authenticationManager(authenticationManager);
-        }
-
-        @Override
-        public void configure(AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
-            // real 值可自定义
-            oauthServer.realm("spring-oauth-server")
-                    // 支持 client_credentials 的配置
-                    .allowFormAuthenticationForClients();
-        }
-
-        @Bean
-        public OAuth2RequestFactory oAuth2RequestFactory() {
-            return new DefaultOAuth2RequestFactory(clientDetailsService);
-        }
-
-
-        @Bean
-        public UserApprovalHandler userApprovalHandler() {
-            OauthUserApprovalHandler userApprovalHandler = new OauthUserApprovalHandler();
-            userApprovalHandler.setOauthService(oauthService);
-            userApprovalHandler.setTokenStore(tokenStore);
-            userApprovalHandler.setClientDetailsService(this.clientDetailsService);
-            userApprovalHandler.setRequestFactory(oAuth2RequestFactory());
-            return userApprovalHandler;
-        }
-
+    /**
+     * 扩展 jwt  id_token 等生成
+     *
+     * @since 3.0.0
+     */
+    @Bean
+    public OAuth2TokenCustomizer<JwtEncodingContext> jwtCustomizer() {
+        return context -> {
+            JwtClaimsSet.Builder claims = context.getClaims();
+            //jti
+            claims.id(UUID.randomUUID().toString());
+        };
     }
 
 

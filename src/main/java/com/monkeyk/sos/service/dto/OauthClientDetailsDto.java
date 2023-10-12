@@ -4,8 +4,9 @@ import com.monkeyk.sos.domain.oauth.OauthClientDetails;
 import com.monkeyk.sos.domain.shared.GuidGenerator;
 import com.monkeyk.sos.infrastructure.DateUtils;
 import com.monkeyk.sos.infrastructure.PasswordHandler;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.List;
  */
 public class OauthClientDetailsDto implements Serializable {
 
-
+    @Serial
     private static final long serialVersionUID = 4011292111995231569L;
 
     private String createTime;

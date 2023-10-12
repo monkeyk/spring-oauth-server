@@ -17,7 +17,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,13 +55,13 @@ public class UserServiceImpl implements UserService {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         final Object principal = authentication.getPrincipal();
 
-        if (authentication instanceof OAuth2Authentication &&
-                (principal instanceof String || principal instanceof org.springframework.security.core.userdetails.User)) {
-            return loadOauthUserJsonDto((OAuth2Authentication) authentication);
-        } else {
+//        if (authentication instanceof OAuth2Authentication &&
+//                (principal instanceof String || principal instanceof org.springframework.security.core.userdetails.User)) {
+//            return loadOauthUserJsonDto((OAuth2Authentication) authentication);
+//        } else {
             final SOSUserDetails userDetails = (SOSUserDetails) principal;
             return new UserJsonDto(userRepository.findByGuid(userDetails.user().guid()));
-        }
+//        }
     }
 
     @Override
@@ -89,15 +89,15 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    private UserJsonDto loadOauthUserJsonDto(OAuth2Authentication oAuth2Authentication) {
-        UserJsonDto userJsonDto = new UserJsonDto();
-        userJsonDto.setUsername(oAuth2Authentication.getName());
-
-        final Collection<GrantedAuthority> authorities = oAuth2Authentication.getAuthorities();
-        for (GrantedAuthority authority : authorities) {
-            userJsonDto.getPrivileges().add(authority.getAuthority());
-        }
-
-        return userJsonDto;
-    }
+//    private UserJsonDto loadOauthUserJsonDto(OAuth2Authentication oAuth2Authentication) {
+//        UserJsonDto userJsonDto = new UserJsonDto();
+//        userJsonDto.setUsername(oAuth2Authentication.getName());
+//
+//        final Collection<GrantedAuthority> authorities = oAuth2Authentication.getAuthorities();
+//        for (GrantedAuthority authority : authorities) {
+//            userJsonDto.getPrivileges().add(authority.getAuthority());
+//        }
+//
+//        return userJsonDto;
+//    }
 }
