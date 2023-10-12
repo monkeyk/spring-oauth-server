@@ -479,18 +479,14 @@ Base on Spring-Boot
             <p><a href="https://oauth.net/2.1/">OAuth2.1 介绍</a></p>       
        </li>       
         <li>
-            <p><a href="https://andaily.com/blog/?p=20004">OAuth 2.1的状态与主要特征</a></p>       
-       </li>        
+            <p><a href="https://andaily.com/blog/?p=20004">OAuth 2.1的状态与主要特征</a>, 个人总结</p>       
+       </li>
         <li>
-            <p><a href="https://andaily.com/blog/?p=20004">OAuth 2.1的状态与主要特征</a></p>       
-       </li>        
-        <li>
-            <p><a href="https://openid.net/developers/how-connect-works/">OIDC 介绍</a></p>       
+            <p><a href="https://openid.net/developers/how-connect-works/">OIDC官方网站</a></p>       
        </li>
 </ul>
 
-
-<hr/>
+<br/>
 <strong>
     与项目相关的技术文章请访问 <a href="https://andaily.com/blog/?cat=19">http://andaily.com/blog/?cat=19</a> (不断更新与OAuth2相关的文章)
 </strong>
@@ -536,5 +532,5 @@ Base on Spring-Boot
  <em>欢迎联系作者 <a href="mailto:sz@monkeyk.com">sz@monkeyk.com</a> 进行探讨</em>
 </p>
 
-<hr/>
+
 
