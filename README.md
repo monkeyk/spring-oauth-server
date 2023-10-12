@@ -163,8 +163,7 @@ Base on Spring-Boot
         <div>
             <code>如何刷新access_token(refresh_token)</code>, 在通过客户端(如移动设备)登录成功后返回的数据如下
             <br/>
-            <pre>{"access_token":"eyJraWQiOiJteW9pZGMta2V5aWQiLCJhbGciOiJSUzI1...","token_type":"bearer","refresh_token":"UCFNxUj4ytr241KzwJJgnMno1RfmoLs0GKVxNWPjW5VZ7d4U4YsDM7...","expires_in":43199,"scope":"openid"}
-            </pre>
+            <pre>{"access_token":"eyJraWQiOiJteW9pZGMta2V5aWQiLCJhbGciOiJSUzI1...","token_type":"bearer","refresh_token":"UCFNxUj4ytr241KzwJJgnMno1RfmoLs0GKVxNWPjW5VZ7d4U4YsDM7...","expires_in":43199,"scope":"openid"}</pre>
             <br/>
             若需要刷新获取新的token(一般在 expires_in 有效期时间快到时), 请求的URL类似如下
             <br/>
