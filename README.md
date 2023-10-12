@@ -406,7 +406,7 @@ Base on Spring-Boot
         <li><p><em>2019-08-04</em>        发布 <a href="https://gitee.com/shengzhao/spring-oauth-server/tree/2.0.1/">2.0.1</a> 版本</p></li>
         <li><p><em>2020-06-04</em>        发布 2.0.2 版本</p></li>
         <li><p><em>2022-05-01</em>        发布 2.1.0 版本</p></li>
-        <li><p><em>2023-10-10</em>        开发全新大版本 3.0.0 开发</p></li>
+        <li><p><em>2023-10-10</em>        开始全新大版本 3.0.0 开发</p></li>
     </ol>
 </div>
 
@@ -427,12 +427,12 @@ Base on Spring-Boot
        </li>
        <li>
             <p>
-                <a href="http://netment.iteye.com/blog/945402">OAuth2核心参数说明</a>, 重点介绍了grant_type 与 response_type 以及示例
+                <a href="https://netment.iteye.com/blog/945402">OAuth2核心参数说明</a>, 重点介绍了grant_type 与 response_type 以及示例
             </p>
        </li>
        <li>
             <p>
-                <a href="http://apiwiki.poken.com/authentication/oauth2">OAuth2 flows</a>, 详细介绍OAuth2的流程,各类错误发生时的响应
+                <a href="https://apiwiki.poken.com/authentication/oauth2">OAuth2 flows</a>, 详细介绍OAuth2的流程,各类错误发生时的响应
             </p>
        </li>
        <li>
@@ -474,6 +474,18 @@ Base on Spring-Boot
             <p>
                 <a href="https://andaily.com/blog/?p=19884">OAuth2中 access_token，refresh_token的各类配置与使用场景FAQ</a>
             </p>       
+       </li>       
+        <li>
+            <p><a href="https://oauth.net/2.1/">OAuth2.1 介绍</a></p>       
+       </li>       
+        <li>
+            <p><a href="https://andaily.com/blog/?p=20004">OAuth 2.1的状态与主要特征</a></p>       
+       </li>        
+        <li>
+            <p><a href="https://andaily.com/blog/?p=20004">OAuth 2.1的状态与主要特征</a></p>       
+       </li>        
+        <li>
+            <p><a href="https://openid.net/developers/how-connect-works/">OIDC 介绍</a></p>       
        </li>
 </ul>
 
@@ -507,12 +519,11 @@ Base on Spring-Boot
 <hr/>
 <div>
     <h3>捐助</h3>
-    <br/>
+
     支付宝: monkeyking1987@126.com (**钊)
-    <br/>
-    快意江湖 -- 100元
-    <br/>
-    yufan -- 100元
+
+- 快意江湖 -- 100元
+- yufan -- 100元
 </div>
 
 <hr/>
