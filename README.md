@@ -45,12 +45,12 @@ Base on Spring-Boot
 <hr/>
 
 <h3>版本分支介绍</h3>
-<strong>MySQL版本请访问Branch: <a href="https://gitee.com/shengzhao/spring-oauth-server/">master</a></strong>
-<br/>
-<strong>MongoDB版本请访问Branch: <a href="https://gitee.com/shengzhao/spring-oauth-server/tree/mongodb/">mongodb</a></strong>
-<br/>
-<strong>Redis版本请访问Branch: <a href="https://gitee.com/shengzhao/spring-oauth-server/tree/config-redis/">
-config-redis</a></strong>
+- MySQL版本请访问Branch: <a href="https://gitee.com/shengzhao/spring-oauth-server/">master</a>
+
+- MongoDB版本请访问Branch: <a href="https://gitee.com/shengzhao/spring-oauth-server/tree/mongodb/">mongodb</a>
+
+- Redis版本请访问Branch: <a href="https://gitee.com/shengzhao/spring-oauth-server/tree/config-redis/">config-redis</a>
+
 <hr/>
 
 <h3>相关项目</h3>
@@ -66,36 +66,28 @@ config-redis</a></strong>
 
 <div>
 <h3>如何使用?</h3>
-<ol>
-<li>
-项目是Maven管理的, 需要本地安装maven(开发用的maven版本号为3.3.3), 还有MySql(开发用的mysql版本号为5.6)
-</li>
-<li>
-<a href="https://gitee.com/shengzhao/spring-oauth-server/repository/archive?ref=master">下载</a>(或clone)项目到本地
-</li>
-<li>
-创建MySQL数据库(如数据库名oauth2_boot), 并运行相应的SQL脚本(脚本文件位于others/database目录),
+
+1. 项目是Maven管理的, 需要本地安装Maven(开发用的maven版本号为3.6.0), 还有MySql(开发用的mysql版本号为5.7.22)
+
+2. <a href="https://gitee.com/shengzhao/spring-oauth-server/repository/archive?ref=master">下载</a>(或clone)项目源码到本地
+
+3. 创建MySQL数据库(默认数据库名oauth2_boot), 并运行相应的SQL脚本(脚本文件位于others/database目录),
 <br/>
-   运行脚本的顺序: initial_db.ddl -> oauth.ddl -> initial_data.ddl
-</li>
-<li>
-修改application.properties(位于src/main/resources目录)中的数据库连接信息(包括username, password等)
-</li>
-<li>
-将本地项目导入到IDE(如Intellij IDEA)中, 可直接运行<code>SpringOauthServerApplication.java</code>进行访问；或配置Tomcat(或类似的servlet运行服务器), 并启动Tomcat(默认端口为8080);
+   运行脚本的顺序: <code>initial_db.ddl -> oauth.ddl -> initial_data.ddl</code>
+
+4. 修改application.properties(位于src/main/resources目录)中的数据库连接信息(包括username, password等)
+
+5. 将本地项目导入到IDE(如Intellij IDEA)中, 可直接运行<code>SpringOauthServerApplication.java</code>进行访问；或配置Tomcat(或类似的servlet运行服务器), 并启动Tomcat(默认端口为8080);
 <br/>
-   也可通过maven package命令将项目编译为war文件(spring-oauth-server.war),
-         将war放在Tomcat中并启动(注意: 这种方式需要将application.properties加入到classpath中并正确配置数据库连接信息).
+   也可通过maven package命令将项目编译为jar文件(spring-oauth-server.jar),
+         使用命令<code>java -jar</code>启动访问.
         <br/>
-        若使用<code>java -jar spring-oauth-server.war</code>启动, 则需要使用参数<em>spring.config.location</em>指定配置文件, 
-        如：<code>java -jar spring-oauth-server.war --spring.config.location=xxx.properties</code>
-    <br/>
-    提示：若打包为war则项目的 contextPath(根路径) 为 'spring-oauth-server'.
-</li>
-<li>
-参考<a href="https://gitee.com/shengzhao/spring-oauth-server/blob/config/others/oauth_test.txt">oauth_test.txt</a>(位于others目录)的内容并测试之(也可在浏览器中访问相应的地址,如: http://localhost:8080/ 在界面上操作).
-</li>
-</ol>
+        若使用<code>java -jar spring-oauth-server.jar</code>启动, 建议使用参数<em>spring.config.location</em>指定配置文件, 
+        如：<code>java -jar spring-oauth-server.jar --spring.config.location=xxx.properties</code>
+
+6. 参考<a href="https://gitee.com/shengzhao/spring-oauth-server/blob/config/others/oauth_test.txt">oauth_test.txt</a>(位于others目录)的内容并测试之(也可在浏览器中访问相应的地址,如: http://localhost:8080/ 在界面上操作).
+
+
 </div>
 <div>
     <h4>配置参数说明</h4>
@@ -117,24 +109,25 @@ config-redis</a></strong>
 
 <hr/>
 <h3>grant_type 介绍</h3>
-<br/>
-说明OAuth2支持的grant_type(授权方式)与功能
+
+说明OAuth2.1支持的grant_type(授权方式)与功能
 <ol>
     <li><code>authorization_code</code> -- 授权码模式(即先登录获取code,再获取token)</li>
-    <li><code>password</code> -- 密码模式(将用户名,密码传过去,直接获取token)</li>
+    <li><code>authorization_code + PKCE</code> -- 授权码模式+PKCE (即先登录获取code, 请求时增加参数<em>code_challenge</em>与<em>code_challenge_method</em>; 再获取token,增加参数<em>code_verifier</em>)</li>
+    <li><code>password</code> -- 密码模式(将用户名,密码传过去,直接获取token) <mark>OAuth2.1不推荐使用</mark></li>
     <li><code>refresh_token</code> -- 刷新access_token</li>
-    <li><code>implicit</code> -- 简化模式(在redirect_uri 的Hash传递token; Auth客户端运行在浏览器中,如JS,Flash)</li>
+    <li><code>device_code</code> -- 适用于各类无输入键盘的物联网智能设备进行认证授权, 通过类似'扫码登录'形式完成整个流程 <strong>OAuth2.1新增</strong></li>
     <li><code>client_credentials</code> -- 客户端模式(无用户,用户向客户端注册,然后客户端以自己的名义向'服务端'获取资源)</li>
 </ol>
 
-
+> 注意：相比OAuth2.0，去掉了 **implicit** 模式
 
 <hr/>
 <h3>帮助与改进</h3>
 <ol>
 <li>
 <p>
- 与该项目相关的博客请访问 <a target="_blank" href="http://blog.csdn.net/monkeyking1987/article/details/16828059">http://blog.csdn.net/monkeyking1987/article/details/16828059</a>
+ 与该项目相关的博客请访问 <a target="_blank" href="https://blog.csdn.net/monkeyking1987/article/details/16828059">https://blog.csdn.net/monkeyking1987/article/details/16828059</a>
 </p>
 </li>
 <li>
@@ -167,23 +160,19 @@ config-redis</a></strong>
         <code>改变token过期的时间的配置</code>, 请下载文件<a href="https://git.oschina.net/shengzhao/spring-oauth-server/attach_files/download?i=6589&u=http%3A%2F%2Ffiles.git.oschina.net%2Fgroup1%2FM00%2F00%2F43%2FcHwGbFRpuk6ANN2CAANJ-Rkiz_c649.jpg%3Ftoken%3D686e6d5b1e9ab04446dbfeb977c3b7a1%26ts%3D1421151523%26filename%3D%E6%94%B9%E5%8F%98token%E8%BF%87%E6%9C%9F%E7%9A%84%E6%97%B6%E9%97%B4%E7%9A%84%E9%85%8D%E7%BD%AE.jpg">改变token过期的时间的配置.jpg</a>
     </li>
     <li>
-        <code>自定义 grant_type</code>, 默认情况支持的grant_type包括 [password,authorization_code,refresh_token,implicit], 若不需要其中的某些grant_type,
+        <code>自定义 grant_type</code>, 默认情况支持的grant_type包括 [password,authorization_code,refresh_token,device_code], 若不需要其中的某些grant_type,
         则可以修改 oauth_client_details 表中的 authorized_grant_types 字段的值;
-        <br/>
-        若想把整个OAuth2服务修改来只支持某些grant_type, 请修改 <i>security.xml</i>文件中的
-        <label>oauth2:authorization-server</label> 中的内容,将对应的 grant_type 注释或删掉即可
     </li>
     <li>
         <div>
             <code>如何刷新access_token(refresh_token)</code>, 在通过客户端(如移动设备)登录成功后返回的数据如下
             <br/>
-            <pre>{"access_token":"3420d0e0-ed77-45e1-8370-2b55af0a62e8","token_type":"bearer","refresh_token":"b36f4978-a172-4aa8-af89-60f58abe3ba1","expires_in":43199,"scope":"read write"}
+            <pre>{"access_token":"eyJraWQiOiJteW9pZGMta2V5aWQiLCJhbGciOiJSUzI1...","token_type":"bearer","refresh_token":"UCFNxUj4ytr241KzwJJgnMno1RfmoLs0GKVxNWPjW5VZ7d4U4YsDM7...","expires_in":43199,"scope":"openid"}
             </pre>
             <br/>
             若需要刷新获取新的token(一般在 expires_in 有效期时间快到时), 请求的URL类似如下
             <br/>
-            <pre>http://localhost:8080/oauth/token?client_id=mobile-client&client_secret=mobile&grant_type=refresh_token&refresh_token=b36f4978-a172-4aa8-af89-60f58abe3ba1
-            </pre>
+            <pre>http://localhost:8080/oauth2/token?client_id=mobile-client&client_secret=mobile&grant_type=refresh_token&refresh_token=UCFNxUj4ytr241KzwJJgnMno1RfmoLs0GKVxNWPjW5VZ7</pre>
             <br/>
             注意: refresh_token 参数值必须与登录成功后获取的 refresh_token 一致, 且grant_type = refresh_token
             <br/>
@@ -203,14 +192,26 @@ config-redis</a></strong>
 <ul>    
 	   <li>
             <p>
-                Version: <strong>2.1.1</strong> [pending]
+                Version: <strong>3.0.0</strong> [pending]
+                <br/>
+                Date: 2023-10-10 / ---
+            </p>
+            <ol>
+                <li><p>底层安全架构升级：jdk升级17, spring6.x, springboot3.x, thymeleaf替换servlet/jsp</p></li>     
+                <li><p>全面升级支持 OAuth2.1协议与 OIDC1.x协议</p></li>     
+                <li><p>构建包由war换成jar, SQL相应调整</p></li>     
+                <li><p>升级替换spring-security-oauth2, 详见<a href="https://andaily.com/blog/?p=20077">背景说明</a></p></li>     
+            </ol>
+       </li>   	
+	   <li>
+            <p>
+                Version: <strong>2.1.1</strong> [canceled]
                 <br/>
                 Date: 2022-05-05 / ---
             </p>
             <ol>
                 <li><p>尝试升级替换spring-security-oauth2, 详见<a href="https://andaily.com/blog/?p=20077">背景说明</a></p></li>     
             </ol>
-            <br/>
        </li>   	   
         <li>
             <p>
@@ -376,7 +377,7 @@ config-redis</a></strong>
 <p>
     在0.3版本中添加了<code>db_table_description.html</code>文件(位于/others目录), 用来说明数据库脚本文件<code>oauth.ddl</code>中各表,各字段的用途及使用场合.
     <br/>
-    也可在线访问<a href="http://andaily.com/spring-oauth-server/db_table_description.html">http://andaily.com/spring-oauth-server/db_table_description.html</a>.
+    也可在线访问<a href="https://andaily.com/spring-oauth-server/db_table_description.html">https://andaily.com/spring-oauth-server/db_table_description.html</a>.
 </p>
 
 
@@ -405,6 +406,7 @@ config-redis</a></strong>
         <li><p><em>2019-08-04</em>        发布 <a href="https://gitee.com/shengzhao/spring-oauth-server/tree/2.0.1/">2.0.1</a> 版本</p></li>
         <li><p><em>2020-06-04</em>        发布 2.0.2 版本</p></li>
         <li><p><em>2022-05-01</em>        发布 2.1.0 版本</p></li>
+        <li><p><em>2023-10-10</em>        开发全新大版本 3.0.0 开发</p></li>
     </ol>
 </div>
 
@@ -415,12 +417,12 @@ config-redis</a></strong>
 <ul>
        <li>
             <p>
-                <a href="http://tools.ietf.org/html/rfc6749">RFC 6749 - The OAuth 2.0 Authorization Framework</a>, OAuth2.0协议(英文)
+                <a href="https://tools.ietf.org/html/rfc6749">RFC 6749 - The OAuth 2.0 Authorization Framework</a>, OAuth2.0协议(英文)
             </p>
        </li>
        <li>
             <p>
-                <a href="http://oauth.net/2/">OAuth 2.0 &mdash; OAuth</a>, OAuth2.0官方网站
+                <a href="https://oauth.net/2/">OAuth 2.0 &mdash; OAuth</a>, OAuth2.0官方网站
             </p>
        </li>
        <li>
@@ -435,56 +437,56 @@ config-redis</a></strong>
        </li>
        <li>
             <p>
-                <a href="http://www.oschina.net/translate/oauth-2-developers-guide">OAuth 2 开发人员指南（Spring security oauth2）</a>, 翻译OAuth 2 Developers Guide(spring security oauth2)
+                <a href="https://www.oschina.net/translate/oauth-2-developers-guide">OAuth 2 开发人员指南（Spring security oauth2）</a>, 翻译OAuth 2 Developers Guide(spring security oauth2)
             </p>
        </li>
        <li>
             <p>
-                <a href="http://www.ruanyifeng.com/blog/2014/05/oauth_2_0.html">理解OAuth 2.0</a>, 介绍OAuth2各类grant_type的使用
+                <a href="https://www.ruanyifeng.com/blog/2014/05/oauth_2_0.html">理解OAuth 2.0</a>, 介绍OAuth2各类grant_type的使用
             </p>
        </li>
        <li>
             <p>
-                <a href="http://www.dannysite.com/blog/178/">OAuth2：隐式授权（Implicit Grant）类型的开放授权</a>, 介绍grant_type='implicit'模式
+                <a href="https://www.dannysite.com/blog/178/">OAuth2：隐式授权（Implicit Grant）类型的开放授权</a>, 介绍grant_type='implicit'模式
             </p>
        </li>
        <li>
             <p>
-                <a href="http://oltu.apache.org/">Apache Oltu</a>, Java版的 OAuth2参考实现, 建议去了解了解
+                <a href="https://oltu.apache.org/">Apache Oltu</a>, Java版的 OAuth2参考实现, 建议去了解了解
             </p>
        </li>
        <li>
             <p>
-                <a href="http://andaily.com/blog/?p=440">OIDC–基于OAuth2的下一代身份认证授权协议</a>
+                <a href="https://andaily.com/blog/?p=440">OIDC–基于OAuth2的下一代身份认证授权协议</a>
             </p>
        </li>       
        <li>
             <p>
-                <a href="http://andaily.com/blog/?p=19776">在spring-oauth-server中将AccessToken存入Redis的配置</a>
+                <a href="https://andaily.com/blog/?p=19776">在spring-oauth-server中将AccessToken存入Redis的配置</a>
             </p>
        </li>       
        <li>
             <p>
-                <a href="http://andaily.com/blog/?p=19793">如何通过代码生成AccessToken</a>
+                <a href="https://andaily.com/blog/?p=19793">如何通过代码生成AccessToken</a>
             </p>
        </li>
        <li>
             <p>
-                <a href="http://andaily.com/blog/?p=19884">OAuth2中 access_token，refresh_token的各类配置与使用场景FAQ</a>
+                <a href="https://andaily.com/blog/?p=19884">OAuth2中 access_token，refresh_token的各类配置与使用场景FAQ</a>
             </p>       
        </li>
 </ul>
 
 
 <hr/>
-<h4>
-    与项目相关的技术文章请访问 <a href="http://andaily.com/blog/?cat=19">http://andaily.com/blog/?cat=19</a> (不断更新与OAuth2相关的文章)
-</h4>
+<strong>
+    与项目相关的技术文章请访问 <a href="https://andaily.com/blog/?cat=19">http://andaily.com/blog/?cat=19</a> (不断更新与OAuth2相关的文章)
+</strong>
 <div>
-    <h4>问答与讨论</h4>
+    <strong>问答与讨论</strong>
     <br/>
     与项目相关的，与OAuth2相关的问题与回答，以及各类讨论请访问<br/>
-    <a href="http://andaily.com/blog/?dwqa-question_category=oauth">http://andaily.com/blog/?dwqa-question_category=oauth</a>
+    <a href="https://andaily.com/blog/?dwqa-question_category=oauth">http://andaily.com/blog/?dwqa-question_category=oauth</a>
 </div>
 
 
@@ -516,7 +518,7 @@ config-redis</a></strong>
 <hr/>
 <h3>其他...</h3>
 <p>
- 关注更多开源项目请访问 <a href="http://andaily.com/my_projects.html">http://andaily.com/my_projects.html</a>
+ 关注更多开源项目请访问 <a href="https://andaily.com/my_projects.html">https://andaily.com/my_projects.html</a>
 </p>
 
 <p>
