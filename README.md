@@ -1,9 +1,9 @@
 ## spring-oauth-server
 
 <br/>
-java config版本(Spring Boot)
+java config版本
 
-<strong>Spring与OAuth2的整合示例</strong>
+<strong>Spring与OAuth2的整合示例；OIDC1.x + OAuth2.1</strong>
 
 
 项目用Maven管理
@@ -11,12 +11,13 @@ java config版本(Spring Boot)
 Base on Spring-Boot
 
 
-使用的技术与版本号
+使用的主要技术与版本号
 <ol>
- <li>JDK (1.8.0_40)</li>
- <li>spring-security-oauth2 (2.3.8.RELEASE)</li>
- <li>spring-security-jwt (1.1.1.RELEASE)</li>
- <li>Spring Boot(2.1.4.RELEASE)</li>
+ <li>JDK (openjdk 17)</li>
+ <li>Spring Boot(3.1.2)</li>
+ <li>Spring Core(6.0.11)</li>
+ <li>spring-security-oauth2-authorization-server (1.1.1)</li>
+ <li>thymeleaf (3.1.1.RELEASE)</li>
 </ol>
 
 <h3>授权协议</h3>
@@ -31,6 +32,9 @@ Base on Spring-Boot
     <li> <a href="https://v.youku.com/v_show/id_XMzg2Mjk0Mjk0MA==.html?f=51900110&o=1">在线测试环境的使用</a> 2018-10-14</li>
     <li> <a href="https://v.youku.com/v_show/id_XNDMwMTg4MTQ5Mg==.html?f=51900110&o=1">spring-oauth-server v2.0.1更新内容简介</a> 2019-08-05</li>
 </ol>
+
+> 注意：以上视频主要适用于v2.x版本
+
 <a href="http://list.youku.com/albumlist/show/id_51900110.html" target="_blank">http://list.youku.com/albumlist/show/id_51900110.html</a>
 (持续更新...)
 <br/>
@@ -48,17 +52,16 @@ Base on Spring-Boot
 <strong>Redis版本请访问Branch: <a href="https://gitee.com/shengzhao/spring-oauth-server/tree/config-redis/">
 config-redis</a></strong>
 <hr/>
+
 <h3>相关项目</h3>
-<h4>
-   OAuth2客户端项目请访问 <a href="https://gitee.com/mkk/spring-oauth-client">spring-oauth-client</a>
-</h4>
-<h4>
-   在线测试访问地址 <a href="http://andaily.com/spring-oauth-server/">http://andaily.com/spring-oauth-server/</a>
-</h4>
-<h4>
-   Shiro与OLTU整合的OAuth2项目 <a href="https://gitee.com/mkk/oauth2-shiro">https://gitee.com/mkk/oauth2-shiro</a>
+
+1. OAuth2客户端项目请访问 <a href="https://gitee.com/mkk/spring-oauth-client">spring-oauth-client</a>
+
+2. 在线测试访问地址 <a href="https://andaily.com/spring-oauth-server">https://andaily.com/spring-oauth-server</a>
+
+3. Shiro与OLTU整合的OAuth2项目 <a href="https://gitee.com/mkk/oauth2-shiro">https://gitee.com/mkk/oauth2-shiro</a>
    (相比spring-oauth-server, 该项目入门门槛相对较低, 代码更加透明, 理解更容易,可扩展性更强, 且模块化开发)
-</h4>
+
 <hr/>
 
 <div>
