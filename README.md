@@ -8,7 +8,7 @@ java config版本
 
 项目用Maven管理
 <br/>
-Base on Spring-Boot
+Base on SpringBoot
 
 
 使用的主要技术与版本号
