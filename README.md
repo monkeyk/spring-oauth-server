@@ -3,7 +3,7 @@
 <br/>
 java config版本
 
-<strong>Spring与OAuth2的整合示例；OIDC1.x + OAuth2.1</strong>
+<strong>Spring与OAuth2的整合示例. OIDC1.x + OAuth2.1</strong>
 
 
 项目用Maven管理
@@ -20,6 +20,7 @@ Base on Spring-Boot
  <li>thymeleaf (3.1.1.RELEASE)</li>
 </ol>
 
+<hr/>
 <h3>授权协议</h3>
 <em><a href="https://gitee.com/shengzhao/spring-oauth-server/tree/master/LICENSE">GPL-2.0</a></em>
 
@@ -38,13 +39,13 @@ Base on Spring-Boot
 <a href="http://list.youku.com/albumlist/show/id_51900110.html" target="_blank">http://list.youku.com/albumlist/show/id_51900110.html</a>
 (持续更新...)
 <br/>
-<br/>
 <p>
     1000 star Gitee奖杯: <a href="http://andaily.com/blog/wp-content/uploads/2019/09/sos-1000-stars.jpg" target="_blank">sos-1000-stars.jpg</a> [2019年]
 </p>
 <hr/>
 
 <h3>版本分支介绍</h3>
+
 - MySQL版本请访问Branch: <a href="https://gitee.com/shengzhao/spring-oauth-server/">master</a>
 
 - MongoDB版本请访问Branch: <a href="https://gitee.com/shengzhao/spring-oauth-server/tree/mongodb/">mongodb</a>
@@ -64,7 +65,6 @@ Base on Spring-Boot
 
 <hr/>
 
-<div>
 <h3>如何使用?</h3>
 
 1. 项目是Maven管理的, 需要本地安装Maven(开发用的maven版本号为3.6.0), 还有MySql(开发用的mysql版本号为5.7.22)
@@ -72,23 +72,19 @@ Base on Spring-Boot
 2. <a href="https://gitee.com/shengzhao/spring-oauth-server/repository/archive?ref=master">下载</a>(或clone)项目源码到本地
 
 3. 创建MySQL数据库(默认数据库名oauth2_boot), 并运行相应的SQL脚本(脚本文件位于others/database目录),
-<br/>
    运行脚本的顺序: <code>initial_db.ddl -> oauth.ddl -> initial_data.ddl</code>
 
 4. 修改application.properties(位于src/main/resources目录)中的数据库连接信息(包括username, password等)
 
 5. 将本地项目导入到IDE(如Intellij IDEA)中, 可直接运行<code>SpringOauthServerApplication.java</code>进行访问；或配置Tomcat(或类似的servlet运行服务器), 并启动Tomcat(默认端口为8080);
-<br/>
    也可通过maven package命令将项目编译为jar文件(spring-oauth-server.jar),
          使用命令<code>java -jar</code>启动访问.
-        <br/>
         若使用<code>java -jar spring-oauth-server.jar</code>启动, 建议使用参数<em>spring.config.location</em>指定配置文件, 
         如：<code>java -jar spring-oauth-server.jar --spring.config.location=xxx.properties</code>
 
 6. 参考<a href="https://gitee.com/shengzhao/spring-oauth-server/blob/config/others/oauth_test.txt">oauth_test.txt</a>(位于others目录)的内容并测试之(也可在浏览器中访问相应的地址,如: http://localhost:8080/ 在界面上操作).
 
 
-</div>
 <div>
     <h4>配置参数说明</h4>
     说明配置文件<em>application.properties</em>中的主要变量。
