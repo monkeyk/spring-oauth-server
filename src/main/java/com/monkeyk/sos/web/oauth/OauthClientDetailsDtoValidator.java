@@ -35,14 +35,14 @@ public class OauthClientDetailsDtoValidator implements Validator {
     }
 
     private void validateGrantTypes(OauthClientDetailsDto clientDetailsDto, Errors errors) {
-        final String grantTypes = clientDetailsDto.getAuthorizedGrantTypes();
+        final String grantTypes = clientDetailsDto.getAuthorizationGrantTypes();
         if (StringUtils.isEmpty(grantTypes)) {
-            errors.rejectValue("authorizedGrantTypes", null, "grant_type(s) is required");
+            errors.rejectValue("authorizationGrantTypes", null, "grant_type(s) is required");
             return;
         }
 
         if ("refresh_token".equalsIgnoreCase(grantTypes)) {
-            errors.rejectValue("authorizedGrantTypes", null, "grant_type(s) 不能只是[refresh_token]");
+            errors.rejectValue("authorizationGrantTypes", null, "grant_type(s) 不能只是[refresh_token]");
         }
     }
 

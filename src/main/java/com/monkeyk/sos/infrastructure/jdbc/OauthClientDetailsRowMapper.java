@@ -34,23 +34,23 @@ public class OauthClientDetailsRowMapper implements RowMapper<OauthClientDetails
         OauthClientDetails clientDetails = new OauthClientDetails();
 
         clientDetails.clientId(rs.getString("client_id"));
-        clientDetails.resourceIds(rs.getString("resource_ids"));
+//        clientDetails.resourceIds(rs.getString("resource_ids"));
         clientDetails.clientSecret(rs.getString("client_secret"));
 
-        clientDetails.scope(rs.getString("scope"));
-        clientDetails.authorizedGrantTypes(rs.getString("authorized_grant_types"));
-        clientDetails.webServerRedirectUri(rs.getString("web_server_redirect_uri"));
+//        clientDetails.scope(rs.getString("scope"));
+//        clientDetails.authorizedGrantTypes(rs.getString("authorized_grant_types"));
+//        clientDetails.webServerRedirectUri(rs.getString("web_server_redirect_uri"));
 
-        clientDetails.authorities(rs.getString("authorities"));
-        clientDetails.accessTokenValidity(getInteger(rs, "access_token_validity"));
-        clientDetails.refreshTokenValidity(getInteger(rs, "refresh_token_validity"));
+//        clientDetails.authorities(rs.getString("authorities"));
+//        clientDetails.accessTokenValidity(getInteger(rs, "access_token_validity"));
+//        clientDetails.refreshTokenValidity(getInteger(rs, "refresh_token_validity"));
 
-        clientDetails.additionalInformation(rs.getString("additional_information"));
+//        clientDetails.additionalInformation(rs.getString("additional_information"));
         clientDetails.createTime(rs.getTimestamp("create_time").toLocalDateTime());
         clientDetails.archived(rs.getBoolean("archived"));
 
-        clientDetails.trusted(rs.getBoolean("trusted"));
-        clientDetails.autoApprove(rs.getString("autoapprove"));
+//        clientDetails.trusted(rs.getBoolean("trusted"));
+//        clientDetails.autoApprove(rs.getString("autoapprove"));
 
         return clientDetails;
     }

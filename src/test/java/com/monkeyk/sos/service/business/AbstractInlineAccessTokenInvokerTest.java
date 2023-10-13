@@ -53,10 +53,10 @@ public abstract class AbstractInlineAccessTokenInvokerTest extends AbstractRepos
         OauthClientDetails clientDetails = new OauthClientDetails();
         clientDetails.clientId(clientId)
                 .clientSecret(PasswordHandler.encode(clientSecret))
-                .authorizedGrantTypes(grantTypes())
-                .scope("read")
-                .accessTokenValidity(200)
-                .resourceIds(RESOURCE_ID);
+                .authorizationGrantTypes(grantTypes())
+                .scopes("openid");
+//                .accessTokenValidity(200)
+//                .resourceIds(RESOURCE_ID);
 
 
         oauthRepository.saveOauthClientDetails(clientDetails);

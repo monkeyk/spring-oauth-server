@@ -62,22 +62,22 @@ public class OauthRepositoryJdbc implements OauthRepository {
 
         this.jdbcTemplate.update(sql, ps -> {
             ps.setString(1, clientDetails.clientId());
-            ps.setString(2, clientDetails.resourceIds());
+//            ps.setString(2, clientDetails.resourceIds());
 
             ps.setString(3, clientDetails.clientSecret());
-            ps.setString(4, clientDetails.scope());
+//            ps.setString(4, clientDetails.scope());
 
-            ps.setString(5, clientDetails.authorizedGrantTypes());
-            ps.setString(6, clientDetails.webServerRedirectUri());
+//            ps.setString(5, clientDetails.authorizedGrantTypes());
+//            ps.setString(6, clientDetails.webServerRedirectUri());
 
-            ps.setString(7, clientDetails.authorities());
-            ps.setObject(8, clientDetails.accessTokenValidity());
+//            ps.setString(7, clientDetails.authorities());
+//            ps.setObject(8, clientDetails.accessTokenValidity());
 
-            ps.setObject(9, clientDetails.refreshTokenValidity());
-            ps.setString(10, clientDetails.additionalInformation());
+//            ps.setObject(9, clientDetails.refreshTokenValidity());
+//            ps.setString(10, clientDetails.additionalInformation());
 
-            ps.setBoolean(11, clientDetails.trusted());
-            ps.setString(12, clientDetails.autoApprove());
+//            ps.setBoolean(11, clientDetails.trusted());
+//            ps.setString(12, clientDetails.autoApprove());
 
         });
     }
