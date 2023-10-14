@@ -8,7 +8,7 @@
 
     <title>OAuth Login - Spring Security&OAuth2.1</title>
 
-    <th:block th:include="fragments/main::header-css"/>
+    <th:block th:insert="~{fragments/main::header-css}"/>
 </head>
 <body class="container">
 <h2 class="page-header">OAuth Login</h2>
@@ -44,9 +44,9 @@
                         <div class="col-sm-9">
                             <input type="submit" value="Login" class="btn btn-primary"/>
 
-                            <span th:if="${param.get('error') eq '2'}"
+                            <span th:if="${param.get('error') == 2}"
                                     class="label label-danger">Access denied !!!</span>
-                            <span th:if="${param.get('error') eq '1'}"
+                            <span th:if="${param.error == 1}"
                                     class="label label-danger">Authentication Failure</span>
                         </div>
                     </div>
@@ -76,7 +76,7 @@
                 <td>unity</td>
                 <td>unity</td>
                 <td>Only allow visit [Unity] resource, support grant_type:
-                    <em>authorization_code,refresh_token,implicit</em></td>
+                    <em>authorization_code,refresh_token,device_code</em></td>
             </tr>
             <tr>
                 <td>mobile</td>
@@ -88,6 +88,6 @@
     </div>
 </div>
 
-<div th:replace="fragments/main :: footer"/>
+<div th:replace="~{fragments/main :: footer}"/>
 </body>
 </html>
