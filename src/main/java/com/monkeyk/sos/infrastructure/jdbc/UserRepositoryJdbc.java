@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 public class UserRepositoryJdbc implements UserRepository {
 
 
-    private static UserRowMapper userRowMapper = new UserRowMapper();
+    private final UserRowMapper userRowMapper = new UserRowMapper();
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -64,8 +64,9 @@ public class UserRepositoryJdbc implements UserRepository {
 
     @Override
     public void saveUser(final User user) {
-        final String sql = " insert into user_(guid,archived,create_time,email,password,username,phone) " +
-                " values (?,?,?,?,?,?,?) ";
+        final String sql = " insert into user_(guid,archived,create_time,email,password,username,phone," +
+                "address,nickname,updated_at,enabled) " +
+                " values (?,?,?,?,?,?,?,?,?,?,?) ";
         this.jdbcTemplate.update(sql, ps -> {
             ps.setString(1, user.guid());
             ps.setBoolean(2, user.archived());
@@ -77,10 +78,15 @@ public class UserRepositoryJdbc implements UserRepository {
             ps.setString(6, user.username());
 
             ps.setString(7, user.phone());
+            // v3.0.0 added
+            ps.setString(8, user.address());
+            ps.setString(9, user.nickname());
+            ps.setLong(10, user.updatedAt());
+            ps.setBoolean(11, user.enabled());
         });
 
         //get user id
-        final Integer id = this.jdbcTemplate.queryForObject("select id from user_ where guid = ?", new Object[]{user.guid()}, Integer.class);
+        final Integer id = this.jdbcTemplate.queryForObject("select id from user_ where guid = ?", Integer.class, user.guid());
 
         //insert privileges
         for (final Privilege privilege : user.privileges()) {
@@ -94,8 +100,9 @@ public class UserRepositoryJdbc implements UserRepository {
 
     @Override
     public void updateUser(final User user) {
-        final String sql = " update user_ set username = ?, password = ?, phone = ?,email = ? where guid = ? ";
-        this.jdbcTemplate.update(sql, ps -> {
+        final String sql = " update user_ set username = ?, password = ?, phone = ?,email = ?," +
+                "address = ?, nickname = ?, enabled = ? where guid = ? ";
+        int row = this.jdbcTemplate.update(sql, ps -> {
             ps.setString(1, user.username());
             ps.setString(2, user.password());
 
@@ -103,13 +110,17 @@ public class UserRepositoryJdbc implements UserRepository {
             ps.setString(4, user.email());
 
             ps.setString(5, user.guid());
+            // v3.0.0 added
+            ps.setString(6, user.address());
+            ps.setString(7, user.nickname());
+            ps.setBoolean(8, user.enabled());
         });
     }
 
     @Override
     public User findByUsername(String username) {
         final String sql = " select * from user_ where username = ? and archived = 0 ";
-        final List<User> list = this.jdbcTemplate.query(sql, new Object[]{username}, userRowMapper);
+        final List<User> list = this.jdbcTemplate.query(sql, userRowMapper, username);
 
         User user = null;
         if (!list.isEmpty()) {
@@ -130,7 +141,7 @@ public class UserRepositoryJdbc implements UserRepository {
         }
         sql += " order by create_time desc ";
 
-        final List<User> list = this.jdbcTemplate.query(sql, params, userRowMapper);
+        final List<User> list = this.jdbcTemplate.query(sql, userRowMapper, params);
         for (User user : list) {
             user.privileges().addAll(findPrivileges(user.id()));
         }
