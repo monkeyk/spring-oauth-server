@@ -108,12 +108,12 @@ public class UserRepositoryJdbc implements UserRepository {
 
             ps.setString(3, user.phone());
             ps.setString(4, user.email());
-
-            ps.setString(5, user.guid());
             // v3.0.0 added
-            ps.setString(6, user.address());
-            ps.setString(7, user.nickname());
-            ps.setBoolean(8, user.enabled());
+            ps.setString(5, user.address());
+            ps.setString(6, user.nickname());
+            ps.setBoolean(7, user.enabled());
+
+            ps.setString(8, user.guid());
         });
     }
 

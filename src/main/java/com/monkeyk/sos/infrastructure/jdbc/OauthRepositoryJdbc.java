@@ -40,7 +40,7 @@ public class OauthRepositoryJdbc implements OauthRepository {
     @Override
     public OauthClientDetails findOauthClientDetails(String clientId) {
         final String sql = " select * from oauth2_registered_client where  client_id = ? ";
-        final List<OauthClientDetails> list = this.jdbcTemplate.query(sql, new Object[]{clientId}, oauthClientDetailsRowMapper);
+        final List<OauthClientDetails> list = this.jdbcTemplate.query(sql, oauthClientDetailsRowMapper, clientId);
         return list.isEmpty() ? null : list.get(0);
     }
 
@@ -58,13 +58,14 @@ public class OauthRepositoryJdbc implements OauthRepository {
 
     @Override
     public void saveOauthClientDetails(final OauthClientDetails clientDetails) {
-        final String sql = " insert into oauth2_registered_client(id,client_id,client_id_issued_at,client_secret,client_secret_expires_at," +
+        final String sql = " insert into oauth2_registered_client(id,create_time,client_id,client_id_issued_at,client_secret,client_secret_expires_at," +
                 "client_name,client_authentication_methods,authorization_grant_types,redirect_uris," +
-                " post_logout_redirect_uris,scopes,client_settings,token_settings) values (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                " post_logout_redirect_uris,scopes,client_settings,token_settings) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
         this.jdbcTemplate.update(sql, ps -> {
             int index = 1;
             ps.setString(index++, clientDetails.id());
+            ps.setTimestamp(index++, Timestamp.valueOf(clientDetails.createTime()));
             ps.setString(index++, clientDetails.clientId());
             ps.setTimestamp(index++, Timestamp.from(clientDetails.clientIdIssuedAt()));
 

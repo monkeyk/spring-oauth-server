@@ -16,8 +16,11 @@ import com.monkeyk.sos.domain.oauth.OauthRepository;
 import com.monkeyk.sos.domain.shared.GuidGenerator;
 import com.monkeyk.sos.infrastructure.AbstractRepositoryTest;
 
+import com.monkeyk.sos.infrastructure.SettingsUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
+import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 
 
 import java.util.List;
@@ -26,8 +29,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 /*
-  * @author Shengzhao Li
-  */
+ * @author Shengzhao Li
+ */
 public class OauthRepositoryJdbcTest extends AbstractRepositoryTest {
 
 
@@ -48,7 +51,15 @@ public class OauthRepositoryJdbcTest extends AbstractRepositoryTest {
 
         final String clientId = GuidGenerator.generate();
 
-        OauthClientDetails clientDetails = new OauthClientDetails().clientId(clientId);
+        OauthClientDetails clientDetails = new OauthClientDetails()
+                .id(GuidGenerator.generate())
+                .clientName("Test-client")
+                .clientAuthenticationMethods("client_secret_post")
+                .authorizationGrantTypes("authorization_code")
+                .scopes("openid")
+                .clientSettings(SettingsUtils.textClientSettings(ClientSettings.builder().build()))
+                .tokenSettings(SettingsUtils.textTokenSettings(TokenSettings.builder().build()))
+                .clientId(clientId);
         oauthRepositoryMyBatis.saveOauthClientDetails(clientDetails);
 
         final OauthClientDetails oauthClientDetails = oauthRepositoryMyBatis.findOauthClientDetails(clientId);
