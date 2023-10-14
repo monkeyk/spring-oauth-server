@@ -18,6 +18,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
+ * table: user_
  * 2015/11/16
  *
  * @author Shengzhao Li
