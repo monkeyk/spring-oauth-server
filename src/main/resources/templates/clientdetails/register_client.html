@@ -17,12 +17,12 @@
 <h2>注册client</h2>
 
 <div ng-app>
-    <p class="help-block">
+    <div class="alert alert-info">
         若对OAuth2.1的<code>client_details</code>中的属性及作用不清楚,
         建议你先查看项目中的<code>db_table_description.html</code>文件(位于others目录)中对表<code>oauth2_registered_client</code>的说明,
         或在线访问<a href="https://andaily.com/spring-oauth-server/db_table_description_3.0.0.html" target="_blank">db_table_description.html</a>;
         因为注册client实际上是向该表中按不同的条件添加数据.
-    </p>
+    </div>
 
     <div ng-controller="RegisterClientCtrl">
         <form th:object="${formDto}" th:action="@{register_client}" class="form-horizontal">
@@ -31,7 +31,7 @@
 
                 <div class="col-sm-10">
                     <input th:name="clientId" class="form-control" id="clientId" placeholder="client_id"
-                           required="required" th:field="*{clientId}"/>
+                           required="required" th:field="*{clientId}" minlength="10"/>
 
                     <p class="help-block">client_id必须输入,且必须唯一,长度至少5位; 在实际应用中的另一个名称叫appKey,与client_id是同一个概念.</p>
                 </div>
@@ -41,8 +41,8 @@
 
                 <div class="col-sm-10">
                     <input th:name="clientName" class="form-control" id="clientName" placeholder="client_name"
-                           required="required" th:field="*{clientName}"/>
-
+                           required="required" th:field="*{clientName}" minlength="4"/>
+                    <em class="label label-success">OAuth2.1新增</em>
                     <p class="help-block">Client有意义的名称.</p>
                 </div>
             </div>
@@ -51,12 +51,12 @@
                         class="text-danger">*</em></label>
 
                 <div class="col-sm-10">
-                    <input th:name="clientSecret" class="form-control" id="clientSecret"
+                    <input th:name="clientSecret" class="form-control" id="clientSecret" minlength="10"
                            placeholder="client_secret" required="required" th:field="*{clientSecret}"/>
 
-                    <p class="help-block">client_secret必须输入,且长度至少8位; 在实际应用中的另一个名称叫appSecret,与client_secret是同一个概念.
+                    <p class="help-block">client_secret必须输入,且长度至少10位; 在实际应用中的另一个名称叫appSecret,与client_secret是同一个概念.
                         <br/>
-                        <strong class="text-danger">注意: </strong> 由于client_secret 会加密存储, 请先复制并保留client_secret值
+                        <strong class="label label-warning">注意: </strong> 由于client_secret 会加密存储, 请先复制并保留client_secret值
                     </p>
                 </div>
             </div>
@@ -67,11 +67,11 @@
                 <div class="col-sm-10">
                     <label class="checkbox-inline">
                         <input type="checkbox" th:name="clientAuthenticationMethods" th:value="client_secret_basic"
-                               th:field="*{clientAuthenticationMethods}" checked/> client_secret_basic
+                               th:field="*{clientAuthenticationMethods}" checked="checked"/> client_secret_basic
                     </label>
                     <label class="checkbox-inline">
                         <input type="checkbox" th:name="clientAuthenticationMethods" th:value="client_secret_post"
-                               th:field="*{clientAuthenticationMethods}" checked/> client_secret_post
+                               th:field="*{clientAuthenticationMethods}" checked="checked"/> client_secret_post
                     </label>
                     <label class="checkbox-inline">
                         <input type="checkbox" th:name="clientAuthenticationMethods" th:value="client_secret_jwt"
@@ -81,7 +81,7 @@
                         <input type="checkbox" th:name="clientAuthenticationMethods" th:value="private_key_jwt"
                                th:field="*{clientAuthenticationMethods}"/> private_key_jwt
                     </label>
-
+                    <em class="label label-success">OAuth2.1新增</em>
                     <p class="help-block">选择在认证时支持传递<em>client_secret</em>参数的方式；在正式环境中，此值一般不需要选择而是由后台创建时根据业务设置即可</p>
                 </div>
             </div>
@@ -91,8 +91,8 @@
 
                 <div class="col-sm-10">
                     <label class="checkbox-inline">
-                        <input type="checkbox" th:name="scopes" th:value="openid" th:field="*{scopes}" checked
-                               readonly/> openid
+                        <input type="checkbox" th:name="scopes" th:value="openid" th:field="*{scopes}" checked="checked"
+                               readonly="readonly"/> openid
                     </label>
                     <label class="checkbox-inline">
                         <input type="checkbox" th:name="scopes" th:value="profile" th:field="*{scopes}"/> profile
@@ -127,12 +127,12 @@
                     <label class="checkbox-inline">
                         <input type="checkbox" th:name="authorizationGrantTypes"
                                value="urn:ietf:params:oauth:grant-type:device_code"
-                               th:field="*{authorizationGrantTypes}"/> device_code <em class="label">OAuth2.1新增</em>
+                               th:field="*{authorizationGrantTypes}"/> device_code <em class="label label-success">OAuth2.1新增</em>
                     </label>
                     <label class="checkbox-inline">
                         <input type="checkbox" th:name="authorizationGrantTypes"
                                value="urn:ietf:params:oauth:grant-type:jwt-bearer"
-                               th:field="*{authorizationGrantTypes}"/> jwt-bearer <em class="label">OAuth2.1新增</em>
+                               th:field="*{authorizationGrantTypes}"/> jwt-bearer <em class="label label-success">OAuth2.1新增</em>
                     </label>
                     <label class="checkbox-inline">
                         <input type="checkbox" th:name="authorizationGrantTypes" th:value="client_credentials"

@@ -196,6 +196,7 @@ Base on SpringBoot
                 <li><p>全面升级支持 OAuth2.1协议与 OIDC1.x协议</p></li>     
                 <li><p>构建包由war换成jar, SQL相应调整</p></li>     
                 <li><p>升级替换spring-security-oauth2, 详见<a href="https://andaily.com/blog/?p=20077">背景说明</a></p></li>     
+                <li><p>界面使用说明按OAuth2.1进行友好更新</p></li>     
             </ol>
        </li>   	
 	   <li>
