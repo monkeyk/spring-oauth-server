@@ -16,8 +16,11 @@ import java.util.List;
 
 /**
  * Handle 'client_details' management
+ * <p>
+ * v3.0.0 中叫 'RegisteredClient', table: oauth2_registered_client
  *
  * @author Shengzhao Li
+ * @see org.springframework.security.oauth2.server.authorization.client.RegisteredClient
  */
 @Controller
 public class ClientDetailsController {
@@ -38,18 +41,18 @@ public class ClientDetailsController {
     }
 
 
-    /*
-    * Logic delete
-    * */
+    /**
+     * Logic delete
+     */
     @RequestMapping("archive_client/{clientId}")
     public String archiveClient(@PathVariable("clientId") String clientId) {
         oauthService.archiveOauthClientDetails(clientId);
         return "redirect:../client_details";
     }
 
-    /*
-    * Test client
-    * */
+    /**
+     * Test client
+     */
     @RequestMapping("test_client/{clientId}")
     public String testClient(@PathVariable("clientId") String clientId, Model model) {
         OauthClientDetailsDto clientDetailsDto = oauthService.loadOauthClientDetailsDto(clientId);
@@ -58,9 +61,9 @@ public class ClientDetailsController {
     }
 
 
-    /*
-    * Register client
-    * */
+    /**
+     * Register client
+     */
     @RequestMapping(value = "register_client", method = RequestMethod.GET)
     public String registerClient(Model model) {
         model.addAttribute("formDto", new OauthClientDetailsDto());
@@ -68,9 +71,9 @@ public class ClientDetailsController {
     }
 
 
-    /*
-    * Submit register client
-    * */
+    /**
+     * Submit register client
+     */
     @RequestMapping(value = "register_client", method = RequestMethod.POST)
     public String submitRegisterClient(@ModelAttribute("formDto") OauthClientDetailsDto formDto, BindingResult result) {
         clientDetailsDtoValidator.validate(formDto, result);

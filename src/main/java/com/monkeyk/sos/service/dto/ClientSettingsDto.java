@@ -40,6 +40,8 @@ public class ClientSettingsDto implements Serializable {
     /**
      * 若client有自定义的 jwk URL，
      * 则填写, null表示用默认的
+     * <p>
+     * todo: v3.0.0不提供自定义设置
      */
     private String jwkSetUrl;
 
@@ -60,7 +62,10 @@ public class ClientSettingsDto implements Serializable {
         this.requireAuthorizationConsent = settings.isRequireAuthorizationConsent();
         this.requireProofKey = settings.isRequireProofKey();
 
-        this.tokenEndpointAuthenticationSigningAlgorithm = settings.getTokenEndpointAuthenticationSigningAlgorithm().getName();
+        JwsAlgorithm jAlg = settings.getTokenEndpointAuthenticationSigningAlgorithm();
+        if (jAlg != null) {
+            this.tokenEndpointAuthenticationSigningAlgorithm = jAlg.getName();
+        }
         this.jwkSetUrl = settings.getJwkSetUrl();
     }
 
@@ -105,5 +110,15 @@ public class ClientSettingsDto implements Serializable {
 
     public void setTokenEndpointAuthenticationSigningAlgorithm(String tokenEndpointAuthenticationSigningAlgorithm) {
         this.tokenEndpointAuthenticationSigningAlgorithm = tokenEndpointAuthenticationSigningAlgorithm;
+    }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "requireProofKey=" + requireProofKey +
+                ", requireAuthorizationConsent=" + requireAuthorizationConsent +
+//                ", jwkSetUrl='" + jwkSetUrl + '\'' +
+                ", tokenEndpointAuthenticationSigningAlgorithm='" + tokenEndpointAuthenticationSigningAlgorithm + '\'' +
+                '}';
     }
 }

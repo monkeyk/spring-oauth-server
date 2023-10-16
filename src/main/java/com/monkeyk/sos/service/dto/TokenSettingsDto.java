@@ -172,4 +172,17 @@ public class TokenSettingsDto implements Serializable {
     public void setIdTokenSignatureAlgorithm(String idTokenSignatureAlgorithm) {
         this.idTokenSignatureAlgorithm = idTokenSignatureAlgorithm;
     }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "authorizationCodeTimeToLive=" + authorizationCodeTimeToLive +
+                ", accessTokenTimeToLive=" + accessTokenTimeToLive +
+                ", accessTokenFormat='" + accessTokenFormat + '\'' +
+                ", deviceCodeTimeToLive=" + deviceCodeTimeToLive +
+                ", reuseRefreshTokens=" + reuseRefreshTokens +
+                ", refreshTokenTimeToLive=" + refreshTokenTimeToLive +
+                ", idTokenSignatureAlgorithm='" + idTokenSignatureAlgorithm + '\'' +
+                '}';
+    }
 }
