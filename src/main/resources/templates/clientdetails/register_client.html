@@ -25,7 +25,7 @@
     </div>
 
     <div ng-controller="RegisterClientCtrl">
-        <form th:object="${formDto}" th:action="@{register_client}" class="form-horizontal">
+        <form th:object="${formDto}" th:action="@{register_client}" th:method="post" class="form-horizontal">
             <div class="form-group">
                 <label for="clientId" class="col-sm-2 control-label">client_id<em class="text-danger">*</em></label>
 
