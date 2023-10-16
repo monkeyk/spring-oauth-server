@@ -1,28 +1,23 @@
 package com.monkeyk.sos.service.impl;
 
-import com.monkeyk.sos.service.dto.UserDto;
-import com.monkeyk.sos.service.dto.UserFormDto;
-import com.monkeyk.sos.service.dto.UserJsonDto;
-import com.monkeyk.sos.service.dto.UserOverviewDto;
 import com.monkeyk.sos.domain.shared.security.SOSUserDetails;
 import com.monkeyk.sos.domain.user.User;
 import com.monkeyk.sos.domain.user.UserRepository;
 import com.monkeyk.sos.service.UserService;
+import com.monkeyk.sos.service.dto.UserDto;
+import com.monkeyk.sos.service.dto.UserFormDto;
+import com.monkeyk.sos.service.dto.UserJsonDto;
+import com.monkeyk.sos.service.dto.UserOverviewDto;
 import com.monkeyk.sos.web.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -59,11 +54,14 @@ public class UserServiceImpl implements UserService {
 //                (principal instanceof String || principal instanceof org.springframework.security.core.userdetails.User)) {
 //            return loadOauthUserJsonDto((OAuth2Authentication) authentication);
 //        } else {
-            final SOSUserDetails userDetails = (SOSUserDetails) principal;
-            return new UserJsonDto(userRepository.findByGuid(userDetails.user().guid()));
+        final SOSUserDetails userDetails = (SOSUserDetails) principal;
+        return new UserJsonDto(userRepository.findByGuid(userDetails.user().guid()));
 //        }
     }
 
+    /**
+     * 注意：产品化的设计此处应该有分页会更好
+     */
     @Override
 //    @Transactional(readOnly = true)
     public UserOverviewDto loadUserOverviewDto(UserOverviewDto overviewDto) {

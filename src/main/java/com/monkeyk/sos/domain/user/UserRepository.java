@@ -18,5 +18,8 @@ public interface UserRepository extends Repository {
 
     User findByUsername(String username);
 
+    /**
+     * 注意：产品化的设计此处应该有分页会更好
+     */
     List<User> findUsersByUsername(String username);
 }
