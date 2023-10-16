@@ -5,6 +5,7 @@ import com.monkeyk.sos.service.OauthService;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -32,6 +33,44 @@ public class OauthClientDetailsDtoValidator implements Validator {
         validateClientSecret(clientDetailsDto, errors);
 
         validateGrantTypes(clientDetailsDto, errors);
+        //v3.0.0 added
+        validateClientName(clientDetailsDto, errors);
+        validateScopes(clientDetailsDto, errors);
+        validateMethods(clientDetailsDto, errors);
+    }
+
+
+    /**
+     * @since 3.0.0
+     */
+    private void validateMethods(OauthClientDetailsDto clientDetailsDto, Errors errors) {
+        String methods = clientDetailsDto.getClientAuthenticationMethods();
+        if (StringUtils.isBlank(methods)) {
+            errors.reject(null, "authentication_methods is required");
+        }
+    }
+
+
+    /**
+     * @since 3.0.0
+     */
+    private void validateScopes(OauthClientDetailsDto clientDetailsDto, Errors errors) {
+        String scopes = clientDetailsDto.getScopes();
+        if (StringUtils.isBlank(scopes)) {
+            errors.reject(null, "scopes is required");
+        } else if (!scopes.contains(OidcScopes.OPENID)) {
+            errors.reject(null, "scopes [openid] must be selected");
+        }
+    }
+
+    /**
+     * @since 3.0.0
+     */
+    private void validateClientName(OauthClientDetailsDto clientDetailsDto, Errors errors) {
+        String clientName = clientDetailsDto.getClientName();
+        if (StringUtils.isBlank(clientName)) {
+            errors.reject(null, "client_name is required");
+        }
     }
 
     private void validateGrantTypes(OauthClientDetailsDto clientDetailsDto, Errors errors) {
@@ -53,8 +92,8 @@ public class OauthClientDetailsDtoValidator implements Validator {
             return;
         }
 
-        if (clientSecret.length() < 8) {
-            errors.rejectValue("clientSecret", null, "client_secret 长度至少8位");
+        if (clientSecret.length() < 10) {
+            errors.rejectValue("clientSecret", null, "client_secret 长度至少10位");
         }
     }
 
@@ -65,8 +104,8 @@ public class OauthClientDetailsDtoValidator implements Validator {
             return;
         }
 
-        if (clientId.length() < 5) {
-            errors.rejectValue("clientId", null, "client_id 长度至少5位");
+        if (clientId.length() < 10) {
+            errors.rejectValue("clientId", null, "client_id 长度至少10位");
             return;
         }
 
