@@ -85,7 +85,9 @@
                         <div>
                             <code>从 spring-oauth-server获取 'code'</code>
                             <div class="text-muted">
-                                PKCE流程在开始前需要先通过代码生成<code>code_verifier</code>与<code>code_challenge</code>（如何生成详见工具类 <mark>PKCEUtils.java</mark>）;
+                                PKCE流程在开始前需要先通过代码生成<code>code_verifier</code>与<code>code_challenge</code>（如何生成详见工具类
+                                <mark>PKCEUtils.java</mark>
+                                ）;
                                 <br/>
                                 生成后在获取'code'时要在已有的参数基础上再增加两个参数：
                                 <table class="table table-bordered">
@@ -104,7 +106,7 @@
                                                  required="required"/>
                             <br/>
                             code_challenge: <input type="text" value="" ng-model="codeChallenge" size="70"
-                                                 readonly="readonly"/> (后台代码生成,不可修改)
+                                                   readonly="readonly"/> (后台代码生成,不可修改)
                             <br/>
                             <form th:action="@{/oauth2/authorize}" th:method="get" target="_blank">
                                 <input type="hidden" name="client_id" value="{{clientId}}"/>
@@ -128,7 +130,7 @@
                                              required="required" size="70"/>
                         <br/>
                         code_verifier: <input type="text" name="codeVerifier" value="" ng-model="codeVerifier"
-                                                readonly="readonly" size="70"/> (后台代码生成,不可修改)
+                                              readonly="readonly" size="70"/> (后台代码生成,不可修改)
 
                         <form th:action="@{/oauth2/token}" th:method="post" target="_blank">
                             <input type="hidden" name="client_id" value="{{clientId}}"/>
@@ -173,26 +175,16 @@
         </div>
 
         <div th:if="${clientDetailsDto.containsDeviceCode}" class="panel panel-default">
-            <div class="panel-heading">Test [device_code]</div>
+            <div class="panel-heading">Test [device_code] <em class="label label-success">OAuth2.1新增</em></div>
             <div class="panel-body">
-                <p class="text-muted">输入redirect_uri 后点击链接地址. 获取access_token后注意查看redirect_uri的hash部分(#号后边部分)</p>
-                redirect_uri: <input type="text" value="" ng-model="implicitRedirectUri" size="70"
-                                     required="required"/>
+                ......
+            </div>
+        </div>
 
-                <div>
-                    <form th:action="@{/oauth2/authorize}" th:method="get" target="_blank">
-                        <input type="hidden" name="client_id" value="{{clientId}}"/>
-                        <input type="hidden" name="client_secret" value="{{clientSecret}}"/>
-                        <input type="hidden" name="redirect_uri" value="{{implicitRedirectUri}}"/>
-                        <input type="hidden" name="scope" value="{{scope}}"/>
-                        <input type="hidden" name="response_type" value="token"/>
-                        <button class="btn btn-link" type="submit">
-                            /oauth2/authorize?client_id={{clientId}}&client_secret={{clientSecret}}&response_type=token&scope={{scope}}&redirect_uri={{implicitRedirectUri}}
-                        </button>
-                        <span class="label label-warning">POST</span>
-                    </form>
-                    <span class="label label-info">GET</span>
-                </div>
+        <div th:if="${clientDetailsDto.containsJwtBearer}" class="panel panel-default">
+            <div class="panel-heading">Test [jwt-bearer] <em class="label label-success">OAuth2.1新增</em></div>
+            <div class="panel-body">
+                ......
             </div>
         </div>
 
