@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Override
-    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+//    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username);
         if (user == null || user.archived()) {
@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+//    @Transactional(readOnly = true)
     public UserJsonDto loadCurrentUserJsonDto() {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         final Object principal = authentication.getPrincipal();
@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+//    @Transactional(readOnly = true)
     public UserOverviewDto loadUserOverviewDto(UserOverviewDto overviewDto) {
         List<User> users = userRepository.findUsersByUsername(overviewDto.getUsername());
         overviewDto.setUserDtos(UserDto.toDtos(users));
@@ -73,14 +73,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+//    @Transactional(readOnly = true)
     public boolean isExistedUsername(String username) {
         final User user = userRepository.findByUsername(username);
         return user != null;
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED)
+//    @Transactional(propagation = Propagation.REQUIRED)
     public String saveUser(UserFormDto formDto) {
         User user = formDto.newUser();
         userRepository.saveUser(user);

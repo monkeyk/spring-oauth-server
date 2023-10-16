@@ -41,6 +41,10 @@ public class UserFormDto extends UserDto {
                 .email(getEmail())
                 .password(PasswordHandler.encode(getPassword()));
         user.privileges().addAll(getPrivileges());
+        //v3.0.0 added
+        user.address(getAddress())
+                .nickname(getNickname())
+                .enabled(isEnabled());
         return user;
     }
 }
