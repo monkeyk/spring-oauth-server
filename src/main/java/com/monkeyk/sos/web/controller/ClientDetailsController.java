@@ -69,7 +69,7 @@ public class ClientDetailsController {
     public String registerClient(Model model) {
         OauthClientDetailsDto formDto = new OauthClientDetailsDto();
         //初始化 v3.0.0 added
-        formDto.setClientAuthenticationMethods("client_secret_basic");
+        formDto.setClientAuthenticationMethods("client_secret_post");
         formDto.setScopes(OidcScopes.OPENID);
         formDto.setAuthorizationGrantTypes(AuthorizationGrantType.AUTHORIZATION_CODE.getValue());
 

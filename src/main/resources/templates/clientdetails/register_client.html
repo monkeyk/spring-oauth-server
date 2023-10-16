@@ -81,6 +81,7 @@
                         <input type="checkbox" th:name="clientAuthenticationMethods" th:value="private_key_jwt"
                                th:field="*{clientAuthenticationMethods}"/> private_key_jwt
                     </label>
+                    <br/>
                     <em class="label label-success">OAuth2.1新增</em>
                     <p class="help-block">选择在认证时支持传递<em>client_secret</em>参数的方式；在正式环境中，此值一般不需要选择而是由后台创建时根据业务设置即可</p>
                 </div>
@@ -107,7 +108,9 @@
                         <input type="checkbox" th:name="scopes" th:value="phone" th:field="*{scopes}"/> phone
                     </label>
 
-                    <p class="help-block">scopes值由OIDC 1.0协议中定义，<em>openid</em>必须选择；在正式环境中，此值一般不需要选择而是由后台创建时根据业务设置即可</p>
+                    <p class="help-block">scopes值由OIDC 1.0协议中定义(详见<a
+                            href="https://openid.net/specs/openid-connect-core-1_0.html#ScopeClaims" target="_blank">#ScopeClaims</a>)，<em>openid</em>必须选择；在正式环境中，此值一般不需要选择而是由后台创建时根据业务设置即可
+                    </p>
                 </div>
             </div>
 
