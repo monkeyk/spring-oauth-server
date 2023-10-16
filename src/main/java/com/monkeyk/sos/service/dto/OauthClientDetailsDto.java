@@ -222,6 +222,20 @@ public class OauthClientDetailsDto implements Serializable {
         return this.authorizationGrantTypes.contains("refresh_token");
     }
 
+    /**
+     * @since 3.0.0
+     */
+    public boolean isContainsDeviceCode() {
+        return this.authorizationGrantTypes.contains("device_code");
+    }
+
+    /**
+     * @since 3.0.0
+     */
+    public boolean isContainsJwtBearer() {
+        return this.authorizationGrantTypes.contains("jwt-bearer");
+    }
+
 
     public OauthClientDetails createDomain() {
         OauthClientDetails clientDetails = new OauthClientDetails()
