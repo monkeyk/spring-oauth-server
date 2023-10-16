@@ -40,7 +40,7 @@
                             redirect_uri: <input type="text" value="" ng-model="redirectUri" size="70"
                                                  required="required"/>
                             <br/>
-                            <form th:action="@{/oauth2/authorize}" th:method="get">
+                            <form th:action="@{/oauth2/authorize}" th:method="get" target="_blank">
                                 <input type="hidden" name="client_id" value="{{clientId}}"/>
                                 <input type="hidden" name="redirect_uri" value="{{redirectUri}}"/>
                                 <input type="hidden" name="scope" value="{{scope}}"/>
@@ -106,7 +106,7 @@
                             code_challenge: <input type="text" value="" ng-model="codeChallenge" size="70"
                                                  readonly="readonly"/> (后台代码生成,不可修改)
                             <br/>
-                            <form th:action="@{/oauth2/authorize}" th:method="get">
+                            <form th:action="@{/oauth2/authorize}" th:method="get" target="_blank">
                                 <input type="hidden" name="client_id" value="{{clientId}}"/>
                                 <input type="hidden" name="redirect_uri" value="{{redirectUri}}"/>
                                 <input type="hidden" name="scope" value="{{scope}}"/>
