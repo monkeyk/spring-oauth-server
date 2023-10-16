@@ -82,7 +82,7 @@ Base on SpringBoot
         若使用<code>java -jar spring-oauth-server.jar</code>启动, 建议使用参数<em>spring.config.location</em>指定配置文件, 
         如：<code>java -jar spring-oauth-server.jar --spring.config.location=xxx.properties</code>
 
-6. 参考<a href="https://gitee.com/shengzhao/spring-oauth-server/blob/config/others/oauth_test.txt">oauth_test.txt</a>(位于others目录)的内容并测试之(也可在浏览器中访问相应的地址,如: http://localhost:8080/ 在界面上操作).
+6. 参考<a href="https://gitee.com/shengzhao/spring-oauth-server/blob/config/others/oauth2.1-flow.md">oauth2.1-flow.md</a>(位于others目录)的内容并测试之(也可在浏览器中访问相应的地址,如: http://localhost:8080/ 在界面上操作).
 
 
 <div>

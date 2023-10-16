@@ -18,7 +18,7 @@
 
 5.将本地项目导入到IDE(如Intellij IDEA)中,直接运行 SpringOauthServerApplication.java (默认端口为8080)
 
-6.参考oauth_test.txt(位于others目录)的内容并测试之(也可在浏览器中访问相应的地址,如: http://localhost:8080).
+6.参考oauth2.1-flow.md(位于others目录)的内容并测试之(也可在浏览器中访问相应的地址,如: http://localhost:8080).
 
 7. 运行单元测试时请先创建数据库 oauth2_boot_test, 并依次运行SQL脚本.
    运行脚本的顺序: initial_db.ddl -> oauth.ddl
