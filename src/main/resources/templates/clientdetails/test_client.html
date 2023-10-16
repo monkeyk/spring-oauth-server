@@ -76,6 +76,76 @@
             </div>
         </div>
 
+        <div th:if="${clientDetailsDto.containsAuthorizationCode}" class="panel panel-default">
+            <div class="panel-heading">Test [authorization_code + PKCE]</div>
+            <div class="panel-body">
+                <p class="text-muted">输入每一步必要的信息后点击其下面的链接地址.</p>
+                <ol>
+                    <li>
+                        <div>
+                            <code>从 spring-oauth-server获取 'code'</code>
+                            <div class="text-muted">
+                                PKCE流程在开始前需要先通过代码生成<code>code_verifier</code>与<code>code_challenge</code>（如何生成详见工具类 <mark>PKCEUtils.java</mark>）；
+                                生成后在获取'code'时要在已有的参数基础上再增加两个参数：
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <td><code>code_challenge</code></td>
+                                        <td>对 code_verifier 使用指定算法进行计算(digest)并base encode的值</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>code_challenge_method</code></td>
+                                        <td>固定值：S256</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <br/>
+                            redirect_uri: <input type="text" value="" ng-model="redirectUri" size="70"
+                                                 required="required"/>
+                            <br/>
+                            code_challenge: <input type="text" value="" ng-model="codeChallenge" size="70"
+                                                 readonly="readonly"/> (后台代码生成,不可修改)
+                            <br/>
+                            <form th:action="@{/oauth2/authorize}" th:method="get">
+                                <input type="hidden" name="client_id" value="{{clientId}}"/>
+                                <input type="hidden" name="redirect_uri" value="{{redirectUri}}"/>
+                                <input type="hidden" name="scope" value="{{scope}}"/>
+                                <input type="hidden" name="state" value="{{state}}"/>
+                                <input type="hidden" name="code_challenge" value="{{codeChallenge}}"/>
+                                <input type="hidden" name="code_challenge_method" value="S256"/>
+                                <input type="hidden" name="response_type" value="code"/>
+                                <button class="btn btn-link" type="submit">
+                                    /oauth2/authorize?client_id={{clientId}}&redirect_uri={{redirectUri}}&response_type=code&scope={{scope}}&state={{state}}&code_challenge={{codeChallenge}}&code_challenge_method=S256
+                                </button>
+                            </form>
+                            <span class="label label-info">GET</span>
+                        </div>
+                    </li>
+                    <li>
+                        <code>用 'code' 换取 'access_token'</code>
+                        <br/>
+                        输入第一步获取的code: <input type="text" name="code" value="" ng-model="code"
+                                             required="required"/>
+                        <br/>
+                        与 code_verifier: <input type="text" name="codeVerifier" value="" ng-model="codeVerifier"
+                                                readonly="readonly"/> (后台代码生成,不可修改)
+
+                        <form th:action="@{/oauth2/token}" th:method="post" target="_blank">
+                            <input type="hidden" name="client_id" value="{{clientId}}"/>
+                            <input type="hidden" name="redirect_uri" value="{{redirectUri}}"/>
+                            <input type="hidden" name="client_secret" value="{{clientSecret}}"/>
+                            <input type="hidden" name="code" value="{{code}}"/>
+                            <input type="hidden" name="code_verifier" value="{{codeVerifier}}"/>
+                            <input type="hidden" name="grant_type" value="authorization_code"/>
+                            <button class="btn btn-link" type="submit">
+                                /oauth2/token?client_id={{clientId}}&client_secret={{clientSecret}}&grant_type=authorization_code&code={{code}}&redirect_uri={{redirectUri}}&code_verifier={{codeVerifier}}
+                            </button>
+                            <span class="label label-warning">POST</span>
+                        </form>
+                    </li>
+                </ol>
+            </div>
+        </div>
+
         <div th:if="${clientDetailsDto.containsPassword}" class="panel panel-default">
             <div class="panel-heading">Test [password] <em class="label label-danger">OAuth2.1不支持</em></div>
             <div class="panel-body">
@@ -176,6 +246,9 @@
         $scope.clientId = [[${clientDetailsDto.clientId}]];
         $scope.clientSecret = "";
         $scope.scope = [[${clientDetailsDto.scopesWithBlank}]];
+
+        $scope.codeChallenge = [[${codeChallenge}]];
+        $scope.codeVerifier = [[${codeVerifier}]];
 
         var redirectUri = [[${clientDetailsDto.redirectUris}]];
         if (redirectUri === '') {

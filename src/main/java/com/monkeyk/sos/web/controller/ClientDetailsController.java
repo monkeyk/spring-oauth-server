@@ -1,5 +1,6 @@
 package com.monkeyk.sos.web.controller;
 
+import com.monkeyk.sos.infrastructure.PKCEUtils;
 import com.monkeyk.sos.service.dto.OauthClientDetailsDto;
 import com.monkeyk.sos.service.OauthService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,10 +9,7 @@ import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -54,10 +52,15 @@ public class ClientDetailsController {
     /**
      * Test client
      */
-    @RequestMapping("test_client/{clientId}")
+    @GetMapping("test_client/{clientId}")
     public String testClient(@PathVariable("clientId") String clientId, Model model) {
         OauthClientDetailsDto clientDetailsDto = oauthService.loadOauthClientDetailsDto(clientId);
         model.addAttribute("clientDetailsDto", clientDetailsDto);
+        //v3.0.0 added  PKCE params
+        String codeVerifier = PKCEUtils.generateCodeVerifier();
+        String codeChallenge = PKCEUtils.generateCodeChallenge(codeVerifier);
+        model.addAttribute("codeVerifier", codeVerifier)
+                .addAttribute("codeChallenge", codeChallenge);
         return "clientdetails/test_client";
     }
 

@@ -1,13 +1,9 @@
 package com.monkeyk.sos.infrastructure;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.util.Base64;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * 2023/10/16 22:53
@@ -45,7 +41,6 @@ class PKCEUtilsTest {
      * code_verifier :  随机生成且base64 encode的值 （推荐随机值至少32位）
      * code_challenge :   对 code_verifier 使用指定算法进行计算(digest)并base encode的值
      *
-     * @throws Exception e
      */
     @Test
     void pkceFlow() {
