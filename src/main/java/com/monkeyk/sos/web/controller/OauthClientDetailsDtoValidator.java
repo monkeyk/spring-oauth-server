@@ -1,4 +1,4 @@
-package com.monkeyk.sos.web.oauth;
+package com.monkeyk.sos.web.controller;
 
 import com.monkeyk.sos.service.dto.OauthClientDetailsDto;
 import com.monkeyk.sos.service.OauthService;

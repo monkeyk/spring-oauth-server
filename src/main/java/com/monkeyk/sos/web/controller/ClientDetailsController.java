@@ -2,8 +2,9 @@ package com.monkeyk.sos.web.controller;
 
 import com.monkeyk.sos.service.dto.OauthClientDetailsDto;
 import com.monkeyk.sos.service.OauthService;
-import com.monkeyk.sos.web.oauth.OauthClientDetailsDtoValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
+import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -66,7 +67,13 @@ public class ClientDetailsController {
      */
     @RequestMapping(value = "register_client", method = RequestMethod.GET)
     public String registerClient(Model model) {
-        model.addAttribute("formDto", new OauthClientDetailsDto());
+        OauthClientDetailsDto formDto = new OauthClientDetailsDto();
+        //初始化 v3.0.0 added
+        formDto.setClientAuthenticationMethods("client_secret_basic");
+        formDto.setScopes(OidcScopes.OPENID);
+        formDto.setAuthorizationGrantTypes(AuthorizationGrantType.AUTHORIZATION_CODE.getValue());
+
+        model.addAttribute("formDto", formDto);
         return "clientdetails/register_client";
     }
 
