@@ -66,12 +66,12 @@
 
                 <div class="col-sm-10">
                     <label class="checkbox-inline">
-                        <input type="checkbox" th:name="clientAuthenticationMethods" th:value="client_secret_basic"
-                               th:field="*{clientAuthenticationMethods}" checked="checked"/> client_secret_basic
+                        <input type="checkbox" th:name="clientAuthenticationMethods" th:value="client_secret_post"
+                               th:field="*{clientAuthenticationMethods}"/> client_secret_post
                     </label>
                     <label class="checkbox-inline">
-                        <input type="checkbox" th:name="clientAuthenticationMethods" th:value="client_secret_post"
-                               th:field="*{clientAuthenticationMethods}" checked="checked"/> client_secret_post
+                        <input type="checkbox" th:name="clientAuthenticationMethods" th:value="client_secret_basic"
+                               th:field="*{clientAuthenticationMethods}"/> client_secret_basic
                     </label>
                     <label class="checkbox-inline">
                         <input type="checkbox" th:name="clientAuthenticationMethods" th:value="client_secret_jwt"
@@ -92,8 +92,7 @@
 
                 <div class="col-sm-10">
                     <label class="checkbox-inline">
-                        <input type="checkbox" th:name="scopes" th:value="openid" th:field="*{scopes}" checked="checked"
-                               readonly="readonly"/> openid
+                        <input type="checkbox" th:name="scopes" th:value="openid" th:field="*{scopes}"/> openid
                     </label>
                     <label class="checkbox-inline">
                         <input type="checkbox" th:name="scopes" th:value="profile" th:field="*{scopes}"/> profile
