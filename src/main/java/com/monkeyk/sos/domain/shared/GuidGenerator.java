@@ -20,6 +20,17 @@ public abstract class GuidGenerator {
     private GuidGenerator() {
     }
 
+    /**
+     * generate random number, length 32
+     *
+     * @return number
+     * @since 3.0.0
+     */
+    public static String generateNumber() {
+        return RandomStringUtils.random(32, false, true);
+    }
+
+
     public static String generate() {
         return UUID.randomUUID().toString().replaceAll("-", "");
     }

@@ -4,6 +4,7 @@ import com.monkeyk.sos.domain.oauth.OauthClientDetails;
 import com.monkeyk.sos.domain.shared.GuidGenerator;
 import com.monkeyk.sos.infrastructure.DateUtils;
 import com.monkeyk.sos.infrastructure.PasswordHandler;
+import com.monkeyk.sos.infrastructure.SettingsUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serial;
@@ -224,13 +225,14 @@ public class OauthClientDetailsDto implements Serializable {
 
     public OauthClientDetails createDomain() {
         OauthClientDetails clientDetails = new OauthClientDetails()
-                .id(GuidGenerator.generate())
+                .id(GuidGenerator.generateNumber())
                 .clientId(clientId)
                 .clientName(clientName)
                 // encrypted client secret
                 .clientSecret(PasswordHandler.encode(clientSecret))
                 .postLogoutRedirectUris(postLogoutRedirectUris)
                 .authorizationGrantTypes(authorizationGrantTypes)
+                .clientAuthenticationMethods(clientAuthenticationMethods)
                 .scopes(scopes);
 
         if (StringUtils.isNotBlank(clientIdIssuedAt)) {
@@ -245,8 +247,8 @@ public class OauthClientDetailsDto implements Serializable {
             clientDetails.redirectUris(redirectUris);
         }
 
-        clientDetails.clientSettings(this.clientSettings.toSettings().toString());
-        clientDetails.tokenSettings(this.tokenSettings.toSettings().toString());
+        clientDetails.clientSettings(SettingsUtils.textClientSettings(this.clientSettings.toSettings()));
+        clientDetails.tokenSettings(SettingsUtils.textTokenSettings(this.tokenSettings.toSettings()));
 
         return clientDetails;
     }
