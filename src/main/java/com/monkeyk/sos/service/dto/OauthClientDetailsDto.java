@@ -355,4 +355,16 @@ public class OauthClientDetailsDto implements Serializable {
     public void setTokenSettings(TokenSettingsDto tokenSettings) {
         this.tokenSettings = tokenSettings;
     }
+
+    /**
+     * 逗号, 转化为 ' '
+     *
+     * @return scopes
+     */
+    public String getScopesWithBlank() {
+        if (scopes != null && scopes.contains(",")) {
+            return scopes.replaceAll(",", " ");
+        }
+        return scopes;
+    }
 }

@@ -107,8 +107,11 @@
                 <p class="text-muted">点击链接地址即可测试</p>
 
 
-                <form action="${contextPath}/oauth/token?client_id={{clientId}}&client_secret={{clientSecret}}&grant_type=client_credentials&scope={{scope}}"
-                      method="post" target="_blank">
+                <form th:action="@{/oauth2/token}" th:method="post" target="_blank">
+                    <input type="hidden" name="client_id" value="{{clientId}}"/>
+                    <input type="hidden" name="client_secret" value="{{clientSecret}}"/>
+                    <input type="hidden" name="scope" value="{{scope}}"/>
+                    <input type="hidden" name="grant_type" value="client_credentials"/>
                     <button class="btn btn-link" type="submit">
                         /oauth/token?client_id={{clientId}}&client_secret={{clientSecret}}&grant_type=client_credentials&scope={{scope}}
                     </button>
@@ -125,8 +128,11 @@
 
                 <br/>
 
-                <form action="${contextPath}/oauth/token?client_id={{clientId}}&client_secret={{clientSecret}}&grant_type=refresh_token&refresh_token={{refreshToken}}"
-                      method="post" target="_blank">
+                <form th:action="@{/oauth2/token}" th:method="post" target="_blank">
+                    <input type="hidden" name="client_id" value="{{clientId}}"/>
+                    <input type="hidden" name="client_secret" value="{{clientSecret}}"/>
+                    <input type="hidden" name="refresh_token" value="{{refreshToken}}"/>
+                    <input type="hidden" name="grant_type" value="refresh_token"/>
                     <button class="btn btn-link" type="submit">
                         /oauth/token?client_id={{clientId}}&client_secret={{clientSecret}}&grant_type=refresh_token&refresh_token={{refreshToken}}
                     </button>
@@ -145,10 +151,10 @@
     var TestClientCtrl = ["$scope", function ($scope) {
         $scope.clientId = [[${clientDetailsDto.clientId}]];
         $scope.clientSecret = "";
-        $scope.scope = [[${clientDetailsDto.scopes}]];
+        $scope.scope = [[${clientDetailsDto.scopesWithBlank}]];
 
-        var emptyRedirectUri = [[${empty clientDetailsDto.redirectUris}]];
-        if (emptyRedirectUri) {
+        var redirectUri = [[${clientDetailsDto.redirectUris}]];
+        if (redirectUri === '') {
             // $scope.implicitRedirectUri = location.href;
             $scope.redirectUri = "http://localhost:8080/unity/dashboard";
         } else {
