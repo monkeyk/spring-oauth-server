@@ -85,7 +85,8 @@
                         <div>
                             <code>从 spring-oauth-server获取 'code'</code>
                             <div class="text-muted">
-                                PKCE流程在开始前需要先通过代码生成<code>code_verifier</code>与<code>code_challenge</code>（如何生成详见工具类 <mark>PKCEUtils.java</mark>）；
+                                PKCE流程在开始前需要先通过代码生成<code>code_verifier</code>与<code>code_challenge</code>（如何生成详见工具类 <mark>PKCEUtils.java</mark>）;
+                                <br/>
                                 生成后在获取'code'时要在已有的参数基础上再增加两个参数：
                                 <table class="table table-bordered">
                                     <tr>
@@ -124,10 +125,10 @@
                         <code>用 'code' 换取 'access_token'</code>
                         <br/>
                         输入第一步获取的code: <input type="text" name="code" value="" ng-model="code"
-                                             required="required"/>
+                                             required="required" size="70"/>
                         <br/>
-                        与 code_verifier: <input type="text" name="codeVerifier" value="" ng-model="codeVerifier"
-                                                readonly="readonly"/> (后台代码生成,不可修改)
+                        code_verifier: <input type="text" name="codeVerifier" value="" ng-model="codeVerifier"
+                                                readonly="readonly" size="70"/> (后台代码生成,不可修改)
 
                         <form th:action="@{/oauth2/token}" th:method="post" target="_blank">
                             <input type="hidden" name="client_id" value="{{clientId}}"/>
