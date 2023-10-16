@@ -53,7 +53,7 @@ public class WebSecurityConfigurer {
 
         http.authorizeHttpRequests(matcherRegistry -> {
             // permitAll() 的URL路径属于公开访问，不需要权限
-            matcherRegistry.requestMatchers("/favicon.ico*", "/oauth/rest_token*", "/bootstrap/**", "*.css").permitAll()
+            matcherRegistry.requestMatchers("/favicon.ico*", "/oauth/rest_token*", "*.js", "*.css").permitAll()
                     .requestMatchers(HttpMethod.GET, "/login*").anonymous()
 
                     // /user/ 开头的URL需要 ADMIN 权限

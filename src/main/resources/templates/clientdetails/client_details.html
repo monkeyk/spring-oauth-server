@@ -36,8 +36,8 @@
         <li th:each="cli:${clientDetailsDtoList}" class="list-group-item">
             <div class="pull-right">
                 <div th:if="${not cli.archived}">
-                    <a th:href="@{test_client/${cli.clientId}}">test</a>
-                    <a th:href="@{archive_client/${cli.clientId}}" class="text-danger"
+                    <a th:href="@{'test_client/' + ${cli.clientId}}">test</a>
+                    <a th:href="@{'archive_client/' + ${cli.clientId}}" class="text-danger"
                        onclick="return confirm('Are you sure archive the client ?')">archive</a>
                 </div>
                 <strong th:if="${cli.archived}" class="text-muted">Archived</strong>
