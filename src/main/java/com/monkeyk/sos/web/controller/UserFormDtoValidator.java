@@ -48,6 +48,8 @@ public class UserFormDtoValidator implements Validator {
         final String password = formDto.getPassword();
         if (StringUtils.isEmpty(password)) {
             errors.rejectValue("password", null, "Password is required");
+        } else if (password.length() < 10) {
+            errors.rejectValue("password", null, "Password length must be >= 10");
         }
     }
 
