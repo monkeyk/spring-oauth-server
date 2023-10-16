@@ -23,7 +23,7 @@
     </p>
 
     <div ng-controller="TestClientCtrl">
-        <div class="well well-sm">
+        <div class="alert alert-info">
             请先输入client_secret: <input type="text" value="" placeholder="client_secret" ng-model="clientSecret"
                                       size="100" required="required"/>
         </div>
@@ -34,17 +34,24 @@
                 <p class="text-muted">输入每一步必要的信息后点击其下面的链接地址.</p>
                 <ol>
                     <li>
-                        <p>
+                        <div>
                             <code>从 spring-oauth-server获取 'code'</code>
                             <br/>
                             redirect_uri: <input type="text" value="" ng-model="redirectUri" size="70"
                                                  required="required"/>
                             <br/>
-                            <a href="${contextPath}/oauth/authorize?client_id={{clientId}}&redirect_uri={{redirectUri}}&response_type=code&scope={{scope}}"
-                               target="_blank">
-                                /oauth/authorize?client_id={{clientId}}&redirect_uri={{redirectUri}}&response_type=code&scope={{scope}}</a>
+                            <form th:action="@{/oauth2/authorize}" th:method="get">
+                                <input type="hidden" name="client_id" value="{{clientId}}"/>
+                                <input type="hidden" name="redirect_uri" value="{{redirectUri}}"/>
+                                <input type="hidden" name="scope" value="{{scope}}"/>
+                                <input type="hidden" name="state" value="{{state}}"/>
+                                <input type="hidden" name="response_type" value="code"/>
+                                <button class="btn btn-link" type="submit">
+                                    /oauth2/authorize?client_id={{clientId}}&redirect_uri={{redirectUri}}&response_type=code&scope={{scope}}&state={{state}}
+                                </button>
+                            </form>
                             <span class="label label-info">GET</span>
-                        </p>
+                        </div>
                     </li>
                     <li>
                         <code>用 'code' 换取 'access_token'</code>
@@ -53,10 +60,14 @@
                                              required="required"/>
                         <br/>
 
-                        <form action="${contextPath}/oauth/token?client_id={{clientId}}&client_secret={{clientSecret}}&grant_type=authorization_code&code={{code}}&redirect_uri={{redirectUri}}"
-                              method="post" target="_blank">
+                        <form th:action="@{/oauth2/token}" th:method="post" target="_blank">
+                            <input type="hidden" name="client_id" value="{{clientId}}"/>
+                            <input type="hidden" name="redirect_uri" value="{{redirectUri}}"/>
+                            <input type="hidden" name="client_secret" value="{{clientSecret}}"/>
+                            <input type="hidden" name="code" value="{{code}}"/>
+                            <input type="hidden" name="grant_type" value="authorization_code"/>
                             <button class="btn btn-link" type="submit">
-                                /oauth/token?client_id={{clientId}}&client_secret={{clientSecret}}&grant_type=authorization_code&code={{code}}&redirect_uri={{redirectUri}}
+                                /oauth2/token?client_id={{clientId}}&client_secret={{clientSecret}}&grant_type=authorization_code&code={{code}}&redirect_uri={{redirectUri}}
                             </button>
                             <span class="label label-warning">POST</span>
                         </form>
@@ -66,7 +77,7 @@
         </div>
 
         <div th:if="${clientDetailsDto.containsPassword}" class="panel panel-default">
-            <div class="panel-heading">Test [password]</div>
+            <div class="panel-heading">Test [password] <em class="label label-danger">OAuth2.1不支持</em></div>
             <div class="panel-body">
                 <p class="text-muted">输入username, password 后点击链接地址.</p>
                 username: <input type="text" required="required" ng-model="username"/>
@@ -75,10 +86,15 @@
 
                 <br/>
 
-                <form action="${contextPath}/oauth/token?client_id={{clientId}}&client_secret={{clientSecret}}&grant_type=password&scope={{scope}}&username={{username}}&password={{password}}"
-                      method="post" target="_blank">
+                <form th:action="@{/oauth2/token}" th:method="post" target="_blank">
+                    <input type="hidden" name="client_id" value="{{clientId}}"/>
+                    <input type="hidden" name="redirect_uri" value="{{redirectUri}}"/>
+                    <input type="hidden" name="username" value="{{username}}"/>
+                    <input type="hidden" name="password" value="{{password}}"/>
+                    <input type="hidden" name="scope" value="{{scope}}"/>
+                    <input type="hidden" name="grant_type" value="password"/>
                     <button class="btn btn-link" type="submit">
-                        /oauth/token?client_id={{clientId}}&client_secret={{clientSecret}}&grant_type=password&scope={{scope}}&username={{username}}&password={{password}}
+                        /oauth2/token?client_id={{clientId}}&client_secret={{clientSecret}}&grant_type=password&scope={{scope}}&username={{username}}&password={{password}}
                     </button>
                     <span class="label label-warning">POST</span>
                 </form>
@@ -92,12 +108,20 @@
                 redirect_uri: <input type="text" value="" ng-model="implicitRedirectUri" size="70"
                                      required="required"/>
 
-                <p>
-                    <a href="${contextPath}/oauth/authorize?client_id={{clientId}}&client_secret={{clientSecret}}&response_type=token&scope={{scope}}&redirect_uri={{implicitRedirectUri}}"
-                       target="_blank"
-                    >/oauth/authorize?client_id={{clientId}}&client_secret={{clientSecret}}&response_type=token&scope={{scope}}&redirect_uri={{implicitRedirectUri}}</a>
+                <div>
+                    <form th:action="@{/oauth2/authorize}" th:method="get" target="_blank">
+                        <input type="hidden" name="client_id" value="{{clientId}}"/>
+                        <input type="hidden" name="client_secret" value="{{clientSecret}}"/>
+                        <input type="hidden" name="redirect_uri" value="{{implicitRedirectUri}}"/>
+                        <input type="hidden" name="scope" value="{{scope}}"/>
+                        <input type="hidden" name="response_type" value="token"/>
+                        <button class="btn btn-link" type="submit">
+                            /oauth2/authorize?client_id={{clientId}}&client_secret={{clientSecret}}&response_type=token&scope={{scope}}&redirect_uri={{implicitRedirectUri}}
+                        </button>
+                        <span class="label label-warning">POST</span>
+                    </form>
                     <span class="label label-info">GET</span>
-                </p>
+                </div>
             </div>
         </div>
 
@@ -113,7 +137,7 @@
                     <input type="hidden" name="scope" value="{{scope}}"/>
                     <input type="hidden" name="grant_type" value="client_credentials"/>
                     <button class="btn btn-link" type="submit">
-                        /oauth/token?client_id={{clientId}}&client_secret={{clientSecret}}&grant_type=client_credentials&scope={{scope}}
+                        /oauth2/token?client_id={{clientId}}&client_secret={{clientSecret}}&grant_type=client_credentials&scope={{scope}}
                     </button>
                     <span class="label label-warning">POST</span>
                 </form>
@@ -134,7 +158,7 @@
                     <input type="hidden" name="refresh_token" value="{{refreshToken}}"/>
                     <input type="hidden" name="grant_type" value="refresh_token"/>
                     <button class="btn btn-link" type="submit">
-                        /oauth/token?client_id={{clientId}}&client_secret={{clientSecret}}&grant_type=refresh_token&refresh_token={{refreshToken}}
+                        /oauth2/token?client_id={{clientId}}&client_secret={{clientSecret}}&grant_type=refresh_token&refresh_token={{refreshToken}}
                     </button>
                     <span class="label label-warning">POST</span>
                 </form>
@@ -155,10 +179,10 @@
 
         var redirectUri = [[${clientDetailsDto.redirectUris}]];
         if (redirectUri === '') {
-            // $scope.implicitRedirectUri = location.href;
+            $scope.implicitRedirectUri = location.href;
             $scope.redirectUri = "http://localhost:8080/unity/dashboard";
         } else {
-            // $scope.implicitRedirectUri = "${clientDetailsDto.webServerRedirectUri}";
+            $scope.implicitRedirectUri = [[${clientDetailsDto.redirectUris}]];
             $scope.redirectUri = [[${clientDetailsDto.redirectUris}]];
         }
 
@@ -166,6 +190,7 @@
         $scope.password = "mobile";
         //a temp value
         $scope.refreshToken = "xYCsaPu7YV_hB6TfLbWsFBws1YvP7D_qAJFlSCvT5u-RbP6uMwEudHZaVnoyw3wuaXO-8F3t_GY";
+        $scope.state = Math.floor(Math.random() * 1000000000).toString();
 
     }];
 </script>
