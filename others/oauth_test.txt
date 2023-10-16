@@ -1,4 +1,6 @@
 
+适用范围：v3.0.0 之前的版本。
+
 方式1:基于浏览器  (访问时后跳到登录页面,登录成功后跳转到redirect_uri指定的地址) [GET]
 说明:只能使用admin或unity 账号登录才能有权限访问,若使用mobile账号登录将返回Access is denied
 http://localhost:8080/oauth/authorize?client_id=unity-client&redirect_uri=http%3a%2f%2flocalhost%3a8080%2fspring-oauth-server%2funity%2fdashboard&response_type=code&scope=read
