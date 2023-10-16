@@ -206,6 +206,10 @@ public class OauthClientDetailsDto implements Serializable {
         return this.authorizationGrantTypes.contains("authorization_code");
     }
 
+    /**
+     * OAuth2.1不支持
+     * @deprecated  from OAuth2.1
+     */
     public boolean isContainsPassword() {
         return this.authorizationGrantTypes.contains("password");
     }
