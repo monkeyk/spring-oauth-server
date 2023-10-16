@@ -15,6 +15,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
@@ -137,12 +138,18 @@ public class OAuth2ServerConfiguration {
     private Consumer<OidcProviderConfiguration.Builder> oidcProviderConfigurationCustomizer() {
         return builder -> {
             builder.idTokenSigningAlgorithms(strings -> {
-                strings.add(SignatureAlgorithm.ES256.getName());
-            }).scopes(strings -> {
-                strings.add(OidcScopes.PROFILE);
-                strings.add(OidcScopes.EMAIL);
-                strings.add(OidcScopes.PHONE);
-            });
+                        strings.add(SignatureAlgorithm.ES256.getName());
+                    }).grantTypes(grantTypes -> {
+                        //向下兼容添加，v3.0.0
+                        grantTypes.add(AuthorizationGrantType.PASSWORD.getValue());
+                        grantTypes.add(AuthorizationGrantType.JWT_BEARER.getValue());
+                    })
+                    .scopes(strings -> {
+                        strings.add(OidcScopes.PROFILE);
+                        strings.add(OidcScopes.EMAIL);
+                        strings.add(OidcScopes.ADDRESS);
+                        strings.add(OidcScopes.PHONE);
+                    });
         };
     }
 
