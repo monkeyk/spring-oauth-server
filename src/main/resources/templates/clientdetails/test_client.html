@@ -57,7 +57,7 @@
                         <code>用 'code' 换取 'access_token'</code>
                         <br/>
                         输入第一步获取的code: <input type="text" name="code" value="" ng-model="code"
-                                             required="required"/>
+                                             required="required" size="70"/>
                         <br/>
 
                         <form th:action="@{/oauth2/token}" th:method="post" target="_blank">

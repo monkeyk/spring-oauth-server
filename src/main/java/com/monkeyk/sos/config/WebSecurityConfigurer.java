@@ -66,7 +66,7 @@ public class WebSecurityConfigurer {
             formLoginConfigurer
                     .loginPage("/login")
                     .loginProcessingUrl("/signin")
-                    .failureUrl("/login?error=1")
+                    .failureUrl("/login?error_failed=true")
 //                    .defaultSuccessUrl("/")
                     .usernameParameter("oidc_user")
                     .passwordParameter("oidcPwd");

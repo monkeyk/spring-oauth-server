@@ -44,9 +44,9 @@
                         <div class="col-sm-9">
                             <input type="submit" value="Login" class="btn btn-primary"/>
 
-                            <span th:if="${param.get('error') == 2}"
+                            <span th:if="${param.access_denied}"
                                   class="label label-danger">Access denied !!!</span>
-                            <span th:if="${param.error == 1}"
+                            <span th:if="${param.error_failed}"
                                   class="label label-danger">Authentication Failure</span>
                         </div>
                     </div>
