@@ -82,6 +82,11 @@ public class WebSecurityConfigurer {
 //        http.sessionManagement(configurer -> {
 //            configurer.maximumSessions(1).maxSessionsPreventsLogin(true);
 //        });
+
+        http.exceptionHandling(configurer -> {
+            configurer.accessDeniedPage("/login?access_denied=true");
+        });
+
         return http.build();
     }
 
