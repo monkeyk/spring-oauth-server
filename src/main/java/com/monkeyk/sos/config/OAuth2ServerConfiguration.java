@@ -1,6 +1,7 @@
 package com.monkeyk.sos.config;
 
 
+import com.monkeyk.sos.domain.oauth.ClaimsOAuth2TokenCustomizer;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.jwk.source.JWKSourceBuilder;
 import com.nimbusds.jose.proc.SecurityContext;
@@ -18,7 +19,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
-import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationConsentService;
 import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
@@ -35,7 +35,6 @@ import org.springframework.security.web.authentication.LoginUrlAuthenticationEnt
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 
 import java.io.IOException;
-import java.util.UUID;
 import java.util.function.Consumer;
 
 import static com.monkeyk.sos.domain.shared.SOSConstants.CUSTOM_CONSENT_PAGE_URI;
@@ -210,11 +209,7 @@ public class OAuth2ServerConfiguration {
      */
     @Bean
     public OAuth2TokenCustomizer<JwtEncodingContext> jwtCustomizer() {
-        return context -> {
-            JwtClaimsSet.Builder claims = context.getClaims();
-            //jti
-            claims.id(UUID.randomUUID().toString());
-        };
+        return new ClaimsOAuth2TokenCustomizer();
     }
 
 

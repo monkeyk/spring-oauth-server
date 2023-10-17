@@ -62,18 +62,4 @@ public class MVCConfiguration implements WebMvcConfigurer {
     }
 
 
-//    /**
-//     * sitemesh filter
-//     */
-//    @Bean
-//    public FilterRegistrationBean<Filter> sitemesh() {
-//        FilterRegistrationBean<Filter> registrationBean = new FilterRegistrationBean<>();
-//        registrationBean.setFilter(new SOSSiteMeshFilter());
-//        registrationBean.addUrlPatterns("/*");
-//        //注意: 在 spring security filter之后
-//        registrationBean.setOrder(8899);
-//        return registrationBean;
-//    }
-
-
 }
