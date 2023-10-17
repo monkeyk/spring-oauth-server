@@ -13,7 +13,7 @@
 <body class="container">
 <a th:href="@{/}">Home</a>
 
-<h2>Hi Mobile
+<h2>Hi Unity
     <small>你已成功访问 [unity] 资源</small>
 </h2>
 
@@ -22,10 +22,10 @@
 <strong th:text="${#authentication.principal.username}"></strong>
 <br/>
 <br/>
-<p class="text-info">
+<p class="text-muted">
     访问API
 </p>
-<a th:href="@{/unity/user_info?access_token=${param.access_token}}">用户信息(JSON)</a>
+<a th:href="@{/unity/user_info(access_token=${param.access_token})}">用户信息(JSON)</a>
 
 
 <div th:replace="~{fragments/main :: footer}"/>
