@@ -87,9 +87,11 @@ public class WebSecurityConfigurer {
 //            configurer.maximumSessions(1).maxSessionsPreventsLogin(true);
 //        });
 
-        http.exceptionHandling(configurer -> {
-            configurer.accessDeniedPage("/login?access_denied=true");
-        });
+//        http.exceptionHandling(configurer -> {
+//            configurer.accessDeniedHandler((request, response, accessDeniedException) -> {
+//                response.sendRedirect("/access_denied");
+//            });
+//        });
 
         return http.build();
     }

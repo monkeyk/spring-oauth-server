@@ -40,4 +40,16 @@ public class SOSController {
     }
 
 
+//    /**
+//     * 403 无权限访问
+//     *
+//     * @return view
+//     * @since 3.0.0
+//     */
+//    @GetMapping("/access_denied")
+//    public String accessDenied() {
+//        return "access_denied";
+//    }
+
+
 }
