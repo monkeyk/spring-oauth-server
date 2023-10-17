@@ -15,6 +15,8 @@ import com.monkeyk.sos.domain.user.Privilege;
 import com.monkeyk.sos.domain.user.User;
 import com.monkeyk.sos.domain.user.UserRepository;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -33,8 +35,14 @@ import java.util.stream.Collectors;
 @Repository("userRepositoryJdbc")
 public class UserRepositoryJdbc implements UserRepository {
 
+    private static final Logger LOG = LoggerFactory.getLogger(UserRepositoryJdbc.class);
 
     private final UserRowMapper userRowMapper = new UserRowMapper();
+
+    /**
+     * @since 3.0.0
+     */
+    private final UserProfileRowMapper userProfileRowMapper = new UserProfileRowMapper();
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -126,6 +134,28 @@ public class UserRepositoryJdbc implements UserRepository {
         if (!list.isEmpty()) {
             user = list.get(0);
             user.privileges().addAll(findPrivileges(user.id()));
+        }
+        if (list.size() > 1) {
+            LOG.warn("Found {} user(s) by username: {}, checking duplicate data??", list.size(), username);
+        }
+
+        return user;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public User findProfileByUsername(String username) {
+        final String sql = " select id, guid,create_time,archived, username,enabled,phone,email,address,nickname,updated_at from user_ where username = ? and archived = 0 ";
+        final List<User> list = this.jdbcTemplate.query(sql, userProfileRowMapper, username);
+
+        User user = null;
+        if (!list.isEmpty()) {
+            user = list.get(0);
+        }
+        if (list.size() > 1) {
+            LOG.warn("Found {} user profiles by username: {}, checking duplicate data??", list.size(), username);
         }
 
         return user;

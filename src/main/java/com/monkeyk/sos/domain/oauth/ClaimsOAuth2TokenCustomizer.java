@@ -1,6 +1,7 @@
 package com.monkeyk.sos.domain.oauth;
 
 import com.monkeyk.sos.domain.shared.GuidGenerator;
+import com.monkeyk.sos.domain.user.User;
 import com.monkeyk.sos.domain.user.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,22 +54,25 @@ public class ClaimsOAuth2TokenCustomizer implements OAuth2TokenCustomizer<JwtEnc
             }
             return;
         }
-//        String username = authorization.getPrincipalName();
+        String username = authorization.getPrincipalName();
+        User user = userRepository.findProfileByUsername(username);
+        boolean nullUser = (user == null);
+
         Set<String> scopes = context.getAuthorizedScopes();
         if (scopes.contains(OidcScopes.ADDRESS)) {
-            Object attrVal = authorization.getAttribute(OidcScopes.ADDRESS);
+            String attrVal = nullUser ? null : user.address();
             claims.claim(OidcScopes.ADDRESS, attrVal == null ? "" : attrVal);
         }
         if (scopes.contains(OidcScopes.EMAIL)) {
-            Object attrVal = authorization.getAttribute(OidcScopes.EMAIL);
+            String attrVal = nullUser ? null : user.email();
             claims.claim(OidcScopes.EMAIL, attrVal == null ? "" : attrVal);
         }
         if (scopes.contains(OidcScopes.PHONE)) {
-            Object attrVal = authorization.getAttribute(OidcScopes.PHONE);
+            String attrVal = nullUser ? null : user.phone();
             claims.claim(OidcScopes.PHONE, attrVal == null ? "" : attrVal);
         }
         if (scopes.contains(OidcScopes.PROFILE)) {
-            Object attrVal = authorization.getAttribute("nickname");
+            String attrVal = nullUser ? null : user.nickname();
             claims.claim("nickname", attrVal == null ? "" : attrVal);
             claims.claim("updated_at", "");
         }
