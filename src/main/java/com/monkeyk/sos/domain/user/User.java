@@ -1,12 +1,15 @@
 package com.monkeyk.sos.domain.user;
 
 import com.monkeyk.sos.domain.AbstractDomain;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.io.Serial;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+
+import static com.monkeyk.sos.domain.shared.security.SOSUserDetails.DEFAULT_USER_ROLE;
+import static com.monkeyk.sos.domain.shared.security.SOSUserDetails.ROLE_PREFIX;
 
 /**
  * table: user_
@@ -227,5 +230,24 @@ public class User extends AbstractDomain {
         this.updatedAt = updatedAt;
         return this;
     }
+
+    /**
+     * 权限值
+     *
+     * @return GrantedAuthority set
+     * @since 3.0.0
+     */
+    public Set<GrantedAuthority> generateAuthorities() {
+        Set<GrantedAuthority> authorities = new HashSet<>();
+        //Default, everyone include
+        authorities.add(DEFAULT_USER_ROLE);
+
+        final List<Privilege> privileges = this.privileges();
+        for (Privilege privilege : privileges) {
+            authorities.add(new SimpleGrantedAuthority(ROLE_PREFIX + privilege.name()));
+        }
+        return authorities;
+    }
+
 
 }

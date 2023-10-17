@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
 //            return loadOauthUserJsonDto((OAuth2Authentication) authentication);
 //        } else {
         final SOSUserDetails userDetails = (SOSUserDetails) principal;
-        return new UserJsonDto(userRepository.findByGuid(userDetails.user().guid()));
+        return new UserJsonDto(userRepository.findByGuid(userDetails.getUserGuid()));
 //        }
     }
 
