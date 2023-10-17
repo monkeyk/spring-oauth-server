@@ -203,12 +203,31 @@ public class OauthClientDetailsDto implements Serializable {
 
 
     public boolean isContainsAuthorizationCode() {
-        return this.authorizationGrantTypes.contains("authorization_code");
+        if (!this.authorizationGrantTypes.contains("authorization_code")) {
+            return false;
+        }
+        if (clientSettings == null) {
+            return true;
+        }
+        return !clientSettings.isRequireProofKey();
+    }
+
+    /**
+     * PKCE   flow
+     *
+     * @since 3.0.0
+     */
+    public boolean isContainsAuthorizationCodeWithPKCE() {
+        if (!isContainsAuthorizationCode()) {
+            return false;
+        }
+        return clientSettings != null && clientSettings.isRequireProofKey();
     }
 
     /**
      * OAuth2.1不支持
-     * @deprecated  from OAuth2.1
+     *
+     * @deprecated from OAuth2.1
      */
     public boolean isContainsPassword() {
         return this.authorizationGrantTypes.contains("password");
