@@ -58,13 +58,16 @@ public class ClaimsOAuth2TokenCustomizer implements OAuth2TokenCustomizer<JwtEnc
         if (scopes.contains(OidcScopes.ADDRESS)) {
             Object attrVal = authorization.getAttribute(OidcScopes.ADDRESS);
             claims.claim(OidcScopes.ADDRESS, attrVal == null ? "" : attrVal);
-        } else if (scopes.contains(OidcScopes.EMAIL)) {
+        }
+        if (scopes.contains(OidcScopes.EMAIL)) {
             Object attrVal = authorization.getAttribute(OidcScopes.EMAIL);
             claims.claim(OidcScopes.EMAIL, attrVal == null ? "" : attrVal);
-        } else if (scopes.contains(OidcScopes.PHONE)) {
+        }
+        if (scopes.contains(OidcScopes.PHONE)) {
             Object attrVal = authorization.getAttribute(OidcScopes.PHONE);
             claims.claim(OidcScopes.PHONE, attrVal == null ? "" : attrVal);
-        } else if (scopes.contains(OidcScopes.PROFILE)) {
+        }
+        if (scopes.contains(OidcScopes.PROFILE)) {
             Object attrVal = authorization.getAttribute("nickname");
             claims.claim("nickname", attrVal == null ? "" : attrVal);
             claims.claim("updated_at", "");
