@@ -13,6 +13,8 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.springframework.security.oauth2.core.AuthorizationGrantType.*;
+
 /**
  * @author Shengzhao Li
  * @since 1.0.0
@@ -203,7 +205,7 @@ public class OauthClientDetailsDto implements Serializable {
 
 
     public boolean isContainsAuthorizationCode() {
-        if (!this.authorizationGrantTypes.contains("authorization_code")) {
+        if (!this.authorizationGrantTypes.contains(AUTHORIZATION_CODE.getValue())) {
             return false;
         }
         if (clientSettings == null) {
@@ -218,7 +220,7 @@ public class OauthClientDetailsDto implements Serializable {
      * @since 3.0.0
      */
     public boolean isContainsAuthorizationCodeWithPKCE() {
-        if (!isContainsAuthorizationCode()) {
+        if (!this.authorizationGrantTypes.contains(AUTHORIZATION_CODE.getValue())) {
             return false;
         }
         return clientSettings != null && clientSettings.isRequireProofKey();
@@ -230,7 +232,7 @@ public class OauthClientDetailsDto implements Serializable {
      * @deprecated from OAuth2.1
      */
     public boolean isContainsPassword() {
-        return this.authorizationGrantTypes.contains("password");
+        return this.authorizationGrantTypes.contains(PASSWORD.getValue());
     }
 
 //    public boolean isContainsImplicit() {
@@ -238,25 +240,25 @@ public class OauthClientDetailsDto implements Serializable {
 //    }
 
     public boolean isContainsClientCredentials() {
-        return this.authorizationGrantTypes.contains("client_credentials");
+        return this.authorizationGrantTypes.contains(CLIENT_CREDENTIALS.getValue());
     }
 
     public boolean isContainsRefreshToken() {
-        return this.authorizationGrantTypes.contains("refresh_token");
+        return this.authorizationGrantTypes.contains(REFRESH_TOKEN.getValue());
     }
 
     /**
      * @since 3.0.0
      */
     public boolean isContainsDeviceCode() {
-        return this.authorizationGrantTypes.contains("device_code");
+        return this.authorizationGrantTypes.contains(DEVICE_CODE.getValue());
     }
 
     /**
      * @since 3.0.0
      */
     public boolean isContainsJwtBearer() {
-        return this.authorizationGrantTypes.contains("jwt-bearer");
+        return this.authorizationGrantTypes.contains(JWT_BEARER.getValue());
     }
 
 

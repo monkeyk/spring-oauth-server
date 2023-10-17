@@ -72,6 +72,7 @@ public class ClientSettingsDto implements Serializable {
     public ClientSettings toSettings() {
         ClientSettings.Builder builder = ClientSettings.builder()
                 .requireProofKey(requireProofKey)
+                .requireAuthorizationConsent(requireAuthorizationConsent)
                 .tokenEndpointAuthenticationSigningAlgorithm(SignatureAlgorithm.valueOf(tokenEndpointAuthenticationSigningAlgorithm));
         if (StringUtils.isNotBlank(jwkSetUrl)) {
             builder.jwkSetUrl(jwkSetUrl);
