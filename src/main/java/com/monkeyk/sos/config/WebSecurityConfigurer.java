@@ -58,6 +58,10 @@ public class WebSecurityConfigurer {
 
                     // /user/ 开头的URL需要 ADMIN 权限
                     .requestMatchers("/user/**").hasAnyRole("ADMIN")
+                    // 所有以 /unity/  开头的 URL属于 UNITY 权限
+                    .requestMatchers("/unity/**").hasAnyRole("UNITY")
+                    // 所有以 /m/  开头的 URL属于 MOBILE 权限
+                    .requestMatchers("/m/**").hasAnyRole("MOBILE")
                     // anyRequest() 放最后
                     .anyRequest().authenticated();
         });
