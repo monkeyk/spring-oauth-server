@@ -121,6 +121,18 @@ public class AuthorizationConsentController {
                     "This application will be able to read your profile information."
             );
             SCOPE_DESCRIPTIONS.put(
+                    OidcScopes.EMAIL,
+                    "This application will be able to read your email information."
+            );
+            SCOPE_DESCRIPTIONS.put(
+                    OidcScopes.PHONE,
+                    "This application will be able to read your phone information."
+            );
+            SCOPE_DESCRIPTIONS.put(
+                    OidcScopes.ADDRESS,
+                    "This application will be able to read your address information."
+            );
+            SCOPE_DESCRIPTIONS.put(
                     "message.read",
                     "This application will be able to read your message."
             );
@@ -140,6 +152,24 @@ public class AuthorizationConsentController {
         ScopeWithDescription(String scope) {
             this.scope = scope;
             this.description = SCOPE_DESCRIPTIONS.getOrDefault(scope, DEFAULT_DESCRIPTION);
+        }
+
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            ScopeWithDescription that = (ScopeWithDescription) o;
+            return Objects.equals(scope, that.scope) && Objects.equals(description, that.description);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(scope, description);
         }
     }
 

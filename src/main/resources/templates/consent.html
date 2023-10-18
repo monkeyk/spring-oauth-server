@@ -5,12 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>授权确认 - Spring Security&OAuth2.1</title>
     <link rel="stylesheet" href="../static/bootstrap.min.css" th:href="@{/bootstrap.min.css}"/>
-    <script>
-        function cancelConsent() {
-            document.consent_form.reset();
-            document.consent_form.submit();
-        }
-    </script>
 </head>
 <body>
 <div class="container">
@@ -84,9 +78,9 @@
                     </button>
                 </div>
                 <div class="pt-3">
-                    <button class="btn btn-link regular" type="button" id="cancel-consent" onclick="cancelConsent();">
+                    <a class="btn btn-link regular" type="button" id="cancel-consent" onclick="history.back()">
                         Cancel
-                    </button>
+                    </a>
                 </div>
             </form>
         </div>
