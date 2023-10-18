@@ -23,7 +23,7 @@
     </p>
 
     <div ng-controller="TestClientCtrl">
-        <div class="alert alert-info">
+        <div class="alert alert-danger">
             请先输入client_secret: <input type="text" value="" placeholder="client_secret" ng-model="clientSecret"
                                       size="100" required="required"/>
         </div>
@@ -106,7 +106,7 @@
                                                  required="required"/>
                             <br/>
                             code_challenge: <input type="text" value="" ng-model="codeChallenge" size="70"
-                                                   readonly="readonly"/> (后台代码生成,不可修改)
+                                                   readonly="readonly"/> <span class="text-muted">(后台代码生成,不可修改)</span>
                             <br/>
                             <form th:action="@{/oauth2/authorize}" th:method="get" target="_blank">
                                 <input type="hidden" name="client_id" value="{{clientId}}"/>
@@ -130,7 +130,8 @@
                                              required="required" size="70"/>
                         <br/>
                         code_verifier: <input type="text" name="codeVerifier" value="" ng-model="codeVerifier"
-                                              readonly="readonly" size="70"/> (后台代码生成,不可修改)
+                                              readonly="readonly" size="70"/> <span
+                            class="text-muted">(后台代码生成,不可修改)</span>
 
                         <form th:action="@{/oauth2/token}" th:method="post" target="_blank">
                             <input type="hidden" name="client_id" value="{{clientId}}"/>
@@ -161,7 +162,7 @@
 
                 <form th:action="@{/oauth2/token}" th:method="post" target="_blank">
                     <input type="hidden" name="client_id" value="{{clientId}}"/>
-                    <input type="hidden" name="redirect_uri" value="{{redirectUri}}"/>
+                    <input type="hidden" name="client_secret" value="{{clientSecret}}"/>
                     <input type="hidden" name="username" value="{{username}}"/>
                     <input type="hidden" name="password" value="{{password}}"/>
                     <input type="hidden" name="scope" value="{{scope}}"/>
@@ -177,7 +178,51 @@
         <div th:if="${clientDetailsDto.containsDeviceCode}" class="panel panel-default">
             <div class="panel-heading">Test [device_code] <em class="label label-success">OAuth2.1新增</em></div>
             <div class="panel-body">
-                ......
+                <ol>
+                    <li>
+                        <p>设备上请求 <code>/oauth2/device_authorization</code>获取 <em>user_code</em>,
+                            <em>device_code</em>,<em>verification_uri</em>等</p>
+                        <form th:action="@{/oauth2/device_authorization}" th:method="post" target="_blank">
+                            <input type="hidden" name="client_id" value="{{clientId}}"/>
+                            <input type="hidden" name="client_secret" value="{{clientSecret}}"/>
+                            <input type="hidden" name="scope" value="{{scope}}"/>
+                            <button class="btn btn-link" type="submit">
+                                /oauth2/device_authorization?client_id={{clientId}}&client_secret={{clientSecret}}&scope={{scope}}
+                            </button>
+                            <span class="label label-warning">POST</span>
+                        </form>
+                        <p class="help-block">一般此步骤是在设备上通过代码来完成, 此处只作演示流程</p>
+                    </li>
+                    <li>
+                        <p>在设备上展示<em>user_code</em>或显示一个二维码(内容为<em>verification_uri_complete</em> URL)</p>
+                        <p>用已经登录成功的浏览器(或另一个已经认证的设备)访问<em>verification_uri_complete</em> URL(可通过扫码等方式获取内容)</p>
+                        <p class="text-success">
+                            此处方便演示, 请点击<a th:href="@{/oauth2/device_verification}" target="_blank">/oauth2/device_verification</a>并输入上一步获取到的<em>user_code</em>
+                            (若未认证将跳转到登录)
+                        </p>
+                        <p class="help-block">提示：此步骤必须在有效时间内完成, <em>user_code</em>的有效时长在上一步中返回的数据<em>expires_in</em>来决定(单位:秒, 默认5分钟)</p>
+                    </li>
+                    <li>
+                        <p>
+                            在第2步进行的同时, 设备上后台将定时(如每隔5秒)向<code>spring-oauth-server</code>发起获取token的请求<code>/oauth2/token</code>
+                            (需要使用第1步中获取到 <em>device_code</em> 的值),
+                            直到获取成功(即第2步操作完成授权设备登录)或超时(即设备轮询请求等待的时长超出第1步返回的时间<em>expires_in</em>)
+                        </p>
+                        device_code: <input type="text" ng-model="deviceCode" placeholder="GQ-K6n5kwLfu3XpDja-b3SlPbTfqYir..." size="70"/>
+                        <form th:action="@{/oauth2/token}" th:method="post" target="_blank">
+                            <input type="hidden" name="client_id" value="{{clientId}}"/>
+                            <input type="hidden" name="client_secret" value="{{clientSecret}}"/>
+                            <input type="hidden" name="grant_type" value="urn:ietf:params:oauth:grant-type:device_code"/>
+                            <input type="hidden" name="device_code" value="{{deviceCode}}"/>
+                            <button class="btn btn-link" type="submit">
+                                /oauth2/token?client_id={{clientId}}&client_secret={{clientSecret}}&device_code={{deviceCode}}&grant_type=urn:ietf:params:oauth:grant-type:device_code
+                            </button>
+                            <span class="label label-warning">POST</span>
+                        </form>
+                        <p class="help-block">提示：在第2步进行过程中调用第3步获取token API时会响应等待授权的结果(Http状态码 400, error='authorization_pending')</p>
+                    </li>
+                </ol>
+
             </div>
         </div>
 
@@ -224,7 +269,8 @@
                         /oauth2/token?client_id={{clientId}}&client_secret={{clientSecret}}&grant_type=refresh_token&refresh_token={{refreshToken}}
                     </button>
                     <span class="label label-warning">POST</span> |
-                    <span class="text-muted">复用refresh_token: <span class="text-info" th:text="${clientDetailsDto.tokenSettings.reuseRefreshTokens}"></span></span>
+                    <span class="text-muted">复用refresh_token: <span class="text-info"
+                                                                    th:text="${clientDetailsDto.tokenSettings.reuseRefreshTokens}"></span></span>
                 </form>
             </div>
         </div>
@@ -239,6 +285,7 @@
     var TestClientCtrl = ["$scope", function ($scope) {
         $scope.clientId = [[${clientDetailsDto.clientId}]];
         $scope.clientSecret = "";
+        $scope.deviceCode = "";
         $scope.scope = [[${clientDetailsDto.scopesWithBlank}]];
 
         $scope.codeChallenge = [[${codeChallenge}]];
