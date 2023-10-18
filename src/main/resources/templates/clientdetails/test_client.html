@@ -206,6 +206,7 @@
                         <p>
                             在第2步进行的同时, 设备上后台将定时(如每隔5秒)向<code>spring-oauth-server</code>发起获取token的请求<code>/oauth2/token</code>
                             (需要使用第1步中获取到 <em>device_code</em> 的值),
+                            <br/>
                             直到获取成功(即第2步操作完成授权设备登录)或超时(即设备轮询请求等待的时长超出第1步返回的时间<em>expires_in</em>)
                         </p>
                         device_code: <input type="text" ng-model="deviceCode" placeholder="GQ-K6n5kwLfu3XpDja-b3SlPbTfqYir..." size="70"/>
