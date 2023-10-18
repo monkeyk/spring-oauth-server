@@ -268,7 +268,8 @@
                     <button class="btn btn-link" type="submit">
                         /oauth2/token?client_id={{clientId}}&client_secret={{clientSecret}}&grant_type=refresh_token&refresh_token={{refreshToken}}
                     </button>
-                    <span class="label label-warning">POST</span> |
+                    <span class="label label-warning">POST</span>
+                    <br/>
                     <span class="text-muted">复用refresh_token: <span class="text-info"
                                                                     th:text="${clientDetailsDto.tokenSettings.reuseRefreshTokens}"></span></span>
                 </form>
