@@ -57,7 +57,7 @@
                         <code>用 'code' 换取 'access_token'</code>
                         <br/>
                         输入第一步获取的code: <input type="text" name="code" value="" ng-model="code"
-                                             required="required" size="70"/>
+                                             placeholder="Laulaadi78kB0DkQKv..." size="70"/>
                         <br/>
 
                         <form th:action="@{/oauth2/token}" th:method="post" target="_blank">
@@ -85,9 +85,8 @@
                         <div>
                             <code>从 spring-oauth-server获取 'code'</code>
                             <div class="text-muted">
-                                PKCE流程在开始前需要先通过代码生成<code>code_verifier</code>与<code>code_challenge</code>（如何生成详见工具类
-                                <mark>PKCEUtils.java</mark>
-                                ）;
+                                PKCE流程在开始前需要先通过代码生成<code>code_verifier</code>与<code>code_challenge</code> (如何生成详见工具类
+                                <mark>PKCEUtils.java</mark>);
                                 <br/>
                                 生成后在获取'code'时要在已有的参数基础上再增加两个参数：
                                 <table class="table table-bordered">
@@ -127,7 +126,7 @@
                         <code>用 'code' 换取 'access_token'</code>
                         <br/>
                         输入第一步获取的code: <input type="text" name="code" value="" ng-model="code"
-                                             required="required" size="70"/>
+                                             placeholder="Laulaadi78kB0DkQKv..." size="70"/>
                         <br/>
                         code_verifier: <input type="text" name="codeVerifier" value="" ng-model="codeVerifier"
                                               readonly="readonly" size="70"/> <span
@@ -304,7 +303,7 @@
         $scope.username = "mobile";
         $scope.password = "mobile";
         //a temp value
-        $scope.refreshToken = "xYCsaPu7YV_hB6TfLbWsFBws1YvP7D_qAJFlSCvT5u-RbP6uMwEudHZaVnoyw3wuaXO-8F3t_GY";
+        $scope.refreshToken = "xYCsaPu7YV_hB6TfLb...";
         $scope.state = Math.floor(Math.random() * 1000000000).toString();
 
     }];
