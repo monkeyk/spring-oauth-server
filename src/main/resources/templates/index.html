@@ -18,7 +18,8 @@
 <div>
     Logged: <span class="text-success" th:text="${#authentication.principal.username}"></span>
     <br/>
-    Authorities：<span th:each="authority : ${#authentication.authorities}" th:text="${authority.authority + ' '}"></span>
+    Authorities：<span th:each="authority : ${#authentication.authorities}"
+                      th:text="${authority.authority + ' '}"></span>
 
     <form th:action="@{/signout}" method="post">
         <button class="btn btn-info btn-sm" type="submit">Logout</button>
@@ -35,8 +36,13 @@
         </li>
         <li>
             <p>
-                菜单 Unity 与 Mobile 需要OAuth 验证后才能访问(即受保护的resource); <br/>
+                菜单 Unity 与 Mobile 需要登录认证后才能访问(即受保护的resource); <br/>
                 Unity 需要 [ROLE_UNITY] 权限, Mobile 需要 [ROLE_MOBILE] 权限.
+            </p>
+        </li>
+        <li>
+            <p>
+                device_login 用于在设备认证时，输入用户码(user_code)完成授权.
             </p>
         </li>
         <li>
@@ -62,7 +68,7 @@
     </ol>
 </div>
 <br/>
-菜单
+<strong>菜单</strong>
 <ul>
     <li>
         <p>
@@ -75,17 +81,23 @@
             <a th:href="@{client_details}">client_details</a> <span class="text-muted">- 管理ClientDetails</span>
         </p>
     </li>
+    <li>
+        <p>
+            <a th:href="@{/oauth2/device_verification}">device_login</a> <span
+                class="text-muted">- [device_code]流程中使用</span> <em class="label label-success">OAuth2.1新增</em>
+        </p>
+    </li>
     <li sec:authorize="hasRole('ROLE_ADMIN')">
         <p>
             <a th:href="@{/user/overview}">User</a> <span class="text-muted">- 管理User</span>
         </p>
     </li>
-    <li>
+    <li sec:authorize="hasRole('ROLE_UNITY')">
         <p>
             <a th:href="@{/unity/dashboard}">Unity</a> <span class="text-muted">- Unity 资源(resource), 需要具有 [ROLE_UNITY] 权限才能访问</span>
         </p>
     </li>
-    <li>
+    <li sec:authorize="hasRole('ROLE_MOBILE')">
         <p>
             <a th:href="@{/m/dashboard}">Mobile</a> <span class="text-muted">- Mobile资源(resource), 需要具有 [ROLE_MOBILE] 权限才能访问</span>
         </p>
