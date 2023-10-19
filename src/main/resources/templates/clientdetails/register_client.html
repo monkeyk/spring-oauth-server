@@ -170,6 +170,7 @@
                            th:field="*{postLogoutRedirectUris}"/>
 
                     <p class="help-block">OAuth2 退出时<em>post</em>的客户端重定向 uri (多个uri用半角逗号分隔)，可选</p>
+                    <em class="label label-success">OAuth2.1新增</em>
                 </div>
             </div>
 
@@ -254,6 +255,7 @@
                                placeholder="300" th:field="*{tokenSettings.deviceCodeTimeToLive}"/>
 
                         <p class="help-block">设定<em>device_code</em>流程中<em>code</em>的有效时长(单位:秒)；默认300（5分钟）</p>
+                        <em class="label label-success">OAuth2.1新增</em>
                     </div>
                 </div>
                 <div class="form-group">
@@ -295,7 +297,8 @@
                         </label>
 
                         <p class="help-block">当调用refresh token API后是否继续使用之前的<em>refresh_token</em>值，Yes则继续使用，No则每次调用refresh
-                            token API后会返回一新的<em>refresh_token</em>值</p>
+                            token API后会返回一新的<em>refresh_token</em>值(即refresh_token只能使用一次,安全性更高)</p>
+                        <em class="label label-success">OAuth2.1新增</em>
                     </div>
                 </div>
                 <div class="form-group">
@@ -314,6 +317,7 @@
 
                         <p class="help-block">设置<em>access_token</em>值的格式，<code>self-contained</code>使用JWT格式(默认)，<code>reference</code>使用类UUID格式
                         </p>
+                        <em class="label label-success">OAuth2.1新增</em>
                     </div>
                 </div>
                 <div class="form-group">
@@ -331,6 +335,7 @@
                             文件)，判断支持哪些key可访问
                             <a th:href="@{/.well-known/openid-configuration}" target="_blank">/.well-known/openid-configuration</a>进行查看
                         </p>
+                        <em class="label label-success">OAuth2.1新增</em>
                     </div>
                 </div>
             </div>
