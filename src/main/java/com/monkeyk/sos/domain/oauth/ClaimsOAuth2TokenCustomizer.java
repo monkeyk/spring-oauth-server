@@ -74,7 +74,7 @@ public class ClaimsOAuth2TokenCustomizer implements OAuth2TokenCustomizer<JwtEnc
         if (scopes.contains(OidcScopes.PROFILE)) {
             String attrVal = nullUser ? null : user.nickname();
             claims.claim("nickname", attrVal == null ? "" : attrVal);
-            claims.claim("updated_at", "");
+            claims.claim("updated_at", 0);
         }
     }
 }
