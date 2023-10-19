@@ -207,9 +207,9 @@ URL: http://localhost:8080/oauth2/revoke
 
 curl --location 'http://localhost:8080/oauth2/revoke' \
 --header 'Content-Type: application/json' \
---form 'client_id="client11"' \
---form 'client_secret="secret22"' \
---form 'token="{token}"'
+--form 'client_id="6urNLgR6osk2E56ekp"' \
+--form 'client_secret="6urNLgR6osk2E56ekp"' \
+--form 'token="TZ9tzVwE_VLoJxALUSw4A4A0Nj7SLSWXCc69U9rvNmSnqR8Hbz-1m4uHebJWsAK0sa7SDIR4SNXOB3iaM0p1bH_8EBrljoBApQgdYi1uYzcVwYq55OVV2RUHN2BJwfSr"'
 
 response
 
@@ -222,25 +222,25 @@ URL: http://localhost:8080/oauth2/introspect
 
 curl --location 'http://localhost:8080/oauth2/introspect' \
 --header 'Content-Type: application/json' \
---header 'Cookie: JSESSIONID=2EF5AAF1492717B75C29750E806E789D' \
---form 'client_id="client11"' \
---form 'client_secret="secret22"' \
---form 'token="{token}"'
+--form 'client_id="6urNLgR6osk2E56ekp"' \
+--form 'client_secret="6urNLgR6osk2E56ekp"' \
+--form 'token="GaHu88XEEAz41xMHfDk05bg9uSJ5Go1RF6jOe5eX7OhHD_52NK_fuwvVWq_dTRIhK8WR9SnCAtBBc0fVsOyGgz8-MhmVTG-dcDi6QtGQQtYxwmGrD-fOhpmePdUv6pwV"'
 
 response
 
 {
 "active": true,
-"sub": "client11",
+"sub": "admin",
 "aud": [
-"client11"
+"6urNLgR6osk2E56ekp"
 ],
-"nbf": 1690979995,
+"nbf": 1697721873,
 "scope": "openid profile",
-"iss": "http://localhost:8080",
-"exp": 1690987195,
-"iat": 1690979995,
-"client_id": "client11",
+"iss": "http://127.0.0.1:8080",
+"exp": 1697725474,
+"iat": 1697721874,
+"jti": "a1aa8f82-c885-45b3-a469-c2f595e8f12d",
+"client_id": "6urNLgR6osk2E56ekp",
 "token_type": "Bearer"
 }
 

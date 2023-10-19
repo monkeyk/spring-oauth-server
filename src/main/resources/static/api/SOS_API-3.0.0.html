@@ -447,16 +447,16 @@
         </div>
 
         <div class="well well-sm" id="verifyToken">
-            <h3>校验access_token
+            <h3>检查token (/oauth2/introspect)
                 <small class="badge">public</small>
             </h3>
 
-            <p class="text-muted">校验, 检查access_token的有效性</p>
+            <p class="text-muted">校验, 检查token的有效性</p>
 
             <ul class="list-group">
                 <li class="list-group-item">
                     <p>
-                        请求URI: <code>/oauth/check_token</code> <span
+                        请求URI: <code>/oauth2/introspect</code> <span
                             class="label label-warning">POST</span>
                     </p>
 
@@ -473,23 +473,31 @@
                             </thead>
                             <tbody>
                             <tr>
-                                <td>token</td>
-                                <td>{access_token}</td>
-                                <td>是</td>
-                                <td></td>
-                            </tr>
-                            <tr>
                                 <td>client_id</td>
                                 <td>{client_id}</td>
                                 <td>是</td>
                                 <td></td>
                             </tr>
+                            <tr>
+                                <td>client_secret</td>
+                                <td>{client_secret}</td>
+                                <td>是</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>token</td>
+                                <td>{token}</td>
+                                <td>是</td>
+                                <td>token可以是<em>access_token</em>, <em>refresh_token</em> 或 <em>id_token</em></td>
+                            </tr>
                             </tbody>
                         </table>
                         请求示例:
-                        <p>
-                            <code>http://localhost:8080/spring-oauth-server/oauth/check_token?token=e2996930-8398-44fd-8de5-7d1b1624ced7&client_id=mobile-client</code>
-                        </p>
+                        <pre>curl --location 'http://localhost:8080/oauth2/introspect' \
+--header 'Content-Type: application/json' \
+--form 'client_id="6urNLgR6osk2E56ekp"' \
+--form 'client_secret="6urNLgR6osk2E56ekp"' \
+--form 'token="GaHu88XEEAz41xMHfDk05bg9uSJ5Go1RF6jOe5eX7OhHD_52NK_fuwvVWq_dTRIhK8WR9SnCAtBBc0fVsOyGgz8-MhmVTG-dcDi6QtGQQtYxwmGrD-fOhpmePdUv6pwV"'</pre>
 
                     </div>
                     <br/>
@@ -498,20 +506,111 @@
 
                     <ul class="list-group">
                         <li class="list-group-item">
-                            <p>
+                            <div>
                                 正常 [200]<br/>
-                                <mark>
-                                    {"aud":["mobile-resource"],"exp":1505878459,"user_name":"mobile","authorities":["ROLE_MOBILE","ROLE_USER"],"client_id":"mobile-client","scope":["read","write"]}
-                                </mark>
-                            </p>
+                                <pre>{
+    "active": true,
+    "sub": "admin",
+    "aud": [
+        "6urNLgR6osk2E56ekp"
+    ],
+    "nbf": 1697721873,
+    "scope": "openid profile",
+    "iss": "http://127.0.0.1:8080",
+    "exp": 1697725474,
+    "iat": 1697721874,
+    "jti": "a1aa8f82-c885-45b3-a469-c2f595e8f12d",
+    "client_id": "6urNLgR6osk2E56ekp",
+    "token_type": "Bearer"
+}</pre>
+                                <p class="help-block">根据不同类型的token响应结果不相同; active=true表示token为有效的</p>
+                            </div>
                         </li>
                         <li class="list-group-item">
-                            <p>
-                                异常 [401]<br/>
-                                <mark>
-                                    {"error":"invalid_token","error_description":"Token was not recognised"}
-                                </mark>
-                            </p>
+                            <div>
+                                异常 [200]<br/>
+                                <pre>{
+    "active": false
+}</pre>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="well well-sm" id="revokeToken">
+            <p class="pull-right"><a href="">返回</a></p>
+            <h3>撤销token (/oauth2/revoke)
+                <small class="badge">public</small>
+            </h3>
+
+            <p class="text-muted">撤销已经签发的token</p>
+
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <p>
+                        请求URI: <code>/oauth2/revoke</code> <span
+                            class="label label-warning">POST</span>
+                    </p>
+
+                    <div>
+                        请求参数说明:
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>参数名</th>
+                                <th>参数值</th>
+                                <th>必须?</th>
+                                <th>备注</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>client_id</td>
+                                <td>{client_id}</td>
+                                <td>是</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>client_secret</td>
+                                <td>{client_secret}</td>
+                                <td>是</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>token</td>
+                                <td>{token}</td>
+                                <td>是</td>
+                                <td>token可以是<em>access_token</em>, <em>refresh_token</em> 或 <em>id_token</em></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        请求示例:
+                        <pre>curl --location 'http://localhost:8080/oauth2/revoke' \
+--header 'Content-Type: application/json' \
+--form 'client_id="6urNLgR6osk2E56ekp"' \
+--form 'client_secret="6urNLgR6osk2E56ekp"' \
+--form 'token="TZ9tzVwE_VLoJxALUSw4A4A0Nj7SLSWXCc69U9rvNmSnqR8Hbz-1m4uHebJWsAK0sa7SDIR4SNXOB3iaM0p1bH_8EBrljoBApQgdYi1uYzcVwYq55OVV2RUHN2BJwfSr"'</pre>
+
+                    </div>
+                    <br/>
+
+                    <strong>响应</strong>
+
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <div>
+                                正常 [200]<br/>
+                                <pre></pre>
+                                <p class="help-block">此API不管什么token结果都响应200; 若token是有效的会成功撤销</p>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div>
+                                异常 [200]
+                                <pre></pre>
+                            </div>
                         </li>
                     </ul>
                 </li>
