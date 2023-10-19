@@ -12,7 +12,7 @@
     </h2>
 
     <p class="text-muted">以下对<a target="_blank"
-             href="https://gitee.com/shengzhao/spring-oauth-server">spring-oauth-server</a>项目中的
+                                href="https://gitee.com/shengzhao/spring-oauth-server">spring-oauth-server</a>项目中的
         <code>oauth.ddl</code> <code>initial_db.ddl</code>文件(位于/others/database目录)中的表字及段进行说明,
         内容包括字段说明与使用场景等</p>
     <table class="table table-bordered table-hover">
@@ -139,7 +139,8 @@
             <td>varchar</td>
             <td>
                 指定客户端申请的权限范围,可选值在OIDC协议中定义,
-                包括<em>openid</em>,<em>profile</em>,<em>email</em>,<em>address</em>,<em>phone</em>;若有多个值用逗号(,)分隔,如: "openid,email".
+                包括<em>openid</em>,<em>profile</em>,<em>email</em>,<em>address</em>,<em>phone</em>;若有多个值用逗号(,)分隔,如:
+                "openid,email".
                 <br/>
                 openid是必须有的,其他值若有则在获取的<code>id_token</code>中会包含对应的值.
                 <br/>
@@ -165,7 +166,8 @@
         <tr>
             <td colspan="3">
                 <p class="text-info">
-                    <em class="glyphicon glyphicon-info-sign"></em> 在项目中,主要操作<code>oauth2_registered_client</code>表的类是<code>ClientDetailsController.java</code>,
+                    <em class="glyphicon glyphicon-info-sign"></em>
+                    在项目中,主要操作<code>oauth2_registered_client</code>表的类是<code>ClientDetailsController.java</code>,
                     <code>OauthClientDetails.java</code>更多的细节请参考该类; 也可以根据实际的需要,去扩展或修改该类的实现.
                 </p>
             </td>
@@ -347,8 +349,10 @@
         <tr>
             <td colspan="3">
                 <p class="text-info">
-                    <em class="glyphicon glyphicon-info-sign"></em> 该表用于存储在OAuth2.1授权过程中各类信息数据, 支持各类<code>grant_type</code>场景;
-                    对<code>oauth2_authorization</code>表的主要操作在<code>JdbcOAuth2AuthorizationService.java</code>类中, 更多的细节请参考该类.
+                    <em class="glyphicon glyphicon-info-sign"></em> 该表用于存储在OAuth2.1授权过程中各类信息数据,
+                    支持各类<code>grant_type</code>场景;
+                    对<code>oauth2_authorization</code>表的主要操作在<code>JdbcOAuth2AuthorizationService.java</code>类中,
+                    更多的细节请参考该类.
                     <br/>
                     注意: 若对性能有要求, 此表的数据存储设计需要进行优化(如存redis或利用JWT特性简化一些不必要的存储字段).
                 </p>
@@ -385,74 +389,115 @@
                 </p>
             </td>
         </tr>
-        <!-- oauth_refresh_token -->
+        <!-- user_ -->
         <tr>
-            <td rowspan="5">oauth_refresh_token</td>
+            <td rowspan="15">user_</td>
+            <td>id</td>
+            <td>int</td>
+            <td>主键, 自增长, 数据库自动生成</td>
+        </tr>
+        <tr>
+            <td>guid</td>
+            <td>varchar</td>
+            <td>唯一, 业务id</td>
+        </tr>
+        <tr>
             <td>create_time</td>
-            <td>数据的创建时间,精确到秒,由数据库在插入数据时取当前系统时间自动生成(扩展字段)</td>
+            <td>datetime</td>
+            <td>数据创建时间</td>
         </tr>
         <tr>
-            <td>token_id</td>
-            <td>
-                该字段的值是将<code>refresh_token</code>的值通过MD5加密后存储的.
-            </td>
+            <td>updated_time</td>
+            <td>timestamp</td>
+            <td>数据的最后修改时间, 由数据库自动维护更新</td>
         </tr>
         <tr>
-            <td>token</td>
-            <td>
-                存储将<code>OAuth2RefreshToken.java</code>对象序列化后的二进制数据.
-            </td>
+            <td>username</td>
+            <td>varchar</td>
+            <td>用户名, 非空, 唯一</td>
         </tr>
         <tr>
-            <td>authentication</td>
-            <td>
-                存储将<code>OAuth2Authentication.java</code>对象序列化后的二进制数据.
-            </td>
+            <td>password</td>
+            <td>varchar</td>
+            <td>密码, 加密存储, 非空</td>
         </tr>
         <tr>
-            <td colspan="2">
+            <td>enabled</td>
+            <td>tinyint</td>
+            <td>是否启用, 默认1(即启用)</td>
+        </tr>
+        <tr>
+            <td>phone</td>
+            <td>varchar</td>
+            <td>手机号</td>
+        </tr>
+        <tr>
+            <td>email</td>
+            <td>varchar</td>
+            <td>邮箱地址</td>
+        </tr>
+        <tr>
+            <td>address</td>
+            <td>varchar</td>
+            <td>个人地址</td>
+        </tr>
+        <tr>
+            <td>nickname</td>
+            <td>varchar</td>
+            <td>用户昵称, 别名</td>
+        </tr>
+        <tr>
+            <td>updated_at</td>
+            <td>int</td>
+            <td>最后数据更新时间值</td>
+        </tr>
+        <tr>
+            <td>default_user</td>
+            <td>tinyint</td>
+            <td>是否默认用户, 默认0(不是); 只用在初始化数据时使用</td>
+        </tr>
+        <tr>
+            <td>last_login_time</td>
+            <td>datetime</td>
+            <td>最后登录时间</td>
+        </tr>
+        <tr>
+            <td colspan="3">
                 <p class="text-info">
-                    <em class="glyphicon glyphicon-info-sign"></em> 在项目中,主要操作<code>oauth_refresh_token</code>表的对象是<code>JdbcTokenStore.java</code>.
-                    (与操作<code>oauth_access_token</code>表的对象一样);更多的细节请参考该类.
-                    <br/>
-                    如果客户端的grant_type不支持<code>refresh_token</code>,则不会使用该表.
+                    <em class="glyphicon glyphicon-info-sign"></em> 在项目中,主要使用<code>user_</code>表的对象是<code>UserServiceImpl.java</code>;
+                    对应的实体是<code>User.java</code>;
+                    在Spring Security中, 此表存储的数据对应<code>UserDetails.java</code>类.
                 </p>
             </td>
         </tr>
-        <!-- oauth_code -->
+        <!-- user_privilege -->
         <tr>
-            <td rowspan="4">oauth_code</td>
-            <td>create_time</td>
-            <td>数据的创建时间,精确到秒,由数据库在插入数据时取当前系统时间自动生成(扩展字段)</td>
+            <td rowspan="3">user_privilege</td>
+            <td>user_id</td>
+            <td>int</td>
+            <td>外键, 关联<code>user_</code>的id字段</td>
         </tr>
         <tr>
-            <td>code</td>
-            <td>
-                存储服务端系统生成的<code>code</code>的值(未加密).
-            </td>
+            <td>privilege</td>
+            <td>varchar</td>
+            <td>权限值, 如: ROLE_USER</td>
         </tr>
         <tr>
-            <td>authentication</td>
-            <td>
-                存储将<code>AuthorizationRequestHolder.java</code>对象序列化后的二进制数据.
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2">
+            <td colspan="3">
                 <p class="text-info">
-                    <em class="glyphicon glyphicon-info-sign"></em> 在项目中,主要操作<code>oauth_code</code>表的对象是<code>JdbcAuthorizationCodeServices.java</code>.
-                    更多的细节请参考该类.
-                    <br/>
-                    只有当grant_type为"authorization_code"时,该表中才会有数据产生; 其他的grant_type没有使用该表.
+                    <em class="glyphicon glyphicon-info-sign"></em> 此表存储用户的权限值, 一个用户可以有多个权限值.
                 </p>
             </td>
         </tr>
         </tbody>
     </table>
 
-    <p class="text-muted">
-        &copy; 2013 - 2023 <a href="https://gitee.com/shengzhao/spring-oauth-server" target="_blank">spring-oauth-server</a>
-    </p>
+    <div class="text-center">
+        <hr/>
+        <p class="text-muted">
+            &copy; 2013 - 2023 <a href="https://gitee.com/shengzhao/spring-oauth-server" target="_blank">spring-oauth-server</a>
+        </p>
+    </div>
 </div>
 
 </body>
