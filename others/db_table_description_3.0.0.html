@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
-    <title>数据库表说明(oauth.ddl)</title>
+    <title>数据库表说明 - spring-oauth-server</title>
     <link href="https://cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet"/>
 </head>
 <body>
@@ -172,97 +172,215 @@
         </tr>
         <!-- oauth2_authorization -->
         <tr>
-            <td rowspan="7">oauth2_authorization</td>
-            <td>create_time</td>
-            <td>数据的创建时间,精确到秒,由数据库在插入数据时取当前系统时间自动生成(扩展字段)</td>
+            <td rowspan="35">oauth2_authorization</td>
+            <td>id</td>
+            <td>varchar</td>
+            <td>主键</td>
         </tr>
         <tr>
-            <td>token_id</td>
+            <td>registered_client_id</td>
+            <td>varchar</td>
             <td>
-                从服务器端获取到的<code>access_token</code>的值.
+                外键, 关联<code>oauth2_registered_client</code>的id字段
             </td>
         </tr>
         <tr>
-            <td>token</td>
-            <td>
-                这是一个二进制的字段, 存储的数据是<code>OAuth2AccessToken.java</code>对象序列化后的二进制数据.
-            </td>
+            <td>principal_name</td>
+            <td>varchar</td>
+            <td>认证名称, 一般指用户名或clientId; 对应OIDC中的sub字段</td>
         </tr>
         <tr>
-            <td>authentication_id</td>
-            <td>
-                该字段具有唯一性, 是根据当前的username(如果有),client_id与scope通过MD5加密生成的.
-                <br/>
-                具体实现请参考<code>DefaultClientKeyGenerator.java</code>类.
-            </td>
+            <td>authorization_grant_type</td>
+            <td>varchar</td>
+            <td>OAuth2的 grant_type 类型</td>
         </tr>
         <tr>
-            <td>user_name</td>
-            <td>登录时的用户名</td>
+            <td>authorized_scopes</td>
+            <td>varchar</td>
+            <td>此次授权的范围(scope)</td>
         </tr>
         <tr>
-            <td>client_id</td>
-            <td></td>
+            <td>attributes</td>
+            <td>blob</td>
+            <td>进行认证授权的各类信息,JSON格式</td>
         </tr>
         <tr>
-            <td colspan="2">
+            <td>state</td>
+            <td>varchar</td>
+            <td>认证请求中传递的 state 值</td>
+        </tr>
+        <tr>
+            <td>authorization_code_value</td>
+            <td>blob</td>
+            <td><code>authorization_code</code>流程中的<em>code</em>值</td>
+        </tr>
+        <tr>
+            <td>authorization_code_issued_at</td>
+            <td>datetime</td>
+            <td><code>authorization_code</code>流程中的<em>code</em>签发时间</td>
+        </tr>
+        <tr>
+            <td>authorization_code_expires_at</td>
+            <td>datetime</td>
+            <td><code>authorization_code</code>流程中的<em>code</em>过期时间</td>
+        </tr>
+        <tr>
+            <td>authorization_code_metadata</td>
+            <td>blob</td>
+            <td><code>authorization_code</code>流程中的<em>code</em>的属性设置, 如值是否有效</td>
+        </tr>
+        <tr>
+            <td>access_token_value</td>
+            <td>blob</td>
+            <td>access_token 值</td>
+        </tr>
+        <tr>
+            <td>access_token_issued_at</td>
+            <td>datetime</td>
+            <td>access_token 签发时间</td>
+        </tr>
+        <tr>
+            <td>access_token_expires_at</td>
+            <td>datetime</td>
+            <td>access_token 过期时间</td>
+        </tr>
+        <tr>
+            <td>access_token_metadata</td>
+            <td>blob</td>
+            <td>access_token 属性设置, 如各类claims中的属性与值</td>
+        </tr>
+        <tr>
+            <td>access_token_type</td>
+            <td>varchar</td>
+            <td>access_token 类型, 一般是Bearer</td>
+        </tr>
+        <tr>
+            <td>access_token_scopes</td>
+            <td>varchar</td>
+            <td>此次授权的scope范围值,如: openid,profile</td>
+        </tr>
+        <tr>
+            <td>oidc_id_token_value</td>
+            <td>blob</td>
+            <td>OIDC中id_token 值</td>
+        </tr>
+        <tr>
+            <td>oidc_id_token_issued_at</td>
+            <td>datetime</td>
+            <td>id_token 签发时间</td>
+        </tr>
+        <tr>
+            <td>oidc_id_token_expires_at</td>
+            <td>datetime</td>
+            <td>id_token 过期时间</td>
+        </tr>
+        <tr>
+            <td>oidc_id_token_metadata</td>
+            <td>blob</td>
+            <td>id_token 属性设置, 如各类claims中的属性与值</td>
+        </tr>
+        <tr>
+            <td>refresh_token_value</td>
+            <td>blob</td>
+            <td>refresh_token 值</td>
+        </tr>
+        <tr>
+            <td>refresh_token_issued_at</td>
+            <td>datetime</td>
+            <td>refresh_token 签发时间</td>
+        </tr>
+        <tr>
+            <td>refresh_token_expires_at</td>
+            <td>datetime</td>
+            <td>refresh_token 过期时间</td>
+        </tr>
+        <tr>
+            <td>refresh_token_metadata</td>
+            <td>blob</td>
+            <td>refresh_token 属性设置, 如是否复用(reuse)</td>
+        </tr>
+        <tr>
+            <td>user_code_value</td>
+            <td>blob</td>
+            <td><code>device_code</code>流程中的user_code值</td>
+        </tr>
+        <tr>
+            <td>user_code_issued_at</td>
+            <td>datetime</td>
+            <td>user_code 签发时间</td>
+        </tr>
+        <tr>
+            <td>user_code_expires_at</td>
+            <td>datetime</td>
+            <td>user_code 过期时间</td>
+        </tr>
+        <tr>
+            <td>user_code_metadata</td>
+            <td>blob</td>
+            <td>user_code 属性设置, 如是否已经验证</td>
+        </tr>
+        <tr>
+            <td>device_code_value</td>
+            <td>blob</td>
+            <td><code>device_code</code>流程中的device_code值</td>
+        </tr>
+        <tr>
+            <td>device_code_issued_at</td>
+            <td>datetime</td>
+            <td>device_code 签发时间</td>
+        </tr>
+        <tr>
+            <td>device_code_expires_at</td>
+            <td>datetime</td>
+            <td>device_code 过期时间</td>
+        </tr>
+        <tr>
+            <td>device_code_metadata</td>
+            <td>blob</td>
+            <td>device_code 属性设置, 如是否已经验证</td>
+        </tr>
+        <tr>
+            <td>updated_time</td>
+            <td>timestamp</td>
+            <td>数据的最后修改时间, 由数据库自动维护更新</td>
+        </tr>
+        <tr>
+            <td colspan="3">
                 <p class="text-info">
-                    <em class="glyphicon glyphicon-info-sign"></em> 该表用于在客户端系统中存储从服务端获取的token数据,
-                    在<a href="http://git.oschina.net/shengzhao/spring-oauth-server">spring-oauth-server</a>项目中未使用到.
+                    <em class="glyphicon glyphicon-info-sign"></em> 该表用于存储在OAuth2.1授权过程中各类信息数据, 支持各类<code>grant_type</code>场景;
+                    对<code>oauth2_authorization</code>表的主要操作在<code>JdbcOAuth2AuthorizationService.java</code>类中, 更多的细节请参考该类.
                     <br/>
-                    对<code>oauth_client_token</code>表的主要操作在<code>JdbcClientTokenServices.java</code>类中, 更多的细节请参考该类.
+                    注意: 若对性能有要求, 此表的数据存储设计需要进行优化(如存redis或利用JWT特性简化一些不必要的存储字段).
                 </p>
             </td>
         </tr>
-        <!-- oauth_access_token -->
+        <!-- oauth2_authorization_consent -->
         <tr>
-            <td rowspan="9">oauth_access_token</td>
-            <td>create_time</td>
-            <td>数据的创建时间,精确到秒,由数据库在插入数据时取当前系统时间自动生成(扩展字段)</td>
+            <td rowspan="5">oauth2_authorization_consent</td>
+            <td>registered_client_id</td>
+            <td>varchar</td>
+            <td>外键, 关联<code>oauth2_registered_client</code>表的id字段</td>
         </tr>
         <tr>
-            <td>token_id</td>
-            <td>
-                该字段的值是将<code>access_token</code>的值通过MD5加密后存储的.
-            </td>
+            <td>principal_name</td>
+            <td>varchar</td>
+            <td>认证名称, 一般指用户名或clientId; 对应OIDC中的sub字段</td>
         </tr>
         <tr>
-            <td>token</td>
-            <td>
-                存储将<code>OAuth2AccessToken.java</code>对象序列化后的二进制数据, 是真实的AccessToken的数据值.
-            </td>
+            <td>authorities</td>
+            <td>varchar</td>
+            <td>授权确认过期中的属性, 如scope范围</td>
         </tr>
         <tr>
-            <td>authentication_id</td>
-            <td>
-                该字段具有唯一性, 其值是根据当前的username(如果有),client_id与scope通过MD5加密生成的.
-                具体实现请参考<code>DefaultAuthenticationKeyGenerator.java</code>类.
-            </td>
+            <td>updated_time</td>
+            <td>timestamp</td>
+            <td>数据的最后修改时间, 由数据库自动维护更新</td>
         </tr>
         <tr>
-            <td>user_name</td>
-            <td>登录时的用户名, 若客户端没有用户名(如grant_type="client_credentials"),则该值等于client_id</td>
-        </tr>
-        <tr>
-            <td>client_id</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>authentication</td>
-            <td>
-                存储将<code>OAuth2Authentication.java</code>对象序列化后的二进制数据.
-            </td>
-        </tr>
-        <tr>
-            <td>refresh_token</td>
-            <td>
-                该字段的值是将<code>refresh_token</code>的值通过MD5加密后存储的.
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2">
+            <td colspan="3">
                 <p class="text-info">
-                    <em class="glyphicon glyphicon-info-sign"></em> 在项目中,主要操作<code>oauth_access_token</code>表的对象是<code>JdbcTokenStore.java</code>.
+                    <em class="glyphicon glyphicon-info-sign"></em> 该表主要存储在授权过程中需要用户进行确认(consent)的信息;
+                    在项目中,主要操作<code>oauth2_authorization_consent</code>表的对象是<code>JdbcOAuth2AuthorizationConsentService.java</code>.
                     更多的细节请参考该类.
                 </p>
             </td>
