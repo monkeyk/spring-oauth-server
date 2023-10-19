@@ -49,19 +49,20 @@ response
 - cURL
   curl --location 'http://localhost:8080/oauth2/token' \
   --header 'Content-Type: application/json' \
-  --form 'client_id="client11"' \
+  --form 'client_id="6urNLgR6osk2E56ekp"' \
+  --form 'client_secret="6urNLgR6osk2E56ekp"' \
   --form 'grant_type="refresh_token"' \
-  --form 'refresh_token="xYCsaPu7YV_hB6TfLbWsFBws1YvP7D_qAJFlSCvT5u-RbP6uMwEudHZaVnoyw3wuaXO-8F3t_GYMNZyfFVTAGBHyYDs9VS6_vqbLqqL0mGMI20GOGY066bdRTOtFlwsl"' \
-  --form 'client_secret="secret22"'
+  --form 'refresh_token="TZ9tzVwE_VLoJxALUSw4A4A0Nj7SLSWXCc69U9rvNmSnqR8Hbz-1m4uHebJWsAK0sa7SDIR4SNXOB3iaM0p1bH_8EBrljoBApQgdYi1uYzcVwYq55OVV2RUHN2BJwfSr"'
 
 response
 
 {
-"access_token": "eyJraWQiOiIyZGZjNTczMi1kODkyLTQ4NjMtYjZkMS04YTgzOGE3NzZmZTUiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImF1ZCI6ImNsaWVudDExIiwibmJmIjoxNjkwNzk2MjA5LCJzY29wZSI6WyJyZWFkIl0sImlzcyI6Imh0dHBzOi8vbXlvaWRjLmNvbSIsImV4cCI6MTY5MDc5NjUwOSwiaWF0IjoxNjkwNzk2MjA5fQ.RjMZHpzz2YgK9ov_v4C94hWPS9qA9EiAVXvV9jxA9l4xLbzVVrmfC4w4QE7Z-8femjhtzzeZj5oCe1hO9v3WfSHXhO_5DAH4S9GY5acDo4XAUBbIKg1r4nvzE3QXacLbRDdtKSn62TM44NTPI_XjBU58e2EuZVRpPaOR5tEQpHjygDS3TW7aC2gouugm0f9YQCCPiHWrUQuA5cWiMJ0E8G_Q9GifVLkSy0aI7wzyvxhnKvd0Xoa5y6rHv3f2Whul5YwHo3aqHDfCO1AaUbCRknFJgG-LYyOj8iUvci2vCyPeWZ1uGm33a5s1PYcxqXXzmRvRvk1ZjMStETg00p-3kA",
-"refresh_token": "xYCsaPu7YV_hB6TfLbWsFBws1YvP7D_qAJFlSCvT5u-RbP6uMwEudHZaVnoyw3wuaXO-8F3t_GYMNZyfFVTAGBHyYDs9VS6_vqbLqqL0mGMI20GOGY066bdRTOtFlwsl",
-"scope": "openid",
+"access_token": "YnVdTXl0MhslsrOjiz1ffSixvPnWCN-XS-UBlkS89daZbd_TvXtSSo_ODuFVWPWw1KsO5WQykVPjwSe_Kreo8ngIP9DglaXJMbYJJu4Wa6_geOINj5ksmnbfb6pHrQHr",
+"refresh_token": "TZ9tzVwE_VLoJxALUSw4A4A0Nj7SLSWXCc69U9rvNmSnqR8Hbz-1m4uHebJWsAK0sa7SDIR4SNXOB3iaM0p1bH_8EBrljoBApQgdYi1uYzcVwYq55OVV2RUHN2BJwfSr",
+"scope": "openid profile",
+"id_token": "eyJraWQiOiJzb3MtZWNjLWtpZDEiLCJhbGciOiJFUzI1NiJ9.eyJzdWIiOiJ1bml0eSIsImF1ZCI6IjZ1ck5MZ1I2b3NrMkU1NmVrcCIsInVwZGF0ZWRfYXQiOjAsImF6cCI6IjZ1ck5MZ1I2b3NrMkU1NmVrcCIsImF1dGhfdGltZSI6MTY5NzcwNzM1NCwiaXNzIjoiaHR0cDovLzEyNy4wLjAuMTo4MDgwIiwibmlja25hbWUiOiIiLCJleHAiOjE2OTc3MjQyNjMsImlhdCI6MTY5NzcyMjQ2MywianRpIjoiMDc4OTc4MTUxNzEwNTgwNDE2ODY0NzgxMDQ1OTM5MDYiLCJzaWQiOiJ1d3A3bnlGcnB2U21aaVBLaEJ1ZVJUVl9xVEpiQ3pmMDJOZjBBNkY3WWtJIn0.j0KVv7bAi85zbX-0wvWe83n_CQdmJLGrHJNFwF5jA1-wa8QzaSwJbznpjbHLGTv-UbI2YeHLn8N5iGXDarbC9Q",
 "token_type": "Bearer",
-"expires_in": 299
+"expires_in": 3599
 }
 
 

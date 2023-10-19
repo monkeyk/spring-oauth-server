@@ -247,18 +247,112 @@
             </ul>
         </div>
 
+        <div class="well well-sm" id="refreshToken">
+            <p class="pull-right"><a href="">返回</a></p>
+
+            <h3>刷新access_token (grant_type=refresh_token)
+                <small class="badge">public</small>
+            </h3>
+
+            <p class="text-muted">用于在access_token要过期时换取新的access_token (grant_type需要有refresh_token)</p>
+
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <p>
+                        请求URI: <code>/oauth2/token</code> <span
+                            class="label label-warning">POST</span>
+                    </p>
+
+                    <div>
+                        请求参数说明:
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>参数名</th>
+                                <th>参数值</th>
+                                <th>必须?</th>
+                                <th>备注</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>client_id</td>
+                                <td>{client_id}</td>
+                                <td>是</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>client_secret</td>
+                                <td>{client_secret}</td>
+                                <td>是</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>grant_type</td>
+                                <td>refresh_token</td>
+                                <td>是</td>
+                                <td>固定值</td>
+                            </tr>
+                            <tr>
+                                <td>refresh_token</td>
+                                <td>{refresh_token}</td>
+                                <td>是</td>
+                                <td></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        请求示例:
+                        <pre>curl --location 'http://localhost:8080/oauth2/token' \
+--header 'Content-Type: application/json' \
+--form 'client_id="6urNLgR6osk2E56ekp"' \
+--form 'client_secret="6urNLgR6osk2E56ekp"' \
+--form 'grant_type="refresh_token"' \
+--form 'refresh_token="TZ9tzVwE_VLoJxALUSw4A4A0Nj7SLSWXCc69U9rvNmSnqR8Hbz-1m4uHebJWsAK0sa7SDIR4SNXOB3iaM0p1bH_8EBrljoBApQgdYi1uYzcVwYq55OVV2RUHN2BJwfSr"'</pre>
+
+                    </div>
+                    <br/>
+
+                    <strong>响应</strong>
+
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <div>
+                                正常 [200]<br/>
+                                <pre>{
+    "access_token": "YnVdTXl0MhslsrOjiz1ffSixvPnWCN-XS-UBlkS89daZbd_TvXtSSo_ODuFVWPWw1KsO5WQykVPjwSe_Kreo8ngIP9DglaXJMbYJJu4Wa6_geOINj5ksmnbfb6pHrQHr",
+    "refresh_token": "TZ9tzVwE_VLoJxALUSw4A4A0Nj7SLSWXCc69U9rvNmSnqR8Hbz-1m4uHebJWsAK0sa7SDIR4SNXOB3iaM0p1bH_8EBrljoBApQgdYi1uYzcVwYq55OVV2RUHN2BJwfSr",
+    "scope": "openid profile",
+    "id_token": "eyJraWQiOiJzb3MtZWNjLWtpZDEiLCJhbGciOiJFUzI1NiJ9.eyJzdWIiOiJ1bml0eSIsImF1ZCI6IjZ1ck5MZ1I2b3NrMkU1NmVrcCIsInVwZGF0ZWRfYXQiOjAsImF6cCI6IjZ1ck5MZ1I2b3NrMkU1NmVrcCIsImF1dGhfdGltZSI6MTY5NzcwNzM1NCwiaXNzIjoiaHR0cDovLzEyNy4wLjAuMTo4MDgwIiwibmlja25hbWUiOiIiLCJleHAiOjE2OTc3MjQyNjMsImlhdCI6MTY5NzcyMjQ2MywianRpIjoiMDc4OTc4MTUxNzEwNTgwNDE2ODY0NzgxMDQ1OTM5MDYiLCJzaWQiOiJ1d3A3bnlGcnB2U21aaVBLaEJ1ZVJUVl9xVEpiQ3pmMDJOZjBBNkY3WWtJIn0.j0KVv7bAi85zbX-0wvWe83n_CQdmJLGrHJNFwF5jA1-wa8QzaSwJbznpjbHLGTv-UbI2YeHLn8N5iGXDarbC9Q",
+    "token_type": "Bearer",
+    "expires_in": 3599
+}</pre>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div>
+                                异常 [401]<br/>
+                                <pre>{
+    "error": "invalid_client"
+}</pre>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
         <div class="well well-sm" id="getTokenRest">
             <h3>获取access_token (Restful API)
                 <small class="badge">public</small>
             </h3>
 
             <p class="text-muted">Restful API 获取access_token,
-                适用于grant_type为authorization_code,password,refresh_token,client_credentials</p>
+                适用于grant_type为authorization_code,refresh_token,client_credentials</p>
 
             <ul class="list-group">
                 <li class="list-group-item">
                     <p>
-                        请求URI: <code>/oauth/rest_token</code> <span
+                        请求URI: <code>/oauth2/rest_token</code> <span
                             class="label label-warning">POST</span> <span class="label label-success">REST</span>
                     </p>
 
@@ -282,13 +376,13 @@
                                 <td>grant_type</td>
                                 <td>{grant_type}</td>
                                 <td>是</td>
-                                <td>authorization_code,password,refresh_token,client_credentials</td>
+                                <td>authorization_code,refresh_token,client_credentials</td>
                             </tr>
                             <tr>
                                 <td>scope</td>
                                 <td>{scope}</td>
                                 <td>是</td>
-                                <td>read or write</td>
+                                <td>如: openid</td>
                             </tr>
                             <tr>
                                 <td>client_id</td>
@@ -303,16 +397,16 @@
                                 <td></td>
                             </tr>
                             <tr>
-                                <td>username</td>
-                                <td>{username}</td>
+                                <td>device_code</td>
+                                <td>{device_code}</td>
                                 <td>否</td>
-                                <td>grant_type=password时必须有</td>
+                                <td>grant_type=urn:ietf:params:oauth:grant-type:device_code 时必须有</td>
                             </tr>
                             <tr>
-                                <td>password</td>
-                                <td>{password}</td>
+                                <td>code_verifier</td>
+                                <td>{code_verifier}</td>
                                 <td>否</td>
-                                <td>grant_type=password时必须有</td>
+                                <td>PKCE时必须</td>
                             </tr>
                             </tbody>
                         </table>
@@ -351,6 +445,7 @@
                 </li>
             </ul>
         </div>
+
         <div class="well well-sm" id="verifyToken">
             <h3>校验access_token
                 <small class="badge">public</small>
@@ -415,93 +510,6 @@
                                 异常 [401]<br/>
                                 <mark>
                                     {"error":"invalid_token","error_description":"Token was not recognised"}
-                                </mark>
-                            </p>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-
-        <div class="well well-sm" id="refreshToken">
-            <p class="pull-right"><a href="">返回</a></p>
-
-            <h3>刷新access_token (grant_type=refresh_token)
-                <small class="badge">public</small>
-            </h3>
-
-            <p class="text-muted">用于在access_token要过期时换取新的access_token (grant_type需要有refresh_token)</p>
-
-            <ul class="list-group">
-                <li class="list-group-item">
-                    <p>
-                        请求URI: <code>/oauth/token</code> <span
-                            class="label label-warning">POST</span>
-                    </p>
-
-                    <div>
-                        请求参数说明:
-                        <table class="table table-bordered">
-                            <thead>
-                            <tr>
-                                <th>参数名</th>
-                                <th>参数值</th>
-                                <th>必须?</th>
-                                <th>备注</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td>client_id</td>
-                                <td>{client_id}</td>
-                                <td>是</td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td>client_secret</td>
-                                <td>{client_secret}</td>
-                                <td>是</td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td>grant_type</td>
-                                <td>refresh_token</td>
-                                <td>是</td>
-                                <td>固定值</td>
-                            </tr>
-                            <tr>
-                                <td>refresh_token</td>
-                                <td>{refresh_token}</td>
-                                <td>是</td>
-                                <td></td>
-                            </tr>
-                            </tbody>
-                        </table>
-                        请求示例:
-                        <p>
-                            <code>http://localhost:8080/spring-oauth-server/oauth/token?client_id=test1234&client_secret=test1234&grant_type=refresh_token&refresh_token=1156ebfe-e303-4572-9fb5-4459a5d46610</code>
-                        </p>
-
-                    </div>
-                    <br/>
-
-                    <strong>响应</strong>
-
-                    <ul class="list-group">
-                        <li class="list-group-item">
-                            <p>
-                                正常 [200]<br/>
-                                <mark>
-                                    {"access_token":"b12cace6-7ce4-4fa8-b127-cf537d15b213","token_type":"bearer","refresh_token":"2b2de701-53e7-4b57-8301-e4a06ee49698","expires_in":43199,"scope":"read"}
-                                </mark>
-                            </p>
-                        </li>
-                        <li class="list-group-item">
-                            <p>
-                                异常 [401]<br/>
-                                <mark>
-                                    {"error":"invalid_grant","error_description":"Invalid refresh token:
-                                    1156ebfe-e303-4572-9fb5-4459a5d46610"}
                                 </mark>
                             </p>
                         </li>
