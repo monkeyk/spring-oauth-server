@@ -197,6 +197,7 @@ Base on SpringBoot
                 <li><p>构建包由war换成jar, SQL相应调整</p></li>     
                 <li><p>升级替换spring-security-oauth2, 详见<a href="https://andaily.com/blog/?p=20077">背景说明</a></p></li>     
                 <li><p>界面使用说明按OAuth2.1进行友好更新</p></li>     
+                <li><p>增加spring-restdocs文档支持, 自动生成API相关文档</p></li>     
             </ol>
        </li>   	
 	   <li>

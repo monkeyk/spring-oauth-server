@@ -1,0 +1,22 @@
+= {project-id} API Docs
+:toc: left
+:toc-title: Contents
+:revnumber: {project-version}
+
+
+// == 应用版本API
+// .http-request
+// include::{snippets}/UnityControllerTest/version/http-request.adoc[]
+// .curl-request
+// include::{snippets}/UnityControllerTest/version/curl-request.adoc[]
+// .request-body
+// include::{snippets}/UnityControllerTest/version/request-body.adoc[]
+// .http-response
+// include::{snippets}/UnityControllerTest/version/http-response.adoc[]
+// .response-body
+// include::{snippets}/UnityControllerTest/version/response-body.adoc[]
+
+== Unity resource API
+
+operation::UnityControllerTest/userInfo[]
+
