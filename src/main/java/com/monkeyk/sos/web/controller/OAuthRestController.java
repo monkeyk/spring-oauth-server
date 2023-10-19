@@ -66,7 +66,7 @@ public class OAuthRestController implements InitializingBean, ApplicationContext
 //    private WebResponseExceptionTranslator providerExceptionHandler = new DefaultWebResponseExceptionTranslator();
 
 
-    @RequestMapping(value = "/oauth/rest_token", method = RequestMethod.POST)
+    @RequestMapping(value = "/oauth2/rest_token", method = RequestMethod.POST)
     @ResponseBody
     public OAuth2AccessToken postAccessToken(@RequestBody Map<String, String> parameters) {
 

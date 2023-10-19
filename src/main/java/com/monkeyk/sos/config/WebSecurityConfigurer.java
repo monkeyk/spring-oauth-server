@@ -47,8 +47,7 @@ public class WebSecurityConfigurer {
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
 
         http.csrf(csrfConfigurer -> {
-//            csrfConfigurer.ignoringRequestMatchers("/oauth/authorize", "/oauth/token", "/oauth/rest_token");
-            csrfConfigurer.ignoringRequestMatchers("/oauth/rest_token");
+            csrfConfigurer.ignoringRequestMatchers("/oauth2/rest_token");
         });
 
         http.authorizeHttpRequests(matcherRegistry -> {
