@@ -23,7 +23,8 @@
     <small class="badge">public</small>
     的API都是公开的, 其他的API则需要先授权获取
     <mark>access_token</mark>
-    后可调用 (如何传递access_token请查看 <a href="https://andaily.com/blog/?p=500" target="_blank">https://andaily.com/blog/?p=500</a>).
+    后可调用 (如何传递access_token请查看 <a href="https://andaily.com/blog/?p=500"
+                                 target="_blank">https://andaily.com/blog/?p=500</a>).
 </div>
 
 <div class="row">
@@ -36,7 +37,8 @@
             <li class="list-group-item"><a href="#getTokenRest">获取access_token (Restful API)</a></li>
             <li class="list-group-item"><a href="#verifyToken">检查token (/oauth2/introspect)</a></li>
             <li class="list-group-item"><a href="#revokeToken">撤销token (/oauth2/revoke)</a></li>
-            <li class="list-group-item"><a href="#deviceAuthor">[device_code]流程 - 发起认证(/oauth2/device_authorization)</a></li>
+            <li class="list-group-item"><a href="#deviceAuthor">[device_code]流程 - 发起认证(/oauth2/device_authorization)</a>
+            </li>
             <li class="list-group-item"><a href="#deviceToken">[device_code]流程 - 获取token(/oauth2/token)</a></li>
             <li class="list-group-item"><a href="#oidcUserinfo">OIDC /userinfo</a></li>
             <li class="list-group-item"><a href="#oidcConfig">OIDC /openid-configuration</a></li>
@@ -56,7 +58,7 @@
             <ul class="list-group">
                 <li class="list-group-item">
                     <p>
-                        请求URI: <code>/oauth/token</code> <span
+                        请求URI: <code>/oauth2/token</code> <span
                             class="label label-warning">POST</span>
                     </p>
 
@@ -102,12 +104,24 @@
                                 <td>是</td>
                                 <td></td>
                             </tr>
+                            <tr>
+                                <td>code_verifier</td>
+                                <td>{code_verifier}</td>
+                                <td>否</td>
+                                <td>PKCE时必须</td>
+                            </tr>
                             </tbody>
                         </table>
                         请求示例:
-                        <p>
-                            <code>http://localhost:8080/spring-oauth-server/oauth/token?client_id=unity-client&client_secret=unity&grant_type=authorization_code&code=[code]&redirect_uri=[redirect_uri]</code>
-                        </p>
+                        <div>
+                            <pre>  curl --location 'http://localhost:8080/oauth2/token' \
+  --header 'Content-Type: application/json' \
+  --form 'client_id="client11"' \
+  --form 'grant_type="authorization_code"' \
+  --form 'redirect_uri="http://localhost:8083/oauth2/callback"' \
+  --form 'code="-VEnyAcEflDxjMh4Hr-6YejZq4Mel5gihFy_FMyotDxLhILeMBQheJkL4mdJ0sKD_C8xpa_sMNGf_I2tYJIVki8a4ktT2QsHojhbV3HpbGLVhJ0qDc8kfXjWt7u_24QO"' \
+  --form 'client_secret="secret22"'</pre>
+                        </div>
 
                     </div>
                     <br/>
@@ -116,21 +130,25 @@
 
                     <ul class="list-group">
                         <li class="list-group-item">
-                            <p>
+                            <div>
                                 正常 [200]<br/>
-                                <mark>
-                                    {"access_token":"2c612eb7-a22b-45f0-8b2e-cd6f9e366772","token_type":"bearer","refresh_token":"6c984bdc-01c7-486f-93bf-5637990d8a37","expires_in":43199,"scope":"read
-                                    write"}
-                                </mark>
-                            </p>
+                                <pre>{
+  "access_token": "7154afT_cxvLDq1naSg6Aq9ueSFSW8xRr5txryW5MlddRe7nV0RogTYwPsJc_rrRqwaIvLleerLhkjtIN2E2U-4J_BzvYNCsv8BVLqeerCObwgwpP3t__NMMUakzRL2i",
+  "refresh_token": "TZ9tzVwE_VLoJxALUSw4A4A0Nj7SLSWXCc69U9rvNmSnqR8Hbz-1m4uHebJWsAK0sa7SDIR4SNXOB3iaM0p1bH_8EBrljoBApQgdYi1uYzcVwYq55OVV2RUHN2BJwfSr",
+  "scope": "openid profile",
+  "id_token": "eyJraWQiOiJzb3MtZWNjLWtpZDEiLCJhbGciOiJFUzI1NiJ9.eyJzdWIiOiJ1bml0eSIsImF1ZCI6IjZ1ck5MZ1I2b3NrMkU1NmVrcCIsInVwZGF0ZWRfYXQiOiIiLCJhenAiOiI2dXJOTGdSNm9zazJFNTZla3AiLCJhdXRoX3RpbWUiOjE2OTc3MDczNTQsImlzcyI6Imh0dHA6Ly8xMjcuMC4wLjE6ODA4MCIsIm5pY2tuYW1lIjoiIiwiZXhwIjoxNjk3NzA5MjA4LCJpYXQiOjE2OTc3MDc0MDgsImp0aSI6IjEyNTc0MjU2NTk4MDI2ODY2NzI3NDAwMTMxNjk5NDk0Iiwic2lkIjoidXdwN255RnJwdlNtWmlQS2hCdWVSVFZfcVRKYkN6ZjAyTmYwQTZGN1lrSSJ9.3w-7EY9SwKA-UkXlhDfD2BbSwP6nCSLZxNgKwhkkMY8YPbMkygbj374SmEmsit7NlpRXHCtW6ULZ9_IVZ9MTBg",
+  "token_type": "Bearer",
+  "expires_in": 3599
+}</pre>
+                            </div>
                         </li>
                         <li class="list-group-item">
-                            <p>
+                            <div>
                                 异常 [401]<br/>
-                                <mark>
-                                    {"error":"invalid_grant","error_description":"Invalid authorization code: vzmIh1"}
-                                </mark>
-                            </p>
+                                <pre>{
+    "error": "invalid_grant"
+}</pre>
+                            </div>
                         </li>
                     </ul>
                 </li>
@@ -149,7 +167,7 @@
             <ul class="list-group">
                 <li class="list-group-item">
                     <p>
-                        请求URI: <code>/oauth/token</code> <span
+                        请求URI: <code>/oauth2/token</code> <span
                             class="label label-warning">POST</span>
                     </p>
 
@@ -187,14 +205,17 @@
                                 <td>scope</td>
                                 <td>{scope}</td>
                                 <td>是</td>
-                                <td>read or write</td>
+                                <td>如: openid</td>
                             </tr>
                             </tbody>
                         </table>
                         请求示例:
-                        <p>
-                            <code>http://localhost:8080/spring-oauth-server/oauth/token?client_id=test1234&client_secret=test1234&grant_type=client_credentials&scope=read</code>
-                        </p>
+                        <pre>curl --location 'http://localhost:8080/oauth2/token' \
+--header 'Content-Type: application/json' \
+--form 'client_id="6urNLgR6osk2E56ekp"' \
+--form 'client_secret="6urNLgR6osk2E56ekp"' \
+--form 'grant_type="client_credentials"' \
+--form 'scope="openid profile"'</pre>
 
                     </div>
                     <br/>
@@ -203,20 +224,23 @@
 
                     <ul class="list-group">
                         <li class="list-group-item">
-                            <p>
+                            <div>
                                 正常 [200]<br/>
-                                <mark>
-                                    {"access_token":"e5ea7620-5459-4d53-a7a0-6888bbb76f62","token_type":"bearer","expires_in":43199,"scope":"read"}
-                                </mark>
-                            </p>
+                                <pre>{
+    "access_token": "p2i1WHiiFBCgTJFTs63OvO9-bclB9DbsgsebDo_ntMw_BAleu2RzIQzzFfaaJAR5oiL3xwN3xMyNTRZSrXM_1ANycleysPU5l3xuZ0aQX4V-Va178qg6e-PvLqLBsD_i",
+    "scope": "openid profile",
+    "token_type": "Bearer",
+    "expires_in": 3599
+}</pre>
+                            </div>
                         </li>
                         <li class="list-group-item">
-                            <p>
+                            <div>
                                 异常 [401]<br/>
-                                <mark>
-                                    &lt;oauth&gt;&lt;error_description&gt;Bad client credentials&lt;/error_description&gt;&lt;error&gt;invalid_client&lt;/error&gt;&lt;/oauth&gt;
-                                </mark>
-                            </p>
+                                <pre>{
+    "error": "invalid_client"
+}</pre>
+                            </div>
                         </li>
                     </ul>
                 </li>

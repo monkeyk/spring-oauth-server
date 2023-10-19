@@ -32,11 +32,12 @@ Core-Class: OAuth2AuthorizationEndpointFilter
 response
 
 {
-"access_token": "eyJraWQiOiIyZGZjNTczMi1kODkyLTQ4NjMtYjZkMS04YTgzOGE3NzZmZTUiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImF1ZCI6ImNsaWVudDExIiwibmJmIjoxNjkwNzk0MDk2LCJzY29wZSI6WyJyZWFkIl0sImlzcyI6Imh0dHBzOi8vbXlvaWRjLmNvbSIsImV4cCI6MTY5MDc5NDM5NiwiaWF0IjoxNjkwNzk0MDk2fQ.pK2hUiQwi_9FWw6aXYSjtJJbPmzZQI_A9zbrtw4p-talPSf9IV9U0aSBboaO0SXmvwcLbWPb8TF1tY2DX8osMezscDiv8U7K3bxUQR7nVrrjrS60ExfvrT_r2IAs9no4fr11e_NnQIzCHDy87qqFPbu0QUSPbJpD0L_t019g7E8LEb_2EqO_4-SvP8tNdmLUrPnDOndbDtkAQB7GXpEB4uyhS0KW_VaoWKZgXu4IcUa927C151LI0wvQXiVATilMm_soUIeZEvFm9ilxXC2OpsNKIPfLIQYNbzUm8juRPOI38BUTyMGBe9qtH1IC5CDOZuBuTzs7Owhdy7Bu2zbf-w",
-"refresh_token": "xYCsaPu7YV_hB6TfLbWsFBws1YvP7D_qAJFlSCvT5u-RbP6uMwEudHZaVnoyw3wuaXO-8F3t_GYMNZyfFVTAGBHyYDs9VS6_vqbLqqL0mGMI20GOGY066bdRTOtFlwsl",
-"scope": "read",
+"access_token": "7154afT_cxvLDq1naSg6Aq9ueSFSW8xRr5txryW5MlddRe7nV0RogTYwPsJc_rrRqwaIvLleerLhkjtIN2E2U-4J_BzvYNCsv8BVLqeerCObwgwpP3t__NMMUakzRL2i",
+"refresh_token": "TZ9tzVwE_VLoJxALUSw4A4A0Nj7SLSWXCc69U9rvNmSnqR8Hbz-1m4uHebJWsAK0sa7SDIR4SNXOB3iaM0p1bH_8EBrljoBApQgdYi1uYzcVwYq55OVV2RUHN2BJwfSr",
+"scope": "openid profile",
+"id_token": "eyJraWQiOiJzb3MtZWNjLWtpZDEiLCJhbGciOiJFUzI1NiJ9.eyJzdWIiOiJ1bml0eSIsImF1ZCI6IjZ1ck5MZ1I2b3NrMkU1NmVrcCIsInVwZGF0ZWRfYXQiOiIiLCJhenAiOiI2dXJOTGdSNm9zazJFNTZla3AiLCJhdXRoX3RpbWUiOjE2OTc3MDczNTQsImlzcyI6Imh0dHA6Ly8xMjcuMC4wLjE6ODA4MCIsIm5pY2tuYW1lIjoiIiwiZXhwIjoxNjk3NzA5MjA4LCJpYXQiOjE2OTc3MDc0MDgsImp0aSI6IjEyNTc0MjU2NTk4MDI2ODY2NzI3NDAwMTMxNjk5NDk0Iiwic2lkIjoidXdwN255RnJwdlNtWmlQS2hCdWVSVFZfcVRKYkN6ZjAyTmYwQTZGN1lrSSJ9.3w-7EY9SwKA-UkXlhDfD2BbSwP6nCSLZxNgKwhkkMY8YPbMkygbj374SmEmsit7NlpRXHCtW6ULZ9_IVZ9MTBg",
 "token_type": "Bearer",
-"expires_in": 299
+"expires_in": 3599
 }
 
 
@@ -58,7 +59,7 @@ response
 {
 "access_token": "eyJraWQiOiIyZGZjNTczMi1kODkyLTQ4NjMtYjZkMS04YTgzOGE3NzZmZTUiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImF1ZCI6ImNsaWVudDExIiwibmJmIjoxNjkwNzk2MjA5LCJzY29wZSI6WyJyZWFkIl0sImlzcyI6Imh0dHBzOi8vbXlvaWRjLmNvbSIsImV4cCI6MTY5MDc5NjUwOSwiaWF0IjoxNjkwNzk2MjA5fQ.RjMZHpzz2YgK9ov_v4C94hWPS9qA9EiAVXvV9jxA9l4xLbzVVrmfC4w4QE7Z-8femjhtzzeZj5oCe1hO9v3WfSHXhO_5DAH4S9GY5acDo4XAUBbIKg1r4nvzE3QXacLbRDdtKSn62TM44NTPI_XjBU58e2EuZVRpPaOR5tEQpHjygDS3TW7aC2gouugm0f9YQCCPiHWrUQuA5cWiMJ0E8G_Q9GifVLkSy0aI7wzyvxhnKvd0Xoa5y6rHv3f2Whul5YwHo3aqHDfCO1AaUbCRknFJgG-LYyOj8iUvci2vCyPeWZ1uGm33a5s1PYcxqXXzmRvRvk1ZjMStETg00p-3kA",
 "refresh_token": "xYCsaPu7YV_hB6TfLbWsFBws1YvP7D_qAJFlSCvT5u-RbP6uMwEudHZaVnoyw3wuaXO-8F3t_GYMNZyfFVTAGBHyYDs9VS6_vqbLqqL0mGMI20GOGY066bdRTOtFlwsl",
-"scope": "read",
+"scope": "openid",
 "token_type": "Bearer",
 "expires_in": 299
 }
@@ -86,16 +87,18 @@ response
 - cURL
   curl --location 'http://localhost:8080/oauth2/token' \
   --header 'Content-Type: application/json' \
-  --form 'client_id="client11"' \
+  --form 'client_id="6urNLgR6osk2E56ekp"' \
+  --form 'client_secret="6urNLgR6osk2E56ekp"' \
   --form 'grant_type="client_credentials"' \
-  --form 'client_secret="secret22"'
+  --form 'scope="openid profile"'
 
 response
 
 {
-"access_token": "eyJraWQiOiJmYjliY2Q4Ni0yMDExLTRjYjYtOGQ4Yi03MmJmZjMwMTVjZGQiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJjbGllbnQxMSIsImF1ZCI6ImNsaWVudDExIiwibmJmIjoxNjkwNzk2ODc4LCJpc3MiOiJodHRwczovL215b2lkYy5jb20iLCJleHAiOjE2OTA4MDQwNzgsImlhdCI6MTY5MDc5Njg3OH0.YL9R0J_EuCSiarZnWWZxvPTdElxBs6r6B3FJ-nkI6paMwaCaWtSyIUqK_5GiF-uiRSK5me_8g4E8OOKitncYhXwVGpplvKXoIQousubkTqtjEhpegCR1i9J9xLL0vJuVsTz8sd8vdd0rDY9QSyeH5Xq2mayRD8il0LArO3QbT9PDM7uKW8PQ2YlxqkqxIRd-tZyyV3eRBzrNvvBb3mPqjyEsSI6c89L5Cs-lhdW5FJR5f7eKS1jUcl6jNWv3xOOWD2J-SjMnCDepGHQHDdxO_sfKZPKBSNThBWqX_4XQBMAxOlRxZLjHjymFYY-xusLh0AbQHrG7xRLyBEW3zNDSNw",
+"access_token": "p2i1WHiiFBCgTJFTs63OvO9-bclB9DbsgsebDo_ntMw_BAleu2RzIQzzFfaaJAR5oiL3xwN3xMyNTRZSrXM_1ANycleysPU5l3xuZ0aQX4V-Va178qg6e-PvLqLBsD_i",
+"scope": "openid profile",
 "token_type": "Bearer",
-"expires_in": 7199
+"expires_in": 3599
 }
 
 ## authorization_code + PKCE  flow
