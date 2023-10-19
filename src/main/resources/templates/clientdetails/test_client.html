@@ -256,7 +256,7 @@
             <div class="panel-heading">Test [refresh_token]</div>
             <div class="panel-body">
                 <p class="text-muted">输入refresh_token 后点击链接地址.</p>
-                refresh_token: <input type="text" ng-model="refreshToken" required="required" size="70"/>
+                refresh_token: <input type="text" ng-model="refreshToken" placeholder="xYCsaPu7YV_hB6TfLb..." size="70"/>
 
                 <br/>
 
@@ -304,7 +304,7 @@
         $scope.username = "mobile";
         $scope.password = "mobile";
         //a temp value
-        $scope.refreshToken = "xYCsaPu7YV_hB6TfLb...";
+        $scope.refreshToken = "";
         $scope.state = Math.floor(Math.random() * 1000000000).toString();
 
     }];
