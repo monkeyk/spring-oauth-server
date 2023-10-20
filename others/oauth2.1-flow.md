@@ -146,17 +146,17 @@ Core-Class: OAuth2DeviceAuthorizationEndpointFilter
 
 curl --location 'http://localhost:8080/oauth2/device_authorization' \
 --header 'Content-Type: application/json' \
---form 'client_id="client11"' \
---form 'client_secret="secret22"' \
---form 'scope="openid"'
+--form 'client_id="6urNLgR6osk2E56ekp"' \
+--form 'client_secret="6urNLgR6osk2E56ekp"' \
+--form 'scope="openid profile"'
 
 response
 
 {
-"user_code": "VZRP-KNJR",
-"device_code": "GQ-K6n5kwLfu3XpDja-b3SlPbTfqYirFtO4JpWmniLUWCSRO2Suu09ipNUo1srUBwebN2PP9KqfIoVpW6DE94xNDkBS-ExAINFHnZzm4XvV5kHOXQwT2UTx5OQp6_7qz",
-"verification_uri_complete": "http://localhost:8080/oauth2/device_verification?user_code=VZRP-KNJR",
-"verification_uri": "http://localhost:8080/oauth2/device_verification",
+"user_code": "PCKJ-FWZS",
+"device_code": "ZPMq2sfyHPj_pJ78T6J4yGcsAAi_XbuBjtQz2NLxYWKDHbcqUhg2nFHe3Ynp3V1SyCOwYEoaz9lPvqt-oj0sXKxJDnC5usJmANVqMQ-8Qjpp1ROi9gljdQY2NO3YYvIo",
+"verification_uri_complete": "http://127.0.0.1:8080/oauth2/device_verification?user_code=PCKJ-FWZS",
+"verification_uri": "http://127.0.0.1:8080/oauth2/device_verification",
 "expires_in": 300
 }
 
@@ -179,11 +179,11 @@ curl --location 'http://localhost:8080/oauth2/token' \
 response [200]
 
 {
-"access_token": "eyJraWQiOiJteW9pZGMta2V5aWQiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiYXVkIjoiY2xpZW50MTEiLCJuYmYiOjE2OTI3ODU5MDEsInNjb3BlIjpbIm9wZW5pZCIsInByb2ZpbGUiXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgxIiwiZXhwIjoxNjkyNzkzMTAxLCJpYXQiOjE2OTI3ODU5MDEsImp0aSI6ImRlOGExYjkwLWI1MzAtNDJmMi1iOWVlLTMwZDQ1ZTkxNDkwNiJ9.dkMOrM74R9eg7ozTtT8a0Tfe7TOjQ0gl0LZ-eG4eOyCUGuSGILzOrF_X7UQ4eaOAu43mRiJOJ81uqOcMgiMj6ijh4ihXumg0EnnWj79ShMX-4bCgy3d8_Ioq5E7CqykZkg0JIQNRm2Mv5Ei6PiPriBDCVjghCbz-UcPoT_66a-dIE3rO95LEQDCoFkWulq93HC9XfPbD2RwAWpRp1C3nD9GToNxkll9zeW8KZm46WSm-ihM6AG2VRj1dhIAOvodwPqGnc9gcY8KKT6tEEeuOSIMlWInQ4YG-pGM0n4h2OxhACZ8AfqQstdm2FP7o83ejVvBIreaaiA15BgqiqFx6IA",
-"refresh_token": "UCFNxUj4ytr241KzwJJgnMno1RfmoLs0GKVxNWPjW5VZ7d4U4YsDM7CwNgxRu7sKfDMFH2lcW_xcXA6CD7dztzUi41SaQZLkwfWU64F40al6U7x0sP3tfhgT005fS43g",
-"scope": "openid profile",
+"access_token": "QqPGuiF9c2HKYQEdxrs9E0WsRijEl_z9sINI6CFD5yMulXaZutLTktVtLP3zcr22XuYJOzWZMzOgvjWl2tqAoMo3S2MHBgxjPmx5gfr6DjeQPsW3fFPVc6pOa5Ll6u4S",
+"refresh_token": "7vtQtkU95tjt7nkaX8DZnDVntrgPYIoXB6_4WsV9FzMi-ppoPB_H5qmufi4EHqAuJPwdlxXYdDbVYoGudXd0iCPfmqT5B8CcW7zRsgaKQOHQlPw9Ju3wMGNSRk14YRWI",
+"scope": "profile",
 "token_type": "Bearer",
-"expires_in": 7199
+"expires_in": 3599
 }
 
 or [400]

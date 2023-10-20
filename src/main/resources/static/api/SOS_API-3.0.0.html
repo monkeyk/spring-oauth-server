@@ -617,16 +617,16 @@
             </ul>
         </div>
 
-        <div class="well well-sm" id="userInfoUnity">
-            <h3>获取当前用户信息 (ROLE_UNITY)</h3>
+        <div class="well well-sm" id="deviceAuthor">
+            <h3>[device_code]流程 - 发起认证(/oauth2/device_authorization)</h3>
 
-            <p class="text-muted">使用access_token获取用户信息, 需要有 ROLE_UNITY 权限</p>
+            <p class="text-muted">发起认证, 获取user_code, device_code等信息</p>
 
             <ul class="list-group">
                 <li class="list-group-item">
                     <p>
-                        请求URI: <code>/unity/user_info</code> <span
-                            class="label label-info">GET</span>
+                        请求URI: <code>/oauth2/device_authorization</code> <span
+                            class="label label-warning">POST</span>
                     </p>
 
                     <div>
@@ -642,14 +642,31 @@
                             </thead>
                             <tbody>
                             <tr>
-                                <td colspan="4">无</td>
+                                <td>client_id</td>
+                                <td>{client_id}</td>
+                                <td>是</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>client_secret</td>
+                                <td>{client_secret}</td>
+                                <td>是</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>scope</td>
+                                <td>{scope}</td>
+                                <td>是</td>
+                                <td>如: openid profile</td>
                             </tr>
                             </tbody>
                         </table>
                         请求示例:
-                        <p>
-                            <code>http://localhost:8080/spring-oauth-server/unity/user_info?access_token=b12cace6-7ce4-4fa8-b127-cf537d15b213</code>
-                        </p>
+                        <pre>curl --location 'http://localhost:8080/oauth2/device_authorization' \
+--header 'Content-Type: application/json' \
+--form 'client_id="6urNLgR6osk2E56ekp"' \
+--form 'client_secret="6urNLgR6osk2E56ekp"' \
+--form 'scope="openid profile"'</pre>
 
                     </div>
                     <br/>
@@ -658,39 +675,40 @@
 
                     <ul class="list-group">
                         <li class="list-group-item">
-                            <p>
+                            <div>
                                 正常 [200]<br/>
-                                <mark>
-                                    {"guid":"55b713df1c6f423e842ad68668523c49","archived":false,"username":"unity","phone":"","email":"unity@wdcy.cc","privileges":["UNITY"]}
-                                </mark>
-                            </p>
+                                <pre>{
+    "user_code": "PCKJ-FWZS",
+    "device_code": "ZPMq2sfyHPj_pJ78T6J4yGcsAAi_XbuBjtQz2NLxYWKDHbcqUhg2nFHe3Ynp3V1SyCOwYEoaz9lPvqt-oj0sXKxJDnC5usJmANVqMQ-8Qjpp1ROi9gljdQY2NO3YYvIo",
+    "verification_uri_complete": "http://127.0.0.1:8080/oauth2/device_verification?user_code=PCKJ-FWZS",
+    "verification_uri": "http://127.0.0.1:8080/oauth2/device_verification",
+    "expires_in": 300
+}</pre>
+                            </div>
                         </li>
                         <li class="list-group-item">
-                            <p>
+                            <div>
                                 异常 [401]<br/>
-                                <mark>
-                                    &lt;oauth&gt;&lt;error_description&gt;Invalid access token:
-                                    2c612eb7-a22b-45f0-8b2e-cd6f9e3667722&lt;/error_description&gt;&lt;error&gt;invalid_token&lt;/error&gt;&lt;/oauth&gt;
-                                </mark>
-                            </p>
+                                <pre>{
+    "error": "invalid_client"
+}</pre>
+                            </div>
                         </li>
                     </ul>
                 </li>
             </ul>
         </div>
 
-        <div class="well well-sm" id="userInfoMobile">
-            <p class="pull-right"><a href="">返回</a></p>
+        <div class="well well-sm" id="deviceToken">
+            <h3>[device_code]流程 - 获取token(/oauth2/token)</h3>
 
-            <h3>获取当前用户信息 (ROLE_MOBILE)</h3>
-
-            <p class="text-muted">使用access_token获取用户信息, 需要有 ROLE_MOBILE 权限</p>
+            <p class="text-muted">设备上轮循调用, 获取token</p>
 
             <ul class="list-group">
                 <li class="list-group-item">
                     <p>
-                        请求URI: <code>/m/user_info</code> <span
-                            class="label label-info">GET</span>
+                        请求URI: <code>/oauth2/token</code> <span
+                            class="label label-warning">POST</span>
                     </p>
 
                     <div>
@@ -706,14 +724,38 @@
                             </thead>
                             <tbody>
                             <tr>
-                                <td colspan="4">无</td>
+                                <td>client_id</td>
+                                <td>{client_id}</td>
+                                <td>是</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>client_secret</td>
+                                <td>{client_secret}</td>
+                                <td>是</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>grant_type</td>
+                                <td>urn:ietf:params:oauth:grant-type:device_code</td>
+                                <td>是</td>
+                                <td>固定值</td>
+                            </tr>
+                            <tr>
+                                <td>device_code</td>
+                                <td>{device_code}</td>
+                                <td>是</td>
+                                <td>发起认证时返回的device_code值</td>
                             </tr>
                             </tbody>
                         </table>
                         请求示例:
-                        <p>
-                            <code>http://localhost:8080/spring-oauth-server/m/user_info?access_token=b12cace6-7ce4-4fa8-b127-cf537d15b213</code>
-                        </p>
+                        <pre>curl --location 'http://localhost:8080/oauth2/token' \
+--header 'Content-Type: application/json' \
+--form 'client_id="6urNLgR6osk2E56ekp"' \
+--form 'client_secret="6urNLgR6osk2E56ekp"' \
+--form 'grant_type="urn:ietf:params:oauth:grant-type:device_code"' \
+--form 'device_code="iBv-_clBQtJR4w2eN8bgGBnwWgcoem6FCJlHgahhHNOq9oImcJAWLYKJ-jJOk207X19uE-glkArRLnhXgpm0C0pQcoxAZyoMmgznvWxOITQUYFYdAluBTo-fmDteKSgh"'</pre>
 
                     </div>
                     <br/>
@@ -722,21 +764,26 @@
 
                     <ul class="list-group">
                         <li class="list-group-item">
-                            <p>
+                            <div>
                                 正常 [200]<br/>
-                                <mark>
-                                    {"guid":"612025cb3f964a64a48bbdf77e53c2c1","archived":false,"username":"mobile","phone":"","email":"mobile@wdcy.cc","privileges":["MOBILE"]}
-                                </mark>
-                            </p>
+                                <pre>{
+    "access_token": "QqPGuiF9c2HKYQEdxrs9E0WsRijEl_z9sINI6CFD5yMulXaZutLTktVtLP3zcr22XuYJOzWZMzOgvjWl2tqAoMo3S2MHBgxjPmx5gfr6DjeQPsW3fFPVc6pOa5Ll6u4S",
+    "refresh_token": "7vtQtkU95tjt7nkaX8DZnDVntrgPYIoXB6_4WsV9FzMi-ppoPB_H5qmufi4EHqAuJPwdlxXYdDbVYoGudXd0iCPfmqT5B8CcW7zRsgaKQOHQlPw9Ju3wMGNSRk14YRWI",
+    "scope": "profile",
+    "token_type": "Bearer",
+    "expires_in": 3599
+}</pre>
+                            </div>
                         </li>
                         <li class="list-group-item">
-                            <p>
-                                异常 [401]<br/>
-                                <mark>
-                                    &lt;oauth&gt;&lt;error_description&gt;Invalid access token:
-                                    2c612eb7-a22b-45f0-8b2e-cd6f9e3667722&lt;/error_description&gt;&lt;error&gt;invalid_token&lt;/error&gt;&lt;/oauth&gt;
-                                </mark>
-                            </p>
+                            <div>
+                                异常 [400]<br/>
+                                <pre>{
+    "error": "authorization_pending",
+    "error_uri": "https://datatracker.ietf.org/doc/html/rfc8628#section-3.5"
+}</pre>
+                                <p class="help-block">说明: error=authorization_pending 表示授权正在进行中, 设备上需要轮循继续等待授权结果</p>
+                            </div>
                         </li>
                     </ul>
                 </li>
