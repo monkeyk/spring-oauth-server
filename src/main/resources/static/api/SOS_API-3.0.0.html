@@ -41,7 +41,6 @@
             <li class="list-group-item"><a href="#deviceToken">[device_code]流程 - 获取token(/oauth2/token)</a></li>
             <li class="list-group-item"><a href="#oidcUserinfo">OIDC /userinfo</a></li>
             <li class="list-group-item"><a href="#oidcConfig">OIDC /openid-configuration</a></li>
-            <li class="list-group-item"><a href="#oidcLogout">OIDC /logout</a></li>
             <li class="list-group-item"><a href="#oauth2Server">OAuth2.1 /oauth-authorization-server</a></li>
         </ul>
     </div>
@@ -776,8 +775,7 @@
                         </table>
                         请求示例:
                         <pre>curl --location 'http://localhost:8080/.well-known/openid-configuration' \
---header 'Content-Type: application/json' \
---header 'Authorization: Bearer eyJraWQiOiJzb3MtcnNhLWtpZDIiLCJhbGciOiJSUzI1NiJ9.eyJzdWIi...'</pre>
+--header 'Content-Type: application/json'</pre>
 
                     </div>
                     <br/>
@@ -840,6 +838,101 @@
         "email",
         "address",
         "phone"
+    ]
+}</pre>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div>
+                                异常 [400]<br/>
+                                <pre></pre>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="well well-sm" id="oauth2Server">
+            <p class="pull-right"><a href="">返回</a></p>
+            <h3>OAuth2.1 /oauth-authorization-server<small class="badge">public</small></h3>
+
+            <p class="text-muted">OAuth2.1 well-known API</p>
+
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <p>
+                        请求URI: <code>/.well-known/oauth-authorization-server</code> <span
+                            class="label label-info">GET</span>
+                    </p>
+
+                    <div>
+                        请求参数说明:
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>参数名</th>
+                                <th>参数值</th>
+                                <th>必须?</th>
+                                <th>备注</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td colspan="4">无</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        请求示例:
+                        <pre>curl --location 'http://localhost:8080/.well-known/oauth-authorization-server' \
+--header 'Content-Type: application/json'</pre>
+
+                    </div>
+                    <br/>
+
+                    <strong>响应</strong>
+
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <div>
+                                正常 [200]<br/>
+                                <pre>{
+    "issuer": "http://127.0.0.1:8080",
+    "authorization_endpoint": "http://127.0.0.1:8080/oauth2/authorize",
+    "device_authorization_endpoint": "http://127.0.0.1:8080/oauth2/device_authorization",
+    "token_endpoint": "http://127.0.0.1:8080/oauth2/token",
+    "token_endpoint_auth_methods_supported": [
+        "client_secret_basic",
+        "client_secret_post",
+        "client_secret_jwt",
+        "private_key_jwt"
+    ],
+    "jwks_uri": "http://127.0.0.1:8080/oauth2/jwks",
+    "response_types_supported": [
+        "code"
+    ],
+    "grant_types_supported": [
+        "authorization_code",
+        "client_credentials",
+        "refresh_token",
+        "urn:ietf:params:oauth:grant-type:device_code"
+    ],
+    "revocation_endpoint": "http://127.0.0.1:8080/oauth2/revoke",
+    "revocation_endpoint_auth_methods_supported": [
+        "client_secret_basic",
+        "client_secret_post",
+        "client_secret_jwt",
+        "private_key_jwt"
+    ],
+    "introspection_endpoint": "http://127.0.0.1:8080/oauth2/introspect",
+    "introspection_endpoint_auth_methods_supported": [
+        "client_secret_basic",
+        "client_secret_post",
+        "client_secret_jwt",
+        "private_key_jwt"
+    ],
+    "code_challenge_methods_supported": [
+        "S256"
     ]
 }</pre>
                             </div>

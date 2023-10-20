@@ -248,7 +248,7 @@ response
 ## logout token API
 Core-Class: OidcLogoutEndpointFilter
 
-URL: http://localhost:8080/connect/logout?id_token_hint=${id_token}&post_logout_redirect_uri=${post_logout_redirect_uri}&state=${state}
+URL: http://localhost:8080/connect/logout?id_token_hint=${id_token}&client_id={client_id}&post_logout_redirect_uri=${post_logout_redirect_uri}&state=${state}
 
 
 
