@@ -34,7 +34,6 @@
             </li>
             <li class="list-group-item"><a href="#getTokenCred">获取access_token (grant_type=client_credentials)</a></li>
             <li class="list-group-item"><a href="#refreshToken">刷新access_token (grant_type=refresh_token)</a></li>
-            <li class="list-group-item"><a href="#getTokenRest">获取access_token (Restful API)</a></li>
             <li class="list-group-item"><a href="#verifyToken">检查token (/oauth2/introspect)</a></li>
             <li class="list-group-item"><a href="#revokeToken">撤销token (/oauth2/revoke)</a></li>
             <li class="list-group-item"><a href="#deviceAuthor">[device_code]流程 - 发起认证(/oauth2/device_authorization)</a>
@@ -341,111 +340,6 @@
             </ul>
         </div>
 
-        <div class="well well-sm" id="getTokenRest">
-            <h3>获取access_token (Restful API)
-                <small class="badge">public</small>
-            </h3>
-
-            <p class="text-muted">Restful API 获取access_token,
-                适用于grant_type为authorization_code,refresh_token,client_credentials</p>
-
-            <ul class="list-group">
-                <li class="list-group-item">
-                    <p>
-                        请求URI: <code>/oauth2/rest_token</code> <span
-                            class="label label-warning">POST</span> <span class="label label-success">REST</span>
-                    </p>
-
-                    <p>
-                        Content-Type:
-                        <mark>application/json</mark>
-                    </p>
-                    <div>
-                        请求Body参数说明:
-                        <table class="table table-bordered">
-                            <thead>
-                            <tr>
-                                <th>参数名</th>
-                                <th>参数值</th>
-                                <th>必须?</th>
-                                <th>备注</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td>grant_type</td>
-                                <td>{grant_type}</td>
-                                <td>是</td>
-                                <td>authorization_code,refresh_token,client_credentials</td>
-                            </tr>
-                            <tr>
-                                <td>scope</td>
-                                <td>{scope}</td>
-                                <td>是</td>
-                                <td>如: openid</td>
-                            </tr>
-                            <tr>
-                                <td>client_id</td>
-                                <td>{client_id}</td>
-                                <td>是</td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td>client_secret</td>
-                                <td>{client_secret}</td>
-                                <td>是</td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td>device_code</td>
-                                <td>{device_code}</td>
-                                <td>否</td>
-                                <td>grant_type=urn:ietf:params:oauth:grant-type:device_code 时必须有</td>
-                            </tr>
-                            <tr>
-                                <td>code_verifier</td>
-                                <td>{code_verifier}</td>
-                                <td>否</td>
-                                <td>PKCE时必须</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                        请求Body示例:
-                        <p>
-                            <code>{"client_id":"test1234","client_secret":"test1234","grant_type":"password","scope":"read","username":"mobile","password":"mobile"}</code>
-                        </p>
-                        或
-                        <p>
-                            <code>{"client_id":"test1234","client_secret":"test1234","grant_type":"password","scope":"read"}</code>
-                        </p>
-
-                    </div>
-                    <br/>
-
-                    <strong>响应</strong>
-
-                    <ul class="list-group">
-                        <li class="list-group-item">
-                            <p>
-                                正常 [200]<br/>
-                                <mark>
-                                    {"access_token":"e2996930-8398-44fd-8de5-7d1b1624ced7","token_type":"bearer","refresh_token":"2b2de701-53e7-4b57-8301-e4a06ee49698","expires_in":43008,"scope":"read"}
-                                </mark>
-                            </p>
-                        </li>
-                        <li class="list-group-item">
-                            <p>
-                                异常 [401]<br/>
-                                <mark>
-                                    {"error":"invalid_grant","error_description":"Bad credentials"}
-                                </mark>
-                            </p>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-
         <div class="well well-sm" id="verifyToken">
             <h3>检查token (/oauth2/introspect)
                 <small class="badge">public</small>
@@ -618,7 +512,7 @@
         </div>
 
         <div class="well well-sm" id="deviceAuthor">
-            <h3>[device_code]流程 - 发起认证(/oauth2/device_authorization)</h3>
+            <h3>[device_code]流程 - 发起认证(/oauth2/device_authorization)<small class="badge">public</small></h3>
 
             <p class="text-muted">发起认证, 获取user_code, device_code等信息</p>
 
@@ -700,7 +594,7 @@
         </div>
 
         <div class="well well-sm" id="deviceToken">
-            <h3>[device_code]流程 - 获取token(/oauth2/token)</h3>
+            <h3>[device_code]流程 - 获取token(/oauth2/token)<small class="badge">public</small></h3>
 
             <p class="text-muted">设备上轮循调用, 获取token</p>
 
@@ -783,6 +677,177 @@
     "error_uri": "https://datatracker.ietf.org/doc/html/rfc8628#section-3.5"
 }</pre>
                                 <p class="help-block">说明: error=authorization_pending 表示授权正在进行中, 设备上需要轮循继续等待授权结果</p>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="well well-sm" id="oidcUserinfo">
+            <h3>OIDC /userinfo</h3>
+
+            <p class="text-muted">客户端带上access_token获取用户信息</p>
+
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <p>
+                        请求URI: <code>/userinfo</code> <span
+                            class="label label-info">GET</span>
+                    </p>
+
+                    <div>
+                        请求参数说明:
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>参数名</th>
+                                <th>参数值</th>
+                                <th>必须?</th>
+                                <th>备注</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td colspan="4">无</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        请求示例:
+                        <pre>curl --location 'http://localhost:8080/userinfo' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer eyJraWQiOiJzb3MtcnNhLWtpZDIiLCJhbGciOiJSUzI1NiJ9.eyJzdWI...'</pre>
+
+                    </div>
+                    <br/>
+
+                    <strong>响应</strong>
+
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <div>
+                                正常 [200]<br/>
+                                <pre>{
+    "sub": "unity",
+    "updated_at": 0,
+    "nickname": ""
+}</pre>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div>
+                                异常 [401]<br/>
+                                <pre></pre>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="well well-sm" id="oidcConfig">
+            <h3>OIDC /openid-configuration<small class="badge">public</small></h3>
+
+            <p class="text-muted">OIDC well-known API</p>
+
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <p>
+                        请求URI: <code>/.well-known/openid-configuration</code> <span
+                            class="label label-info">GET</span>
+                    </p>
+
+                    <div>
+                        请求参数说明:
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>参数名</th>
+                                <th>参数值</th>
+                                <th>必须?</th>
+                                <th>备注</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td colspan="4">无</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        请求示例:
+                        <pre>curl --location 'http://localhost:8080/.well-known/openid-configuration' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer eyJraWQiOiJzb3MtcnNhLWtpZDIiLCJhbGciOiJSUzI1NiJ9.eyJzdWIi...'</pre>
+
+                    </div>
+                    <br/>
+
+                    <strong>响应</strong>
+
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <div>
+                                正常 [200]<br/>
+                                <pre>{
+    "issuer": "http://127.0.0.1:8080",
+    "authorization_endpoint": "http://127.0.0.1:8080/oauth2/authorize",
+    "device_authorization_endpoint": "http://127.0.0.1:8080/oauth2/device_authorization",
+    "token_endpoint": "http://127.0.0.1:8080/oauth2/token",
+    "token_endpoint_auth_methods_supported": [
+        "client_secret_basic",
+        "client_secret_post",
+        "client_secret_jwt",
+        "private_key_jwt"
+    ],
+    "jwks_uri": "http://127.0.0.1:8080/oauth2/jwks",
+    "userinfo_endpoint": "http://127.0.0.1:8080/userinfo",
+    "end_session_endpoint": "http://127.0.0.1:8080/connect/logout",
+    "response_types_supported": [
+        "code"
+    ],
+    "grant_types_supported": [
+        "authorization_code",
+        "client_credentials",
+        "refresh_token",
+        "urn:ietf:params:oauth:grant-type:device_code",
+        "password",
+        "urn:ietf:params:oauth:grant-type:jwt-bearer"
+    ],
+    "revocation_endpoint": "http://127.0.0.1:8080/oauth2/revoke",
+    "revocation_endpoint_auth_methods_supported": [
+        "client_secret_basic",
+        "client_secret_post",
+        "client_secret_jwt",
+        "private_key_jwt"
+    ],
+    "introspection_endpoint": "http://127.0.0.1:8080/oauth2/introspect",
+    "introspection_endpoint_auth_methods_supported": [
+        "client_secret_basic",
+        "client_secret_post",
+        "client_secret_jwt",
+        "private_key_jwt"
+    ],
+    "subject_types_supported": [
+        "public"
+    ],
+    "id_token_signing_alg_values_supported": [
+        "RS256",
+        "ES256"
+    ],
+    "scopes_supported": [
+        "openid",
+        "profile",
+        "email",
+        "address",
+        "phone"
+    ]
+}</pre>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div>
+                                异常 [400]<br/>
+                                <pre></pre>
                             </div>
                         </li>
                     </ul>
