@@ -3,6 +3,7 @@ package com.monkeyk.sos.service.dto;
 import com.monkeyk.sos.infrastructure.SettingsUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.oauth2.jose.jws.JwsAlgorithm;
+import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
 
@@ -72,8 +73,13 @@ public class ClientSettingsDto implements Serializable {
     public ClientSettings toSettings() {
         ClientSettings.Builder builder = ClientSettings.builder()
                 .requireProofKey(requireProofKey)
-                .requireAuthorizationConsent(requireAuthorizationConsent)
-                .tokenEndpointAuthenticationSigningAlgorithm(SignatureAlgorithm.valueOf(tokenEndpointAuthenticationSigningAlgorithm));
+                .requireAuthorizationConsent(requireAuthorizationConsent);
+        //区分不同算法:对称/非对称
+        if (tokenEndpointAuthenticationSigningAlgorithm.startsWith("HS")) {
+            builder.tokenEndpointAuthenticationSigningAlgorithm(MacAlgorithm.valueOf(tokenEndpointAuthenticationSigningAlgorithm));
+        } else {
+            builder.tokenEndpointAuthenticationSigningAlgorithm(SignatureAlgorithm.valueOf(tokenEndpointAuthenticationSigningAlgorithm));
+        }
         if (StringUtils.isNotBlank(jwkSetUrl)) {
             builder.jwkSetUrl(jwkSetUrl);
         }

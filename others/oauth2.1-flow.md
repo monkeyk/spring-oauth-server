@@ -201,6 +201,7 @@ or [400]
 
 
 
+
 ## revoke token API
 Core-Class: OAuth2TokenRevocationEndpointFilter
 
@@ -272,6 +273,8 @@ URL: http://localhost:8080/connect/logout?id_token_hint=${id_token}&client_id={c
 https://springdoc.cn/spring-authorization-server/index.html
 
 https://developer.aliyun.com/article/1050110
+
+[jwt-bearer] https://developer.atlassian.com/cloud/jira/software/user-impersonation-for-connect-apps/
 
 在线PKCE生成工具
 1. PKCEUtils.java
