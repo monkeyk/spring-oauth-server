@@ -196,7 +196,8 @@ or [400]
 
 
 ## JWT_BEARER flow
-- Core-Class: 
+- Core-Class: JwtClientAssertionAuthenticationProvider
+- 
 
 
 
