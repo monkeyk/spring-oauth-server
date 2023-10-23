@@ -256,9 +256,7 @@ URL: http://localhost:8080/connect/logout?id_token_hint=${id_token}&client_id={c
 ## .well-known URL
 ### OIDC 1.0
 - URL: http://localhost:8080/.well-known/openid-configuration
-
 - Core-Class: OidcProviderConfigurationEndpointFilter
-
 - Response: {"issuer":"http://localhost:8080","authorization_endpoint":"http://localhost:8080/oauth2/authorize","device_authorization_endpoint":"http://localhost:8080/oauth2/device_authorization","token_endpoint":"http://localhost:8080/oauth2/token","token_endpoint_auth_methods_supported":["client_secret_basic","client_secret_post","client_secret_jwt","private_key_jwt"],"jwks_uri":"http://localhost:8080/oauth2/jwks","userinfo_endpoint":"http://localhost:8080/userinfo","end_session_endpoint":"http://localhost:8080/connect/logout","response_types_supported":["code"],"grant_types_supported":["authorization_code","client_credentials","refresh_token","urn:ietf:params:oauth:grant-type:device_code"],"revocation_endpoint":"http://localhost:8080/oauth2/revoke","revocation_endpoint_auth_methods_supported":["client_secret_basic","client_secret_post","client_secret_jwt","private_key_jwt"],"introspection_endpoint":"http://localhost:8080/oauth2/introspect","introspection_endpoint_auth_methods_supported":["client_secret_basic","client_secret_post","client_secret_jwt","private_key_jwt"],"subject_types_supported":["public"],"id_token_signing_alg_values_supported":["RS256"],"scopes_supported":["openid"]}
 
 ### OAuth 2.1
