@@ -197,6 +197,7 @@ or [400]
 
 ## JWT_BEARER flow
 - Core-Class: JwtClientAssertionAuthenticationProvider
+- URL: http://localhost:8080/oauth2/token
 - 
 
 

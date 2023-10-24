@@ -13,21 +13,30 @@
     </appender>
 
     <!--按天生成日志-->
-<!--    <appender name="fileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
-<!--        <prudent>true</prudent>-->
+    <appender name="fileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <prudent>true</prudent>
 
-<!--        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">-->
-<!--            <fileNamePattern>logs/%d{yyyy-MM-dd}/sos-%i.log</fileNamePattern>-->
-<!--            <maxFileSize>10MB</maxFileSize>-->
-<!--            <maxHistory>15</maxHistory>-->
-<!--            <timeBasedFileNamingAndTriggeringPolicy-->
-<!--                    class="ch.qos.logback.core.rolling.DefaultTimeBasedFileNamingAndTriggeringPolicy">-->
-<!--            </timeBasedFileNamingAndTriggeringPolicy>-->
-<!--        </rollingPolicy>-->
-<!--        <encoder>-->
-<!--            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%-5level] [%.80c{10}][%L] -%m%n</pattern>-->
-<!--        </encoder>-->
-<!--    </appender>-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>logs/%d{yyyy-MM-dd}/sos-%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>15</maxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy
+                    class="ch.qos.logback.core.rolling.DefaultTimeBasedFileNamingAndTriggeringPolicy">
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%-5level] [%.80c{10}][%L] -%m%n</pattern>
+        </encoder>
+    </appender>
+
+
+    <logger name="com.monkeyk.sos" level="DEBUG" additivity="false">
+        <appender-ref ref="fileAppender"/>
+    </logger>
+
+    <logger name="org.springframework.security" level="DEBUG" additivity="false">
+        <appender-ref ref="fileAppender"/>
+    </logger>
 
     <!--  root配置放最后 -->
     <root level="INFO">
