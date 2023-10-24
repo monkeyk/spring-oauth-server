@@ -268,6 +268,12 @@ URL: http://localhost:8080/connect/logout?id_token_hint=${id_token}&client_id={c
 - Response: {"issuer":"http://localhost:8080","authorization_endpoint":"http://localhost:8080/oauth2/authorize","device_authorization_endpoint":"http://localhost:8080/oauth2/device_authorization","token_endpoint":"http://localhost:8080/oauth2/token","token_endpoint_auth_methods_supported":["client_secret_basic","client_secret_post","client_secret_jwt","private_key_jwt"],"jwks_uri":"http://localhost:8080/oauth2/jwks","response_types_supported":["code"],"grant_types_supported":["authorization_code","client_credentials","refresh_token","urn:ietf:params:oauth:grant-type:device_code"],"revocation_endpoint":"http://localhost:8080/oauth2/revoke","revocation_endpoint_auth_methods_supported":["client_secret_basic","client_secret_post","client_secret_jwt","private_key_jwt"],"introspection_endpoint":"http://localhost:8080/oauth2/introspect","introspection_endpoint_auth_methods_supported":["client_secret_basic","client_secret_post","client_secret_jwt","private_key_jwt"],"code_challenge_methods_supported":["S256"]}
 
 
+## jwks URL
+- URL: http://localhost:8080/oauth2/jwks
+- Core-Class: NimbusJwkSetEndpointFilter
+- Response: {"keys":[{"kty":"EC","crv":"P-256","kid":"sos-ecc-kid1","key_ops":["sign","deriveKey","decrypt","encrypt","verify"],"x":"UyCuPXhC0_KLRqfWPNDU4ZljSx7lQ_vP7VbYDiOZmsk","y":"2HuQhn3bfkmYiB6BLQKlN8tkI8awkeOiKaNk1cu06ow","alg":"ES256"},{"kty":"RSA","e":"AQAB","kid":"sos-rsa-kid2","key_ops":["deriveKey","verify","encrypt","decrypt","sign"],"alg":"RS256","n":"st2IswiZyQXHy86KBYQdEYv3sAfWpyx-e4o0Dcqvpck0E1FpZfVcFzbLy9B7YHvXv1SseVcg93iiNYgGlPDeZxPllz4-oIisDvSmEJdAidhqQxxpMeSjeQzvVu4CKjGFG9jA68pTm-KDia3Y516b4tPyKhHGIUZq2yJrNIs2QjTikYbn5AxAQ244cDPTsuEV5yqdOdyWvdlrn4WSFLiPt31MboT6et7Hmm90fwbMDSaWWb2XNo2gOnzWFwlNO2s8zK_Z1IWhmreb_XH5mW9xirrT03nbnLTLcmLtZYHFKjP55zRFDgKsXeo9BQNG3dkCsWz0N8pURaN6cuXYoYGU7Q"}]}
+
+
 ---
 ## reference doc
 
