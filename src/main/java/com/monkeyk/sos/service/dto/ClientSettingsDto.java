@@ -41,9 +41,9 @@ public class ClientSettingsDto implements Serializable {
 
     /**
      * 若client有自定义的 jwk URL，
-     * 则填写, null表示用默认的
-     * <p>
-     * todo: v3.0.0不提供自定义设置
+     * 则填写, jwt-bearer流程中会使用到(OAuth2.1新增)
+     *
+     * @since 3.0.0
      */
     private String jwkSetUrl;
 
