@@ -22,14 +22,14 @@ public class JwtBearerFlowTest {
 
 
     /**
-     * MAC 生成 token
+     * MAC 生成 assertion
      * HS256
      * method:  CLIENT_SECRET_JWT
      *
      * @throws Exception e
      */
     @Test
-    void macToken() throws Exception {
+    void macAssertion() throws Exception {
 
         String clientId = "vLIXDF9GXg6Psfh1uzwVFUj0fucX2Zn9";
         // client_secret 加密后的值
@@ -53,9 +53,24 @@ public class JwtBearerFlowTest {
         //签名
         jwsObject.sign(jwsSigner);
 
-        String idToken = jwsObject.serialize();
-        assertNotNull(idToken);
-        System.out.println(idToken);
+        // 将 assertion 复制放到请求参数  client_assertion 的值
+        String assertion = jwsObject.serialize();
+        assertNotNull(assertion);
+//        System.out.println(assertion);
+
+    }
+
+
+    /**
+     * RSA 生成 assertion
+     * SignatureAlgorithm:  RS256
+     * method:  PRIVATE_KEY_JWT
+     *
+     * @throws Exception e
+     */
+    void rs256Assertion() throws Exception {
+
+
 
     }
 
