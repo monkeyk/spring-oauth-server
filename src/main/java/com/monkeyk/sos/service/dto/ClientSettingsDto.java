@@ -10,6 +10,7 @@ import org.springframework.security.oauth2.server.authorization.settings.ClientS
 import java.io.Serial;
 import java.io.Serializable;
 
+import static com.monkeyk.sos.domain.shared.SOSConstants.HS;
 import static org.springframework.security.oauth2.jose.jws.JwsAlgorithms.RS256;
 
 /**
@@ -75,7 +76,7 @@ public class ClientSettingsDto implements Serializable {
                 .requireProofKey(requireProofKey)
                 .requireAuthorizationConsent(requireAuthorizationConsent);
         //区分不同算法:对称/非对称
-        if (tokenEndpointAuthenticationSigningAlgorithm.startsWith("HS")) {
+        if (tokenEndpointAuthenticationSigningAlgorithm.startsWith(HS)) {
             builder.tokenEndpointAuthenticationSigningAlgorithm(MacAlgorithm.valueOf(tokenEndpointAuthenticationSigningAlgorithm));
         } else {
             builder.tokenEndpointAuthenticationSigningAlgorithm(SignatureAlgorithm.valueOf(tokenEndpointAuthenticationSigningAlgorithm));

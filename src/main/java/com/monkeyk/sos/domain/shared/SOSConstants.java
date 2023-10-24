@@ -28,5 +28,10 @@ public interface SOSConstants {
      */
     String AUTHORIZATION_ENDPOINT_URI = "/oauth2/authorize";
 
+    /**
+     * 对称算法名称前缀，如HS256
+     * 详见 MacAlgorithm.java
+     */
+    String HS = "HS";
 
 }
