@@ -198,8 +198,27 @@ or [400]
 ## JWT_BEARER flow
 - Core-Class: JwtClientAssertionAuthenticationProvider
 - URL: http://localhost:8080/oauth2/token
-- 
 
+- grant_type=authorization_code
+curl --location 'http://localhost:8080/oauth2/token' \
+--header 'Content-Type: application/json' \
+--form 'client_id="vLIXDF9GXg6Psfh1uzwVFUj0fucX2Zn9"' \
+--form 'client_assertion_type="urn:ietf:params:oauth:client-assertion-type:jwt-bearer"' \
+--form 'scope="openid"' \
+--form 'grant_type="authorization_code"' \
+--form 'client_assertion="eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ2TElYREY5R1hnNlBzZmgxdXp3VkZVajBmdWNYMlpuOSIsInN1YiI6InZMSVhERjlHWGc2UHNmaDF1endWRlVqMGZ1Y1gyWm45IiwiYXVkIjoiaHR0cDovLzEyNy4wLjAuMTo4MDgwIiwiZXhwIjoxNjk4MTE5NjMxfQ.-40zh9Sao9JzP4_eYVnIpreuk76Nql4ue3hNuyhu59c"' \
+--form 'code="CyN4YB2Y9p8y1lqfUQc0_jxbuL0spqP8pC8vriwzwKP4AQhtYriMVF-obChcf83rwLILZP8z-uSVKcS-eGvZPE-vTM-LbiMXic0tXW1fzWfYd0r7ijGapX1Nnho3-XWn"' \
+--form 'redirect_uri="https://andaily.com/oauth2/callback"'
+
+- grant_type=client_credentials
+  curl --location 'http://localhost:8080/oauth2/token' \
+  --header 'Content-Type: application/json' \
+  --form 'client_id="dofOx6hjxlWw9qe2bnFvqbiPhuWwGWdn"' \
+  --form 'client_assertion_type="urn:ietf:params:oauth:client-assertion-type:jwt-bearer"' \
+  --form 'scope="openid"' \
+  --form 'grant_type="client_credentials"' \
+  --form 'client_assertion="eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJkb2ZPeDZoanhsV3c5cWUyYm5GdnFiaVBodVd3R1dkbiIsInN1YiI6ImRvZk94NmhqeGxXdzlxZTJibkZ2cWJpUGh1V3dHV2RuIiwiYXVkIjoiaHR0cDovLzEyNy4wLjAuMTo4MDgwIiwiZXhwIjoxNjk4MzI4NDI0fQ.A-CMlBoOqtlWVQiu8RjK9xWKG4lqBMT7IMCVIDJc3hsSZk7KvApL2lPx3k2b9bDM8Ysr7VXnFPfQbN8RN4sTsf2x-cpzDQ-vFBGMFqgaXZckuba21moT42GWyTULQ2_HRYy8bLCfOiX7BG4HyJYHf2JDrZgQ3pPu3VhH5D9bJ5_y6WcZxDlVMBUMXGRuhwl0tCTc8L0Ss3azPD82wMblDavCUTxNzOvb0qc3orVEjgUW77cxzGi929TtWtCvBH8dyNh_CAsvYJKAJDskTnLKv6GihL33pNHBhfjwSUP2s-_LPD6Z7gjf9GJHSSz7TeztX3NU9-FaoJZjYGR2lq2F2A"' \
+  --form 'client_secret="dofOx6hjxlWw9qe2bnFvqbiPhuWwGWdn"'
 
 
 

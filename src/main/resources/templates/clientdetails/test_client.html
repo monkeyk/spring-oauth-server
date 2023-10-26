@@ -229,7 +229,17 @@
         <div th:if="${clientDetailsDto.containsJwtBearer}" class="panel panel-default">
             <div class="panel-heading">Test [jwt-bearer] <em class="label label-success">OAuth2.1新增</em></div>
             <div class="panel-body">
-                ......
+                <ul>
+                    <li>
+                        <p><code>jwt-bearer</code>不是一种新的<em>grant_type</em>, 而是一类增强client端请求安全性的辅助(assertion)实现;
+                            通过类似'双向SSL'的机制来让server端验证client端的签名实现强安全性.</p>
+                    </li>
+                    <li>
+                        <p>当注册或添加client端时需要填写一个jwk URL地址(用来获取验签的公钥)</p>
+                    </li>
+                </ul>
+
+
             </div>
         </div>
 
