@@ -231,14 +231,16 @@
             <div class="panel-body">
                 <ul>
                     <li>
-                        <p><code>jwt-bearer</code>不是一种新的<em>grant_type</em>, 而是一类增强client端请求安全性的辅助(assertion)实现;
+                        <p><code>jwt-bearer</code>是一类增强client端请求安全性的断言(assertion)实现;
                             通过类似'双向SSL'的机制来让server端验证client端的签名实现强安全性.</p>
                     </li>
                     <li>
-                        <p>当注册或添加client端时需要填写一个jwk URL地址(用来获取验签的公钥)</p>
+                        <p>当注册或添加client端时需要填写一个jwk URL地址(用来获取验签的公钥), 指定认证jwt签名算法(如RS256),
+                            设置methods为<code>client_secret_jwt</code>(对称算法, 使用client_secret为MacKey)或<code>private_key_jwt</code>(非对称算法)</p>
                     </li>
                 </ul>
 
+                ...
 
             </div>
         </div>
