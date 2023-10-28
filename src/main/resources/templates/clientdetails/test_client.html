@@ -31,44 +31,102 @@
         <div th:if="${clientDetailsDto.containsAuthorizationCode}" class="panel panel-default">
             <div class="panel-heading">Test [authorization_code]</div>
             <div class="panel-body">
-                <p class="text-muted">输入每一步必要的信息后点击其下面的链接地址.</p>
+                <p class="text-muted">输入每一步必要的信息后点击其下面的按钮地址.</p>
                 <ol>
                     <li>
                         <div>
                             <code>从 spring-oauth-server获取 'code'</code>
                             <br/>
-                            redirect_uri: <input type="text" value="" ng-model="redirectUri" size="70"
-                                                 required="required"/>
-                            <br/>
                             <form th:action="@{/oauth2/authorize}" th:method="get" target="_blank">
-                                <input type="hidden" name="client_id" value="{{clientId}}"/>
-                                <input type="hidden" name="redirect_uri" value="{{redirectUri}}"/>
-                                <input type="hidden" name="scope" value="{{scope}}"/>
-                                <input type="hidden" name="state" value="{{state}}"/>
-                                <input type="hidden" name="response_type" value="code"/>
-                                <button class="btn btn-link" type="submit">
-                                    /oauth2/authorize?client_id={{clientId}}&redirect_uri={{redirectUri}}&response_type=code&scope={{scope}}&state={{state}}
-                                </button>
+                                <table class="table table-striped table-bordered table-hover">
+                                    <tr>
+                                        <td>client_id</td>
+                                        <td>
+                                            <input readonly="readonly" name="client_id" size="70" value="{{clientId}}"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>redirect_uri</td>
+                                        <td>
+                                            <input type="text" name="redirect_uri" size="70"
+                                                   value="{{redirectUri}}" placeholder="https://..."/>
+                                            <p class="help-block">若配置有多个<code>redirect_uri</code>可自行修改(默认使用第一个)</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>scope</td>
+                                        <td>
+                                            <input type="text" readonly="readonly" name="scope" size="70"
+                                                   value="{{scope}}"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>state</td>
+                                        <td>
+                                            <input readonly="readonly" name="state" size="70" value="{{state}}"/>
+                                            <p class="help-block">每次随机生成, spring-oauth-server原封不动返回(防止会话劫持攻击)</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>response_type</td>
+                                        <td>
+                                            <input readonly="readonly" name="response_type" size="70" value="code"/>
+                                            <p class="help-block">固定值</p>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <button class="btn btn-info" type="submit">/oauth2/authorize</button>
+                                <span class="label label-info">GET</span>
                             </form>
-                            <span class="label label-info">GET</span>
                         </div>
                     </li>
                     <li>
                         <code>用 'code' 换取 'access_token'</code>
                         <br/>
-                        输入第一步获取的code: <input type="text" name="code" value="" ng-model="code"
-                                             placeholder="Laulaadi78kB0DkQKv..." size="70"/>
+                        输入第一步获取的'code'并点击按钮链接地址.
                         <br/>
 
                         <form th:action="@{/oauth2/token}" th:method="post" target="_blank">
-                            <input type="hidden" name="client_id" value="{{clientId}}"/>
-                            <input type="hidden" name="redirect_uri" value="{{redirectUri}}"/>
-                            <input type="hidden" name="client_secret" value="{{clientSecret}}"/>
-                            <input type="hidden" name="code" value="{{code}}"/>
-                            <input type="hidden" name="grant_type" value="authorization_code"/>
-                            <button class="btn btn-link" type="submit">
-                                /oauth2/token?client_id={{clientId}}&client_secret={{clientSecret}}&grant_type=authorization_code&code={{code}}&redirect_uri={{redirectUri}}
-                            </button>
+                            <table class="table table-striped table-bordered table-hover">
+                                <tr>
+                                    <td>client_id</td>
+                                    <td>
+                                        <input readonly="readonly" name="client_id" size="70" value="{{clientId}}"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>client_secret</td>
+                                    <td>
+                                        <input readonly="readonly" name="client_secret" size="70"
+                                               value="{{clientSecret}}" placeholder="请先在页面最上面输入client_secret"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>redirect_uri</td>
+                                    <td>
+                                        <input type="text" name="redirect_uri" size="70"
+                                               value="{{redirectUri}}" placeholder="https://..."/>
+                                        <p class="help-block">若配置有多个<code>redirect_uri</code>可自行修改(默认使用第一个)</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>grant_type</td>
+                                    <td>
+                                        <input readonly="readonly" name="grant_type" size="70"
+                                               value="authorization_code"/>
+                                        <p class="help-block">固定值</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>code</td>
+                                    <td>
+                                        <input type="text" name="code" value="" ng-model="code"
+                                               placeholder="Laulaadi78kB0DkQKv..." size="70"/>
+                                        <p class="help-block">请输入code值</p>
+                                    </td>
+                                </tr>
+                            </table>
+                            <button class="btn btn-primary" type="submit">/oauth2/token</button>
                             <span class="label label-warning">POST</span>
                         </form>
                     </li>
@@ -400,7 +458,7 @@
                             <td>refresh_token</td>
                             <td>
                                 <input type="text" ng-model="refreshToken" placeholder="xYCsaPu7YV_hB6TfLb..."
-                                       size="70"/>
+                                       size="70" name="refresh_token"/>
                                 <p class="help-block">请输入 refresh_token 值</p>
                             </td>
                         </tr>
