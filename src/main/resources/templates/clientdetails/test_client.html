@@ -86,7 +86,8 @@
                             <code>从 spring-oauth-server获取 'code'</code>
                             <div class="text-muted">
                                 PKCE流程在开始前需要先通过代码生成<code>code_verifier</code>与<code>code_challenge</code> (如何生成详见工具类
-                                <mark>PKCEUtils.java</mark>);
+                                <mark>PKCEUtils.java</mark>
+                                );
                                 <br/>
                                 生成后在获取'code'时要在已有的参数基础上再增加两个参数：
                                 <table class="table table-bordered">
@@ -199,27 +200,32 @@
                             此处方便演示, 请点击<a th:href="@{/oauth2/device_verification}" target="_blank">/oauth2/device_verification</a>并输入上一步获取到的<em>user_code</em>
                             (若未认证将跳转到登录)
                         </p>
-                        <p class="help-block">提示：此步骤必须在有效时间内完成, <em>user_code</em>的有效时长在上一步中返回的数据<em>expires_in</em>来决定(单位:秒, 默认5分钟)</p>
+                        <p class="help-block">提示：此步骤必须在有效时间内完成, <em>user_code</em>的有效时长在上一步中返回的数据<em>expires_in</em>来决定(单位:秒,
+                            默认5分钟)</p>
                     </li>
                     <li>
                         <p>
-                            在第2步进行的同时, 设备上后台将定时(如每隔5秒)向<code>spring-oauth-server</code>发起获取token的请求<code>/oauth2/token</code>
+                            在第2步进行的同时,
+                            设备上后台将定时(如每隔5秒)向<code>spring-oauth-server</code>发起获取token的请求<code>/oauth2/token</code>
                             (需要使用第1步中获取到 <em>device_code</em> 的值),
                             <br/>
                             直到获取成功(即第2步操作完成授权设备登录)或超时(即设备轮询请求等待的时长超出第1步返回的时间<em>expires_in</em>)
                         </p>
-                        device_code: <input type="text" ng-model="deviceCode" placeholder="GQ-K6n5kwLfu3XpDja-b3SlPbTfqYir..." size="70"/>
+                        device_code: <input type="text" ng-model="deviceCode"
+                                            placeholder="GQ-K6n5kwLfu3XpDja-b3SlPbTfqYir..." size="70"/>
                         <form th:action="@{/oauth2/token}" th:method="post" target="_blank">
                             <input type="hidden" name="client_id" value="{{clientId}}"/>
                             <input type="hidden" name="client_secret" value="{{clientSecret}}"/>
-                            <input type="hidden" name="grant_type" value="urn:ietf:params:oauth:grant-type:device_code"/>
+                            <input type="hidden" name="grant_type"
+                                   value="urn:ietf:params:oauth:grant-type:device_code"/>
                             <input type="hidden" name="device_code" value="{{deviceCode}}"/>
                             <button class="btn btn-link" type="submit">
                                 /oauth2/token?client_id={{clientId}}&client_secret={{clientSecret}}&device_code={{deviceCode}}&grant_type=urn:ietf:params:oauth:grant-type:device_code
                             </button>
                             <span class="label label-warning">POST</span>
                         </form>
-                        <p class="help-block">提示：在第2步进行过程中调用第3步获取token API时会响应等待授权的结果(Http状态码 400, error='authorization_pending')</p>
+                        <p class="help-block">提示：在第2步进行过程中调用第3步获取token API时会响应等待授权的结果(Http状态码 400,
+                            error='authorization_pending')</p>
                     </li>
                 </ol>
 
@@ -236,11 +242,87 @@
                     </li>
                     <li>
                         <p>当注册或添加client端时需要填写一个jwk URL地址(用来获取验签的公钥), 指定认证jwt签名算法(如RS256),
-                            设置methods为<code>client_secret_jwt</code>(对称算法, 使用client_secret为MacKey)或<code>private_key_jwt</code>(非对称算法)</p>
+                            设置methods为<code>client_secret_jwt</code>(对称算法,
+                            使用client_secret为MacKey)或<code>private_key_jwt</code>(非对称算法)</p>
+                        <p class="text-warning">注意: grant_type不能只有jwt-bearer, 无实用意义</p>
                     </li>
                 </ul>
 
-                ...
+                <div>
+                    cURL示例:
+                    <pre>curl --location 'http://localhost:8080/oauth2/token' \
+  --header 'Content-Type: application/json' \
+  --form 'client_id="dofOx6hjxlWw9qe2bnFvqbiPhuWwGWdn"' \
+  --form 'client_assertion_type="urn:ietf:params:oauth:client-assertion-type:jwt-bearer"' \
+  --form 'scope="openid"' \
+  --form 'grant_type="client_credentials"' \
+  --form 'client_assertion="eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJkb2ZPeDZoanhsV3c5..."' \
+  --form 'client_secret="dofOx6hjxlWw9qe2bnFvqbiPhuWwGWdn"'</pre>
+                    增加两个请求参数:
+                    <table class="table table-striped table-bordered table-hover">
+                        <tr>
+                            <td>client_assertion_type</td>
+                            <td>固定值: <em>urn:ietf:params:oauth:client-assertion-type:jwt-bearer</em></td>
+                        </tr>
+                        <tr>
+                            <td>client_assertion</td>
+                            <td>
+                                使用提供的 jwk URL中的 private_key进行签名生成的 JWT(如何生成详见: <code>JwtBearerFlowTest.java</code>)
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <p class="text-muted">输入<code>client_assertion</code>值, 点击链接地址即可测试</p>
+                <form th:action="@{/oauth2/token}" th:method="post" target="_blank">
+                    <table class="table table-striped table-bordered table-hover">
+                        <tr>
+                            <td>client_id</td>
+                            <td>
+                                <input type="text" readonly="readonly" name="client_id" size="70" value="{{clientId}}"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>client_secret</td>
+                            <td>
+                                <input type="text" readonly="readonly" name="client_secret" size="70"
+                                       value="{{clientSecret}}"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>scope</td>
+                            <td>
+                                <input type="text" readonly="readonly" name="scope" size="70" value="{{scope}}"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>grant_type</td>
+                            <td>
+                                <input readonly="readonly" name="grant_type" size="70" value="client_credentials"/>
+                                <p class="help-block">grant_type根据需要值可以是<code>authorization_code</code> <code>refresh_token</code>等
+                                </p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>client_assertion_type</td>
+                            <td>
+                                <input readonly="readonly" size="70" name="client_assertion_type"
+                                       value="urn:ietf:params:oauth:client-assertion-type:jwt-bearer"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>client_assertion</td>
+                            <td>
+                                <input name="client_assertion" size="70" value="{{clientAssertion}}"
+                                       placeholder="eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJkb2ZPeDZo..."/>
+                                <p class="help-block">如何生成client_assertion, 详见示例类: <code>JwtBearerFlowTest.java</code>
+                                </p>
+                            </td>
+                        </tr>
+                    </table>
+                    <button class="btn btn-primary" type="submit">/oauth2/token</button>
+                    <span class="label label-warning">POST</span>
+                </form>
 
             </div>
         </div>
@@ -268,7 +350,8 @@
             <div class="panel-heading">Test [refresh_token]</div>
             <div class="panel-body">
                 <p class="text-muted">输入refresh_token 后点击链接地址.</p>
-                refresh_token: <input type="text" ng-model="refreshToken" placeholder="xYCsaPu7YV_hB6TfLb..." size="70"/>
+                refresh_token: <input type="text" ng-model="refreshToken" placeholder="xYCsaPu7YV_hB6TfLb..."
+                                      size="70"/>
 
                 <br/>
 
@@ -317,6 +400,7 @@
         $scope.password = "mobile";
         //a temp value
         $scope.refreshToken = "";
+        $scope.clientAssertion = "";
         $scope.state = Math.floor(Math.random() * 1000000000).toString();
 
     }];
