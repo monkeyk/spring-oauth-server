@@ -586,7 +586,7 @@
             <div class="panel-body">
                 <p class="text-muted">对已经签发的id_token/access_token进行退出并重定向会指定的uri, 由client端通过浏览器发起调用.</p>
 
-                <form th:action="@{/connect/logout}" th:method="get" target="_blank">
+                <form th:action="@{/connect/logout}" th:method="post" target="_blank">
                     <table class="table table-striped table-bordered table-hover">
                         <tr>
                             <td>client_id</td>
@@ -618,7 +618,7 @@
                         </tr>
                     </table>
                     <button class="btn btn-success" type="submit">/connect/logout</button>
-                    <span class="label label-info">GET</span>
+                    <span class="label label-warning">POST</span>
 
                 </form>
             </div>
