@@ -512,7 +512,7 @@
                         <tr>
                             <td>client_secret</td>
                             <td>
-                                <input type="text" readonly="readonly" name="client_secret" size="70"
+                                <input type="text" readonly="readonly" name="client_secret" size="70" required="required"
                                        value="{{clientSecret}}" placeholder="请先在页面最上面输入client_secret"/>
                             </td>
                         </tr>
@@ -552,7 +552,7 @@
                         <tr>
                             <td>client_secret</td>
                             <td>
-                                <input type="text" readonly="readonly" name="client_secret" size="70"
+                                <input type="text" readonly="readonly" name="client_secret" size="70" required="required"
                                        value="{{clientSecret}}" placeholder="请先在页面最上面输入client_secret"/>
                             </td>
                         </tr>
@@ -567,7 +567,7 @@
                             <td>refresh_token</td>
                             <td>
                                 <input type="text" ng-model="refreshToken" placeholder="xYCsaPu7YV_hB6TfLb..."
-                                       size="70" name="refresh_token"/>
+                                       size="70" name="refresh_token" required="required"/>
                                 <p class="help-block">请输入 refresh_token 值</p>
                             </td>
                         </tr>
@@ -577,6 +577,49 @@
                     <br/>
                     <span class="text-muted">复用refresh_token: <span class="text-info"
                                                                     th:text="${clientDetailsDto.tokenSettings.reuseRefreshTokens}"></span></span>
+                </form>
+            </div>
+        </div>
+
+        <div class="panel panel-info">
+            <div class="panel-heading">Test OIDC-Logout <em class="label label-success">OAuth2.1新增</em></div>
+            <div class="panel-body">
+                <p class="text-muted">对已经签发的id_token/access_token进行退出并重定向会指定的uri</p>
+
+                <form th:action="@{/connect/logout}" th:method="get" target="_blank">
+                    <table class="table table-striped table-bordered table-hover">
+                        <tr>
+                            <td>client_id</td>
+                            <td>
+                                <input type="text" readonly="readonly" name="client_id" size="70" value="{{clientId}}"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>id_token_hint</td>
+                            <td>
+                                <input name="id_token_hint" size="70" required="required"
+                                       value="" placeholder="请输入已经签发的id_token/access_token值"/>
+                                <p class="help-block">填写一个已经签发的id_token/access_token</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>post_logout_redirect_uri</td>
+                            <td>
+                                <input name="post_logout_redirect_uri" size="70" value="{{post_logout_redirect_uri}}" required="required" placeholder="https://...."/>
+                                <p class="help-block">退出后通过post重定向的uri</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>state</td>
+                            <td>
+                                <input readonly="readonly" name="state" size="70" value="{{state}}"/>
+                                <p class="help-block">每次随机生成, spring-oauth-server原封不动返回(防止会话劫持攻击)</p>
+                            </td>
+                        </tr>
+                    </table>
+                    <button class="btn btn-success" type="submit">/connect/logout</button>
+                    <span class="label label-info">GET</span>
+
                 </form>
             </div>
         </div>
@@ -611,6 +654,7 @@
         //a temp value
         $scope.refreshToken = "";
         $scope.clientAssertion = "";
+        $scope.post_logout_redirect_uri =  [[${clientDetailsDto.postLogoutRedirectUris}]];
         $scope.state = Math.floor(Math.random() * 1000000000).toString();
 
     }];
