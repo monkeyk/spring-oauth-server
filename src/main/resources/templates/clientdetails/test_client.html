@@ -584,7 +584,7 @@
         <div class="panel panel-info">
             <div class="panel-heading">Test OIDC-Logout <em class="label label-success">OAuth2.1新增</em></div>
             <div class="panel-body">
-                <p class="text-muted">对已经签发的id_token/access_token进行退出并重定向会指定的uri, 由client端通过浏览器发起调用.</p>
+                <p class="text-muted">对已经签发的id_token进行退出并重定向会指定的uri, 由client端通过浏览器发起调用.</p>
 
                 <form th:action="@{/connect/logout}" th:method="post" target="_blank">
                     <table class="table table-striped table-bordered table-hover">
@@ -598,8 +598,8 @@
                             <td>id_token_hint</td>
                             <td>
                                 <input name="id_token_hint" size="70" required="required"
-                                       value="" placeholder="请输入已经签发的id_token/access_token值"/>
-                                <p class="help-block">填写一个已经签发的id_token/access_token</p>
+                                       value="" placeholder="请输入已经签发的id_token值"/>
+                                <p class="help-block">填写一个已经签发的id_token</p>
                             </td>
                         </tr>
                         <tr>
