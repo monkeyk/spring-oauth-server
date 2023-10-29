@@ -97,7 +97,7 @@
                                 <tr>
                                     <td>client_secret</td>
                                     <td>
-                                        <input readonly="readonly" name="client_secret" size="70"
+                                        <input readonly="readonly" name="client_secret" size="70" required="required"
                                                value="{{clientSecret}}" placeholder="请先在页面最上面输入client_secret"/>
                                     </td>
                                 </tr>
@@ -121,7 +121,7 @@
                                     <td>code</td>
                                     <td>
                                         <input type="text" name="code" value="" ng-model="code"
-                                               placeholder="Laulaadi78kB0DkQKv..." size="70"/>
+                                               placeholder="Laulaadi78kB0DkQKv..." size="70" required="required"/>
                                         <p class="help-block">请输入code值</p>
                                     </td>
                                 </tr>
@@ -160,23 +160,60 @@
                                 </table>
                             </div>
                             <br/>
-                            redirect_uri: <input type="text" value="" ng-model="redirectUri" size="70"
-                                                 required="required"/>
-                            <br/>
-                            code_challenge: <input type="text" value="" ng-model="codeChallenge" size="70"
-                                                   readonly="readonly"/> <span class="text-muted">(后台代码生成,不可修改)</span>
-                            <br/>
                             <form th:action="@{/oauth2/authorize}" th:method="get" target="_blank">
-                                <input type="hidden" name="client_id" value="{{clientId}}"/>
-                                <input type="hidden" name="redirect_uri" value="{{redirectUri}}"/>
-                                <input type="hidden" name="scope" value="{{scope}}"/>
-                                <input type="hidden" name="state" value="{{state}}"/>
-                                <input type="hidden" name="code_challenge" value="{{codeChallenge}}"/>
-                                <input type="hidden" name="code_challenge_method" value="S256"/>
-                                <input type="hidden" name="response_type" value="code"/>
-                                <button class="btn btn-link" type="submit">
-                                    /oauth2/authorize?client_id={{clientId}}&redirect_uri={{redirectUri}}&response_type=code&scope={{scope}}&state={{state}}&code_challenge={{codeChallenge}}&code_challenge_method=S256
-                                </button>
+                                <table class="table table-striped table-bordered table-hover">
+                                    <tr>
+                                        <td>client_id</td>
+                                        <td>
+                                            <input readonly="readonly" name="client_id" size="70" value="{{clientId}}"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>redirect_uri</td>
+                                        <td>
+                                            <input type="text" name="redirect_uri" size="70"
+                                                   value="{{redirectUri}}" placeholder="https://..."/>
+                                            <p class="help-block">若配置有多个<code>redirect_uri</code>可自行修改(默认使用第一个)</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>scope</td>
+                                        <td>
+                                            <input type="text" readonly="readonly" name="scope" size="70"
+                                                   value="{{scope}}"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>state</td>
+                                        <td>
+                                            <input readonly="readonly" name="state" size="70" value="{{state}}"/>
+                                            <p class="help-block">每次随机生成, spring-oauth-server原封不动返回(防止会话劫持攻击)</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>response_type</td>
+                                        <td>
+                                            <input readonly="readonly" name="response_type" size="70" value="code"/>
+                                            <p class="help-block">固定值</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>code_challenge_method</td>
+                                        <td>
+                                            <input readonly="readonly" name="code_challenge_method" size="70" value="S256"/>
+                                            <p class="help-block">固定值</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>code_challenge</td>
+                                        <td>
+                                            <input type="text" value="" ng-model="codeChallenge" size="70"
+                                                   readonly="readonly" name="code_challenge"/>
+                                            <p class="help-block">(后台代码生成,不可修改)</p>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <button class="btn btn-info" type="submit">/oauth2/authorize</button>
                             </form>
                             <span class="label label-info">GET</span>
                         </div>
@@ -184,23 +221,57 @@
                     <li>
                         <code>用 'code' 换取 'access_token'</code>
                         <br/>
-                        输入第一步获取的code: <input type="text" name="code" value="" ng-model="code"
-                                             placeholder="Laulaadi78kB0DkQKv..." size="70"/>
-                        <br/>
-                        code_verifier: <input type="text" name="codeVerifier" value="" ng-model="codeVerifier"
-                                              readonly="readonly" size="70"/> <span
-                            class="text-muted">(后台代码生成,不可修改)</span>
+                        输入第一步获取的code并点击按钮地址.
 
                         <form th:action="@{/oauth2/token}" th:method="post" target="_blank">
-                            <input type="hidden" name="client_id" value="{{clientId}}"/>
-                            <input type="hidden" name="redirect_uri" value="{{redirectUri}}"/>
-                            <input type="hidden" name="client_secret" value="{{clientSecret}}"/>
-                            <input type="hidden" name="code" value="{{code}}"/>
-                            <input type="hidden" name="code_verifier" value="{{codeVerifier}}"/>
-                            <input type="hidden" name="grant_type" value="authorization_code"/>
-                            <button class="btn btn-link" type="submit">
-                                /oauth2/token?client_id={{clientId}}&client_secret={{clientSecret}}&grant_type=authorization_code&code={{code}}&redirect_uri={{redirectUri}}&code_verifier={{codeVerifier}}
-                            </button>
+                            <table class="table table-striped table-bordered table-hover">
+                                <tr>
+                                    <td>client_id</td>
+                                    <td>
+                                        <input readonly="readonly" name="client_id" size="70" value="{{clientId}}"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>client_secret</td>
+                                    <td>
+                                        <input readonly="readonly" name="client_secret" size="70" required="required"
+                                               value="{{clientSecret}}" placeholder="请先在页面最上面输入client_secret"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>redirect_uri</td>
+                                    <td>
+                                        <input type="text" name="redirect_uri" size="70"
+                                               value="{{redirectUri}}" placeholder="https://..."/>
+                                        <p class="help-block">若配置有多个<code>redirect_uri</code>可自行修改(默认使用第一个)</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>grant_type</td>
+                                    <td>
+                                        <input readonly="readonly" name="grant_type" size="70"
+                                               value="authorization_code"/>
+                                        <p class="help-block">固定值</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>code</td>
+                                    <td>
+                                        <input type="text" name="code" value="" ng-model="code"
+                                               placeholder="Laulaadi78kB0DkQKv..." size="70" required="required"/>
+                                        <p class="help-block">请输入code值</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>code_verifier</td>
+                                    <td>
+                                        <input type="text" name="code_verifier" value="" ng-model="codeVerifier"
+                                               readonly="readonly" size="70" />
+                                        <p class="help-block">(后台代码生成,不可修改)</p>
+                                    </td>
+                                </tr>
+                            </table>
+                            <button class="btn btn-primary" type="submit">/oauth2/token</button>
                             <span class="label label-warning">POST</span>
                         </form>
                     </li>
