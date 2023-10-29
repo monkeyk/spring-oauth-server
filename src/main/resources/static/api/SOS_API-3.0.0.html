@@ -39,6 +39,7 @@
             <li class="list-group-item"><a href="#deviceAuthor">[device_code]流程 - 发起认证(/oauth2/device_authorization)</a>
             </li>
             <li class="list-group-item"><a href="#deviceToken">[device_code]流程 - 获取token(/oauth2/token)</a></li>
+            <li class="list-group-item"><a href="#jwtBearerToken">[jwt-bearer] - 获取token(/oauth2/token)</a></li>
             <li class="list-group-item"><a href="#oidcUserinfo">OIDC /userinfo</a></li>
             <li class="list-group-item"><a href="#oidcConfig">OIDC /openid-configuration</a></li>
             <li class="list-group-item"><a href="#oauth2Server">OAuth2.1 /oauth-authorization-server</a></li>
@@ -676,6 +677,111 @@
     "error_uri": "https://datatracker.ietf.org/doc/html/rfc8628#section-3.5"
 }</pre>
                                 <p class="help-block">说明: error=authorization_pending 表示授权正在进行中, 设备上需要轮循继续等待授权结果</p>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="well well-sm" id="jwtBearerToken">
+            <h3>[jwt-bearer] - 获取token(/oauth2/token)<small class="badge">public</small></h3>
+
+            <p class="text-muted">jwt-bearer流程, 获取token</p>
+
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <p>
+                        请求URI: <code>/oauth2/token</code> <span
+                            class="label label-warning">POST</span>
+                    </p>
+
+                    <div>
+                        请求参数说明:
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>参数名</th>
+                                <th>参数值</th>
+                                <th>必须?</th>
+                                <th>备注</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>client_id</td>
+                                <td>{client_id}</td>
+                                <td>是</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>client_secret</td>
+                                <td>{client_secret}</td>
+                                <td>是</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>grant_type</td>
+                                <td>{grant_type}</td>
+                                <td>是</td>
+                                <td>可选值: authorization_code, client_credentials, refresh_token</td>
+                            </tr>
+                            <tr>
+                                <td>scope</td>
+                                <td>{scope}</td>
+                                <td>是</td>
+                                <td>可选值: openid, email, profile 等</td>
+                            </tr>
+                            <tr>
+                                <td>client_assertion_type</td>
+                                <td>urn:ietf:params:oauth:client-assertion-type:jwt-bearer</td>
+                                <td>是</td>
+                                <td>固定值</td>
+                            </tr>
+                            <tr>
+                                <td>client_assertion</td>
+                                <td>{client_assertion}</td>
+                                <td>是</td>
+                                <td>一个根据算法生成的JWT值, 详见<code>JwtBearerFlowTest.java</code></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        请求示例:
+                        <pre>curl --location 'http://localhost:8080/oauth2/token' \
+  --header 'Content-Type: application/json' \
+  --form 'client_id="dofOx6hjxlWw9qe2bnFvqbiPhuWwGWdn"' \
+  --form 'client_assertion_type="urn:ietf:params:oauth:client-assertion-type:jwt-bearer"' \
+  --form 'scope="openid"' \
+  --form 'grant_type="client_credentials"' \
+  --form 'client_assertion="eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJkb2ZPeDZoanhsV3c5cWUyYm5GdnFiaVBodVd3R1dkbiIsInN1YiI6ImRvZk94NmhqeGxXdzlxZTJibkZ2cWJpUGh1V3dHV2RuIiwiYXVkIjoiaHR0cDovLzEyNy4wLjAuMTo4MDgwIiwiZXhwIjoxNjk4MzI4NDI0fQ.A-CMlBoOqtlWVQiu8RjK9xWKG4lqBMT7IMCVIDJc3hsSZk7KvApL2lPx3k2b9bDM8Ysr7VXnFPfQbN8RN4sTsf2x-cpzDQ-vFBGMFqgaXZckuba21moT42GWyTULQ2_HRYy8bLCfOiX7BG4HyJYHf2JDrZgQ3pPu3VhH5D9bJ5_y6WcZxDlVMBUMXGRuhwl0tCTc8L0Ss3azPD82wMblDavCUTxNzOvb0qc3orVEjgUW77cxzGi929TtWtCvBH8dyNh_CAsvYJKAJDskTnLKv6GihL33pNHBhfjwSUP2s-_LPD6Z7gjf9GJHSSz7TeztX3NU9-FaoJZjYGR2lq2F2A"' \
+  --form 'client_secret="dofOx6hjxlWw9qe2bnFvqbiPhuWwGWdn"'</pre>
+
+                    </div>
+                    <br/>
+
+                    <strong>响应</strong>
+
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <div>
+                                正常 [200]<br/>
+                                <pre>{
+    "access_token": "QqPGuiF9c2HKYQEdxrs9E0WsRijEl_z9sINI6CFD5yMulXaZutLTktVtLP3zcr22XuYJOzWZMzOgvjWl2tqAoMo3S2MHBgxjPmx5gfr6DjeQPsW3fFPVc6pOa5Ll6u4S",
+    "refresh_token": "7vtQtkU95tjt7nkaX8DZnDVntrgPYIoXB6_4WsV9FzMi-ppoPB_H5qmufi4EHqAuJPwdlxXYdDbVYoGudXd0iCPfmqT5B8CcW7zRsgaKQOHQlPw9Ju3wMGNSRk14YRWI",
+    "scope": "profile",
+    "token_type": "Bearer",
+    "expires_in": 3599
+}</pre>
+                                <p class="help-block">根据不同的grant_type, 响应结果有所不同.</p>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div>
+                                异常 [400]<br/>
+                                <pre>{
+    "error": "invalid_grant"
+}</pre>
+                                <p class="help-block">说明: 根据不同的grant_type,响应异常结果有差别.</p>
                             </div>
                         </li>
                     </ul>
