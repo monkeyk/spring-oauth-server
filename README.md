@@ -96,7 +96,7 @@ Base on SpringBoot
             <tr><td>spring.datasource.*</td><td>是</td><td>-</td><td>数据库连接相关配置</td></tr>
             <tr><td>spring.thymeleaf.*</td><td>是</td><td>-</td><td>Spring MVC thymeleaf相关配置</td></tr>
             <tr><td>server.port</td><td>是</td><td>8080</td><td>服务运行端口号</td></tr>
-            <tr><td>spring.security.oauth2.authorizationserver.issuer</td><td>是</td><td>jwt</td><td>OAuth2 issuer, 生产环境配置对外访问完整地址</td></tr>
+            <tr><td>spring.security.oauth2.authorizationserver.issuer</td><td>是</td><td></td><td>OAuth2 issuer, 生产环境配置对外访问完整地址</td></tr>
             <tr><td>spring.application.name</td><td>是</td><td></td><td>应用组件名称</td></tr>
         </tbody>
     </table>
