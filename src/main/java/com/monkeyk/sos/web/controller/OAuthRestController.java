@@ -11,23 +11,38 @@
  */
 package com.monkeyk.sos.web.controller;
 
+import com.monkeyk.sos.web.WebUtils;
+import com.monkeyk.sos.web.authentication.*;
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.server.ServletServerHttpResponse;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.core.OAuth2AccessToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.*;
+import org.springframework.security.oauth2.core.endpoint.OAuth2AccessTokenResponse;
+import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
+import org.springframework.security.oauth2.core.http.converter.OAuth2AccessTokenResponseHttpMessageConverter;
+import org.springframework.security.oauth2.core.http.converter.OAuth2ErrorHttpMessageConverter;
+import org.springframework.security.oauth2.server.authorization.authentication.OAuth2AccessTokenAuthenticationToken;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.Map;
 
 /**
@@ -45,164 +60,114 @@ public class OAuthRestController implements InitializingBean, ApplicationContext
 
     private static final Logger LOG = LoggerFactory.getLogger(OAuthRestController.class);
 
-//    @Autowired
-//    private ClientDetailsService clientDetailsService;
-//
-//    // consumerTokenServices,defaultAuthorizationServerTokenServices
-//    @Autowired
-//    @Qualifier("defaultAuthorizationServerTokenServices")
-//    private AuthorizationServerTokenServices tokenServices;
-//    @Autowired
-//    private AuthorizationCodeServices authorizationCodeServices;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-//    private AuthenticationManager authenticationManager;
-
-//    private OAuth2RequestFactory oAuth2RequestFactory;
-//
-//    private OAuth2RequestValidator oAuth2RequestValidator = new DefaultOAuth2RequestValidator();
-//    private WebResponseExceptionTranslator providerExceptionHandler = new DefaultWebResponseExceptionTranslator();
+    private static final String DEFAULT_ERROR_URI = "https://datatracker.ietf.org/doc/html/rfc6749#section-5.2";
 
 
-    @RequestMapping(value = "/oauth2/rest_token", method = RequestMethod.POST)
+    private final AuthenticationRestConverter authenticationConverter;
+
+    private final HttpMessageConverter<OAuth2AccessTokenResponse> accessTokenHttpResponseConverter =
+            new OAuth2AccessTokenResponseHttpMessageConverter();
+    private final HttpMessageConverter<OAuth2Error> errorHttpResponseConverter =
+            new OAuth2ErrorHttpMessageConverter();
+
+
+    private AuthenticationManager authenticationManager;
+
+    public OAuthRestController() {
+
+        this.authenticationConverter = new DelegatingAuthenticationRestConverter(
+                Arrays.asList(
+                        new OAuth2AuthorizationCodeAuthenticationRestConverter(),
+                        new OAuth2RefreshTokenAuthenticationRestConverter(),
+                        new OAuth2ClientCredentialsAuthenticationRestConverter(),
+                        new OAuth2DeviceCodeAuthenticationRestConverter()));
+    }
+
+    /**
+     * Replace OAuth2TokenEndpointFilter flow use restful API
+     *
+     * @param parameters request params
+     */
+    @PostMapping("/oauth2/rest_token")
     @ResponseBody
-    public OAuth2AccessToken postAccessToken(@RequestBody Map<String, String> parameters) {
+    public void postAccessToken(@RequestBody Map<String, String> parameters, HttpServletResponse response) throws IOException {
 
+        try {
+            String grantType = parameters.get(OAuth2ParameterNames.GRANT_TYPE);
+            if (grantType == null) {
+                throwError(OAuth2ErrorCodes.INVALID_REQUEST, OAuth2ParameterNames.GRANT_TYPE);
+            }
 
-//        String clientId = getClientId(parameters);
-//        ClientDetails authenticatedClient = clientDetailsService.loadClientByClientId(clientId);
-//
-//        //validate client_secret
-//        String clientSecret = getClientSecret(parameters);
-//        if (clientSecret == null || clientSecret.equals("")) {
-//            throw new InvalidClientException("Bad client credentials");
-//        } else {
-//            if (!this.passwordEncoder.matches(clientSecret, authenticatedClient.getClientSecret())) {
-//                throw new InvalidClientException("Bad client credentials");
-//            }
-//        }
-//
-//        TokenRequest tokenRequest = oAuth2RequestFactory.createTokenRequest(parameters, authenticatedClient);
+            Authentication authorizationGrantAuthentication = this.authenticationConverter.convert(parameters);
+            if (authorizationGrantAuthentication == null) {
+                throwError(OAuth2ErrorCodes.UNSUPPORTED_GRANT_TYPE, OAuth2ParameterNames.GRANT_TYPE);
+            }
+            if (authorizationGrantAuthentication instanceof AbstractAuthenticationToken) {
+                ((AbstractAuthenticationToken) authorizationGrantAuthentication)
+//                        .setDetails(this.authenticationDetailsSource.buildDetails(request));
+                        .setDetails(new WebAuthenticationDetails(WebUtils.getIp(), null));
+            }
 
-//        if (clientId != null && !clientId.equals("")) {
-//            // Only validate the client details if a client authenticated during this
-//            // request.
-//            if (!clientId.equals(tokenRequest.getClientId())) {
-//                // double check to make sure that the client ID in the token request is the same as that in the
-//                // authenticated client
-//                throw new InvalidClientException("Given client ID does not match authenticated client");
-//            }
-//        }
-//
-//        oAuth2RequestValidator.validateScope(tokenRequest, authenticatedClient);
-
-//        final String grantType = tokenRequest.getGrantType();
-//        if (!StringUtils.hasText(grantType)) {
-//            throw new InvalidRequestException("Missing grant type");
-//        }
-//        if (grantType.equals("implicit")) {
-//            throw new InvalidGrantException("Implicit grant type not supported from token endpoint");
-//        }
-//
-//        if (isAuthCodeRequest(parameters)) {
-//            // The scope was requested or determined during the authorization step
-//            if (!tokenRequest.getScope().isEmpty()) {
-//                LOG.debug("Clearing scope of incoming token request");
-//                tokenRequest.setScope(Collections.<String>emptySet());
-//            }
-//        }
-
-
-//        if (isRefreshTokenRequest(parameters)) {
-//            // A refresh token has its own default scopes, so we should ignore any added by the factory here.
-//            tokenRequest.setScope(OAuth2Utils.parseParameterList(parameters.get(OAuth2Utils.SCOPE)));
-//        }
-//
-//        OAuth2AccessToken token = getTokenGranter(grantType).grant(grantType, tokenRequest);
-//        if (token == null) {
-//            throw new UnsupportedGrantTypeException("Unsupported grant type: " + grantType);
-//        }
-
-
-//        return token;
-        throw new UnsupportedOperationException("Not yet implements");
-    }
-
-//    protected TokenGranter getTokenGranter(String grantType) {
-//
-//        if ("authorization_code".equals(grantType)) {
-//            return new AuthorizationCodeTokenGranter(tokenServices, authorizationCodeServices, clientDetailsService, this.oAuth2RequestFactory);
-//        } else if ("password".equals(grantType)) {
-//            return new ResourceOwnerPasswordTokenGranter(getAuthenticationManager(), tokenServices, clientDetailsService, this.oAuth2RequestFactory);
-//        } else if ("refresh_token".equals(grantType)) {
-//            return new RefreshTokenGranter(tokenServices, clientDetailsService, this.oAuth2RequestFactory);
-//        } else if ("client_credentials".equals(grantType)) {
-//            return new ClientCredentialsTokenGranter(tokenServices, clientDetailsService, this.oAuth2RequestFactory);
-//        } else if ("implicit".equals(grantType)) {
-//            return new ImplicitTokenGranter(tokenServices, clientDetailsService, this.oAuth2RequestFactory);
-//        } else {
-//            throw new UnsupportedGrantTypeException("Unsupport grant_type: " + grantType);
-//        }
-//    }
-
-
-//    @ExceptionHandler(Exception.class)
-//    public ResponseEntity<OAuth2Exception> handleException(Exception e) throws Exception {
-//        LOG.info("Handling error: " + e.getClass().getSimpleName() + ", " + e.getMessage());
-//        return getExceptionTranslator().translate(e);
-//    }
-
-//    @ExceptionHandler(ClientRegistrationException.class)
-//    public ResponseEntity<OAuth2Exception> handleClientRegistrationException(Exception e) throws Exception {
-//        LOG.info("Handling error: " + e.getClass().getSimpleName() + ", " + e.getMessage());
-//        return getExceptionTranslator().translate(new BadClientCredentialsException());
-//    }
-//
-//    @ExceptionHandler(OAuth2Exception.class)
-//    public ResponseEntity<OAuth2Exception> handleException(OAuth2Exception e) throws Exception {
-//        LOG.info("Handling error: " + e.getClass().getSimpleName() + ", " + e.getMessage());
-//        return getExceptionTranslator().translate(e);
-//    }
-
-
-//    private boolean isRefreshTokenRequest(Map<String, String> parameters) {
-//        return "refresh_token".equals(parameters.get(OAuth2Utils.GRANT_TYPE)) && parameters.get("refresh_token") != null;
-//    }
-//
-//    private boolean isAuthCodeRequest(Map<String, String> parameters) {
-//        return "authorization_code".equals(parameters.get(OAuth2Utils.GRANT_TYPE)) && parameters.get("code") != null;
-//    }
-
-
-//    protected String getClientId(Map<String, String> parameters) {
-//        return parameters.get(OAuth2Utils.CLIENT_ID);
-//    }
-
-    protected String getClientSecret(Map<String, String> parameters) {
-        return parameters.get("client_secret");
+            OAuth2AccessTokenAuthenticationToken accessTokenAuthentication =
+                    (OAuth2AccessTokenAuthenticationToken) this.authenticationManager.authenticate(authorizationGrantAuthentication);
+            this.sendAccessTokenResponse(response, accessTokenAuthentication);
+        } catch (OAuth2AuthenticationException ex) {
+            SecurityContextHolder.clearContext();
+            if (LOG.isTraceEnabled()) {
+                LOG.trace("Token request failed: {}", ex.getError(), ex);
+            }
+            this.sendErrorResponse(response, ex);
+        }
     }
 
 
-//    private AuthenticationManager getAuthenticationManager() {
-//        return this.authenticationManager;
-//    }
+    private void sendErrorResponse(HttpServletResponse response,
+                                   AuthenticationException exception) throws IOException {
+
+        OAuth2Error error = ((OAuth2AuthenticationException) exception).getError();
+        ServletServerHttpResponse httpResponse = new ServletServerHttpResponse(response);
+        httpResponse.setStatusCode(HttpStatus.BAD_REQUEST);
+        this.errorHttpResponseConverter.write(error, null, httpResponse);
+    }
+
+    private void sendAccessTokenResponse(HttpServletResponse response, Authentication authentication) throws IOException {
+
+        OAuth2AccessTokenAuthenticationToken accessTokenAuthentication =
+                (OAuth2AccessTokenAuthenticationToken) authentication;
+
+        OAuth2AccessToken accessToken = accessTokenAuthentication.getAccessToken();
+        OAuth2RefreshToken refreshToken = accessTokenAuthentication.getRefreshToken();
+        Map<String, Object> additionalParameters = accessTokenAuthentication.getAdditionalParameters();
+
+        OAuth2AccessTokenResponse.Builder builder =
+                OAuth2AccessTokenResponse.withToken(accessToken.getTokenValue())
+                        .tokenType(accessToken.getTokenType())
+                        .scopes(accessToken.getScopes());
+        if (accessToken.getIssuedAt() != null && accessToken.getExpiresAt() != null) {
+            builder.expiresIn(ChronoUnit.SECONDS.between(accessToken.getIssuedAt(), accessToken.getExpiresAt()));
+        }
+        if (refreshToken != null) {
+            builder.refreshToken(refreshToken.getTokenValue());
+        }
+        if (!CollectionUtils.isEmpty(additionalParameters)) {
+            builder.additionalParameters(additionalParameters);
+        }
+        OAuth2AccessTokenResponse accessTokenResponse = builder.build();
+        ServletServerHttpResponse httpResponse = new ServletServerHttpResponse(response);
+        this.accessTokenHttpResponseConverter.write(accessTokenResponse, null, httpResponse);
+    }
+
+
+    private static void throwError(String errorCode, String parameterName) {
+        OAuth2Error error = new OAuth2Error(errorCode, "OAuth 2.0 Parameter: " + parameterName, DEFAULT_ERROR_URI);
+        throw new OAuth2AuthenticationException(error);
+    }
+
 
     @Override
     public void afterPropertiesSet() throws Exception {
-
-//        Assert.state(clientDetailsService != null, "ClientDetailsService must be provided");
 //        Assert.state(authenticationManager != null, "AuthenticationManager must be provided");
-
-        Assert.notNull(this.passwordEncoder, "PasswordEncoder is null");
-
-//        oAuth2RequestFactory = new DefaultOAuth2RequestFactory(clientDetailsService);
     }
-
-//    protected WebResponseExceptionTranslator getExceptionTranslator() {
-//        return providerExceptionHandler;
-//    }
 
 
     @Override
@@ -211,4 +176,5 @@ public class OAuthRestController implements InitializingBean, ApplicationContext
 //            this.authenticationManager = (AuthenticationManager) applicationContext.getBean("authenticationManagerBean");
 //        }
     }
+
 }
