@@ -94,11 +94,10 @@ Base on SpringBoot
         </thead>
         <tbody>
             <tr><td>spring.datasource.*</td><td>是</td><td>-</td><td>数据库连接相关配置</td></tr>
-            <tr><td>spring.mvc.*</td><td>是</td><td>-</td><td>Spring MVC相关配置</td></tr>
-            <tr><td>logging.level.root</td><td>是</td><td>INFO</td><td>默认的日志级别</td></tr>
-            <tr><td>sos.token.store</td><td>是</td><td>jwt</td><td>可选值：jwt,jdbc；配置Token存储方式，v2.1.0增加</td></tr>
-            <tr><td>sos.token.store.jwt.key</td><td>否</td><td>IH6S2dhCEMwGr7uE4fBakSuDh9SoIrRa</td><td>当<em>sos.token.store</em>为jwt时配置具体的jwt key(长度16位或32位)</td></tr>
-            <tr><td>sos.reuse.refresh-token</td><td>否</td><td>true</td><td>可选值：true,false；true重复使用refresh_token值直到过期，false每次刷新时生成新的refresh_token值(类似session机制进行续期)，v2.1.0增加</td></tr>
+            <tr><td>spring.thymeleaf.*</td><td>是</td><td>-</td><td>Spring MVC thymeleaf相关配置</td></tr>
+            <tr><td>server.port</td><td>是</td><td>8080</td><td>服务运行端口号</td></tr>
+            <tr><td>spring.security.oauth2.authorizationserver.issuer</td><td>是</td><td>jwt</td><td>OAuth2 issuer, 生产环境配置对外访问完整地址</td></tr>
+            <tr><td>spring.application.name</td><td>是</td><td></td><td>应用组件名称</td></tr>
         </tbody>
     </table>
 </div>
@@ -114,6 +113,7 @@ Base on SpringBoot
     <li><code>refresh_token</code> -- 刷新access_token</li>
     <li><code>device_code</code> -- 适用于各类无输入键盘的物联网智能设备进行认证授权, 通过类似'扫码登录'形式完成整个流程 <strong>OAuth2.1新增</strong></li>
     <li><code>client_credentials</code> -- 客户端模式(无用户,用户向客户端注册,然后客户端以自己的名义向'服务端'获取资源)</li>
+    <li><code>jwt-bearer</code> -- 增强client端请求安全性的断言(assertion)实现; 通过类似'双向SSL'的机制来让server端验证client端的签名实现强安全性.</li>
 </ol>
 
 > 注意：相比OAuth2.0，去掉了 **implicit** 模式
@@ -187,16 +187,16 @@ Base on SpringBoot
 <ul>    
 	   <li>
             <p>
-                Version: <strong>3.0.0</strong> [pending]
+                Version: <strong>3.0.0</strong> [finished]
                 <br/>
-                Date: 2023-10-10 / ---
+                Date: 2023-10-10 / 2023-10-31
             </p>
             <ol>
                 <li><p>底层安全架构升级：jdk升级17, spring6.x, springboot3.x, thymeleaf替换servlet/jsp</p></li>     
-                <li><p>全面升级支持 OAuth2.1协议与 OIDC1.x协议</p></li>     
+                <li><p>全面升级支持 OAuth2.1协议与 OIDC1.0协议</p></li>     
                 <li><p>构建包由war换成jar, SQL相应调整</p></li>     
-                <li><p>升级替换spring-security-oauth2, 详见<a href="https://andaily.com/blog/?p=20077">背景说明</a></p></li>     
-                <li><p>界面使用说明按OAuth2.1进行友好更新</p></li>     
+                <li><p>用spring-security-oauth2-authorization-server升级替换spring-security-oauth2, 详见<a href="https://andaily.com/blog/?p=20077">背景说明</a></p></li>     
+                <li><p>界面使用说明按OAuth2.1进行友好设计并更新各提示语句</p></li>     
                 <li><p>增加spring-restdocs文档支持, 自动生成API相关文档</p></li>     
             </ol>
        </li>   	
@@ -344,7 +344,7 @@ Base on SpringBoot
             <ol>
                 <li><p>#73 - Upgrade 'spring-security-oauth2' version to '2.0.6.RELEASE' (current: 1.0.5.RELEASE)      [CANCELED]</p></li>
                 <li><p><del>#74 - oauth mysql ddl add create_time,  default is now()  </del></p></li>
-                <li><p><del>#75 - Add user information API, for <a href="https://gitee.com/mkk/spring-oauth-client"><code>spring-oauth-client</code></a> project use
+                <li><div><del>#75 - Add user information API, for <a href="https://gitee.com/mkk/spring-oauth-client"><code>spring-oauth-client</code></a> project use
                     <pre>
                     URL: /unity/user_info
                     Login: Yes (ROLE_UNITY)
@@ -353,7 +353,7 @@ Base on SpringBoot
                     Login: Yes (ROLE_MOBILE)
                     Data Format: JSON
                     </pre>
-                    </del></p>
+                    </del></div>
                 </li>
                 <li><p><del>#77 - User add Privilege domain.
                                   Addition initial two user: unityuser(ROLE_UNITY),mobileuser("ROLE_MOBILE).
@@ -372,9 +372,10 @@ Base on SpringBoot
 <hr/>
 <h3>数据库表字段说明</h3>
 <p>
-    在0.3版本中添加了<code>db_table_description.html</code>文件(位于/others目录), 用来说明数据库脚本文件<code>oauth.ddl</code>中各表,各字段的用途及使用场合.
+    在0.3版本中添加了<code>db_table_description.html</code>文件(位于/others目录, 3.0.0版本db_table_description_3.0.0.html), 
+用来说明数据库脚本文件<code>oauth.ddl</code>中各表,各字段的用途及使用场合.
     <br/>
-    也可在线访问<a href="https://andaily.com/spring-oauth-server/db_table_description.html">https://andaily.com/spring-oauth-server/db_table_description.html</a>.
+    也可在线访问<a href="https://andaily.com/spring-oauth-server/db_table_description_3.0.0.html">db_table_description_3.0.0.html</a>.
 </p>
 
 
@@ -404,6 +405,7 @@ Base on SpringBoot
         <li><p><em>2020-06-04</em>        发布 2.0.2 版本</p></li>
         <li><p><em>2022-05-01</em>        发布 2.1.0 版本</p></li>
         <li><p><em>2023-10-10</em>        开始全新大版本 3.0.0 开发</p></li>
+        <li><p><em>2023-10-31</em>        发布 3.0.0 全新版本</p></li>
     </ol>
 </div>
 
