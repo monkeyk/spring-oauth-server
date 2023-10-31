@@ -17,6 +17,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -25,6 +26,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServletServerHttpResponse;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -38,7 +40,9 @@ import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
 import java.time.temporal.ChronoUnit;
@@ -166,15 +170,21 @@ public class OAuthRestController implements InitializingBean, ApplicationContext
 
     @Override
     public void afterPropertiesSet() throws Exception {
-//        Assert.state(authenticationManager != null, "AuthenticationManager must be provided");
+        Assert.state(authenticationManager != null, "AuthenticationManager must be provided");
     }
 
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-//        if (this.authenticationManager == null) {
-//            this.authenticationManager = (AuthenticationManager) applicationContext.getBean("authenticationManagerBean");
-//        }
+        if (this.authenticationManager == null) {
+            AuthenticationConfiguration configuration = applicationContext.getBean(AuthenticationConfiguration.class);
+            Assert.notNull(configuration, "AuthenticationManagerBuilder is null");
+            try {
+                this.authenticationManager = configuration.getAuthenticationManager();
+            } catch (Exception e) {
+                throw new BeanInitializationException("Call 'getAuthenticationManager' error", e);
+            }
+        }
     }
 
 }

@@ -140,7 +140,7 @@ public class OAuth2ServerConfiguration {
                         strings.add(SignatureAlgorithm.ES256.getName());
                     }).grantTypes(grantTypes -> {
                         //向下兼容添加，v3.0.0
-                        grantTypes.add(AuthorizationGrantType.PASSWORD.getValue());
+//                        grantTypes.add(AuthorizationGrantType.PASSWORD.getValue());
                         grantTypes.add(AuthorizationGrantType.JWT_BEARER.getValue());
                     })
                     .scopes(strings -> {
