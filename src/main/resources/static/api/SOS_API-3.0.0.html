@@ -34,6 +34,7 @@
             </li>
             <li class="list-group-item"><a href="#getTokenCred">获取access_token (grant_type=client_credentials)</a></li>
             <li class="list-group-item"><a href="#refreshToken">刷新access_token (grant_type=refresh_token)</a></li>
+            <li class="list-group-item"><a href="#getTokenRest">获取access_token (Restful API)</a></li>
             <li class="list-group-item"><a href="#verifyToken">检查token (/oauth2/introspect)</a></li>
             <li class="list-group-item"><a href="#revokeToken">撤销token (/oauth2/revoke)</a></li>
             <li class="list-group-item"><a href="#deviceAuthor">[device_code]流程 - 发起认证(/oauth2/device_authorization)</a>
@@ -332,6 +333,132 @@
                                 异常 [401]<br/>
                                 <pre>{
     "error": "invalid_client"
+}</pre>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="well well-sm" id="getTokenRest">
+            <h3>获取access_token (Restful API)
+                <small class="badge">public</small>
+            </h3>
+
+            <p class="text-muted">Restful API 获取access_token,
+                适用于grant_type为authorization_code,refresh_token,client_credentials</p>
+
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <p>
+                        请求URI: <code>/oauth2/rest_token</code> <span
+                            class="label label-warning">POST</span> <span class="label label-success">REST</span>
+                    </p>
+
+                    <p>
+                        Content-Type:
+                        <mark>application/json</mark>
+                    </p>
+                    <div>
+                        请求Body参数说明:
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>参数名</th>
+                                <th>参数值</th>
+                                <th>必须?</th>
+                                <th>备注</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>grant_type</td>
+                                <td>{grant_type}</td>
+                                <td>是</td>
+                                <td>authorization_code,refresh_token,client_credentials</td>
+                            </tr>
+                            <tr>
+                                <td>scope</td>
+                                <td>{scope}</td>
+                                <td>是</td>
+                                <td>如 openid</td>
+                            </tr>
+                            <tr>
+                                <td>client_id</td>
+                                <td>{client_id}</td>
+                                <td>是</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>client_secret</td>
+                                <td>{client_secret}</td>
+                                <td>是</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>code</td>
+                                <td>{code}</td>
+                                <td>否</td>
+                                <td>grant_type=authorization_code时必须有</td>
+                            </tr>
+                            <tr>
+                                <td>code_verifier</td>
+                                <td>{code_verifier}</td>
+                                <td>否</td>
+                                <td>grant_type=authorization_code + PKCE时必须有</td>
+                            </tr>
+                            <tr>
+                                <td>refresh_token</td>
+                                <td>{refresh_token}</td>
+                                <td>否</td>
+                                <td>grant_type=refresh_token时必须有</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        请求Body示例:
+                        <pre>{
+    "client_id": "cRG45sAr1hJ2SSKzmB5UsjPIgd7VVlM0",
+    "client_secret": "cRG45sAr1hJ2SSKzmB5UsjPIgd7VVlM0",
+    "grant_type": "authorization_code",
+    "redirect_uri": "https://andaily.com/oauth2/callback",
+    "scope": "openid profile",
+    "code": "AL-Q-OUhhgDrG-x-nFCKILadiBA2gTgvnDYh4AaPuviiQYqPTzLl-BVDXH2VNILS4X3qnDhC7rGaiWY9Qdm9SUTAvttaSXox_g_V8Qn27PeI21xv3RFkGE21BJJWdaUB",
+    "code_verifier": "UUdEMjhQMG1OZkF0NEFNcW12TmdOanVnaHpWeHREMGI="
+}</pre>
+                        或
+                        <pre>{
+    "client_id": "cRG45sAr1hJ2SSKzmB5UsjPIgd7VVlM0",
+    "client_secret": "cRG45sAr1hJ2SSKzmB5UsjPIgd7VVlM0",
+    "grant_type": "refresh_token",
+    "refresh_token": "-ETmWRoPkWvH2bC4ufB2fZwyeXXaqwmUq17zS_vEGGHb9dHnXd1W8HRZnUCEP03kJEn0IQ5w8E6jyAYb_oDC3iTgbT0OwRmIbnKWbcqbp5uxjB4RpNKBtyUMxax-EU1_"
+}</pre>
+
+                    </div>
+                    <br/>
+
+                    <strong>响应</strong>
+
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <div>
+                                正常 [200]<br/>
+                                <pre>{
+    "access_token": "eyJraWQiOiJzb3MtcnNhLWtpZDIiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImF1ZCI6ImNSRzQ1c0FyMWhKMlNTS3ptQjVVc2pQSWdkN1ZWbE0wIiwibmJmIjoxNjk4NzUyNTQzLCJzY29wZSI6WyJvcGVuaWQiLCJwcm9maWxlIiwiZW1haWwiXSwiaXNzIjoiaHR0cDovLzEyNy4wLjAuMTo4MDgwIiwiZXhwIjoxNjk4NzU2MTQzLCJpYXQiOjE2OTg3NTI1NDMsImp0aSI6IjU3MDA1MDQ1Nzc1MzMwMTI1OTYyMjIzNzUxNjE2MjE1In0.PlrUmTd5DUq10Sj-p2MZYoQuciVLixnsUT-RMah1eHLBvVlP4YsoCOgvzlFQQLVT8TRv-XM8JIJQCo0o151ZHhGmDzaWHEsDdPGlJvWL959LbZjw8f3BR8MvMGaBgjjMV6uWgY_nZBTef10KwWsZZwrVtR25n_qHk9SZkyFDzI6Bk7S6BvlOMFNYp80Ik8khRTwYphFykBtQQE9D8wzR59YuLP6aQVfbU8gkM6aNYmV7vYELtoQqI_Co9pOCC1Fwb7Ae-qgQzknr_FsARoui9cIgSBk7r0i5v-1fKXFC8I1idtuw-CA9GGXqNPoohDpV-e1AkygT1rbhuYavuNnv-g",
+    "refresh_token": "L_3boxXBZFbA2odSvrrMD9tku58L_MkIAcnP8ahP2OhpuZIYDHFPqGNr0rHuhuM_1zeXu8cLKCIMsoS8leL9ZvIBJ2h84ZXs5PgcNX2jZPCedpMwTN6pKZe236Sz1Y0j",
+    "scope": "openid profile email",
+    "id_token": "eyJraWQiOiJzb3MtZWNjLWtpZDEiLCJhbGciOiJFUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlzcyI6Imh0dHA6Ly8xMjcuMC4wLjE6ODA4MCIsInNpZCI6IjN3a3JXR3NucHg5SW9aQXd2d09sbkQyZ0RhTVNBSWZaazBkY2VLeHZlaVkiLCJhdWQiOiJjUkc0NXNBcjFoSjJTU0t6bUI1VXNqUElnZDdWVmxNMCIsInVwZGF0ZWRfYXQiOjAsImF6cCI6ImNSRzQ1c0FyMWhKMlNTS3ptQjVVc2pQSWdkN1ZWbE0wIiwiYXV0aF90aW1lIjoxNjk4NzUyMzQ3LCJuaWNrbmFtZSI6IiIsImV4cCI6MTY5ODc1NDM0MywiaWF0IjoxNjk4NzUyNTQzLCJqdGkiOiIyNDc3NTYyNjQxMDEwMTQxNTEyNzMwMjQ0MDQ4OTMzMyIsImVtYWlsIjoiYWRtaW5AYW5kYWlseS5jb20ifQ.k8zdBJE9aq-Tp_rz_ssUrTBxV4e8ZpKOn10s71j6xjGp7kZq1RiATrU8t00wx1RNRC4E1V62nTeYpJuTy4mdlA",
+    "token_type": "Bearer",
+    "expires_in": 3599
+}</pre>
+                                <p class="help-block">根据不同的grant_type, 返回的结果不同</p>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div>
+                                异常 [400]或[401]<br/>
+                                <pre>{
+    "error": "invalid_grant"
 }</pre>
                             </div>
                         </li>
@@ -837,6 +964,7 @@
     "updated_at": 0,
     "nickname": ""
 }</pre>
+                                <p class="help-block">具体有哪些属性值由<code>scope</code>范围来决定</p>
                             </div>
                         </li>
                         <li class="list-group-item">
