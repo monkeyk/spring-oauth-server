@@ -13,6 +13,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -30,6 +31,7 @@ import org.springframework.security.oauth2.server.authorization.config.annotatio
 import org.springframework.security.oauth2.server.authorization.oidc.OidcProviderConfiguration;
 import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
+import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
@@ -72,6 +74,12 @@ public class OAuth2ServerConfiguration {
      */
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+
+    /**
+     * @since 3.0.0
+     */
+    private AuthenticationManager authenticationManagerOAuth2;
 
 
     /**
@@ -125,9 +133,21 @@ public class OAuth2ServerConfiguration {
                         //ext jwt
                         oauth2ResourceServer.jwt(Customizer.withDefaults()));
 
-        return http.build();
+        DefaultSecurityFilterChain filterChain = http.build();
+        this.authenticationManagerOAuth2 = http.getSharedObject(AuthenticationManager.class);
+        return filterChain;
     }
 
+
+    /**
+     * 获取 OAuth2流程中的  AuthenticationManager
+     *
+     * @return AuthenticationManager
+     * @since 3.0.0
+     */
+    public AuthenticationManager authenticationManagerOAuth2() {
+        return authenticationManagerOAuth2;
+    }
 
     /**
      * 扩展 oidc 的默认能力配置项

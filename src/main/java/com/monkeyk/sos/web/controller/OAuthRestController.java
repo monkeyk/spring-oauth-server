@@ -11,22 +11,19 @@
  */
 package com.monkeyk.sos.web.controller;
 
+import com.monkeyk.sos.config.OAuth2ServerConfiguration;
 import com.monkeyk.sos.web.WebUtils;
 import com.monkeyk.sos.web.authentication.*;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanInitializationException;
-import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServletServerHttpResponse;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -59,7 +56,7 @@ import java.util.Map;
  * @since 2.0.0
  */
 @Controller
-public class OAuthRestController implements InitializingBean, ApplicationContextAware {
+public class OAuthRestController {
 
 
     private static final Logger LOG = LoggerFactory.getLogger(OAuthRestController.class);
@@ -76,6 +73,10 @@ public class OAuthRestController implements InitializingBean, ApplicationContext
 
 
     private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private ApplicationContext applicationContext;
+
 
     public OAuthRestController() {
 
@@ -112,6 +113,8 @@ public class OAuthRestController implements InitializingBean, ApplicationContext
                         .setDetails(new WebAuthenticationDetails(WebUtils.getIp(), null));
             }
 
+            checkAndInitialAuthenticationManager();
+
             OAuth2AccessTokenAuthenticationToken accessTokenAuthentication =
                     (OAuth2AccessTokenAuthenticationToken) this.authenticationManager.authenticate(authorizationGrantAuthentication);
             this.sendAccessTokenResponse(response, accessTokenAuthentication);
@@ -121,6 +124,14 @@ public class OAuthRestController implements InitializingBean, ApplicationContext
                 LOG.trace("Token request failed: {}", ex.getError(), ex);
             }
             this.sendErrorResponse(response, ex);
+        }
+    }
+
+    private void checkAndInitialAuthenticationManager() {
+        if (this.authenticationManager == null) {
+            OAuth2ServerConfiguration serverConfiguration = applicationContext.getBean(OAuth2ServerConfiguration.class);
+            this.authenticationManager = serverConfiguration.authenticationManagerOAuth2();
+            Assert.notNull(this.authenticationManager, "authenticationManager cannot be null");
         }
     }
 
@@ -167,24 +178,5 @@ public class OAuthRestController implements InitializingBean, ApplicationContext
         throw new OAuth2AuthenticationException(error);
     }
 
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        Assert.state(authenticationManager != null, "AuthenticationManager must be provided");
-    }
-
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        if (this.authenticationManager == null) {
-            AuthenticationConfiguration configuration = applicationContext.getBean(AuthenticationConfiguration.class);
-            Assert.notNull(configuration, "AuthenticationManagerBuilder is null");
-            try {
-                this.authenticationManager = configuration.getAuthenticationManager();
-            } catch (Exception e) {
-                throw new BeanInitializationException("Call 'getAuthenticationManager' error", e);
-            }
-        }
-    }
 
 }
