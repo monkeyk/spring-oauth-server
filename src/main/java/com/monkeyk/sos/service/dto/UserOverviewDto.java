@@ -1,5 +1,6 @@
 package com.monkeyk.sos.service.dto;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
  * @author Shengzhao Li
  */
 public class UserOverviewDto implements Serializable {
+    @Serial
     private static final long serialVersionUID = 2023379587030489248L;
 
 

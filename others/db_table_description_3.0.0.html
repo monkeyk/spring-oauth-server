@@ -1,0 +1,506 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <link rel="shortcut icon" href="https://andaily.com/spring-oauth-server/favicon.ico" />
+
+    <title>数据库表说明 - spring-oauth-server</title>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="container-fluid">
+    <h2 class="page-header">spring-oauth-server 数据库表说明
+        <small class="badge" title="Version">v3.0.0</small>
+    </h2>
+
+    <p class="text-muted">以下对<a target="_blank"
+                                href="https://gitee.com/shengzhao/spring-oauth-server">spring-oauth-server</a>项目中的
+        <code>oauth.ddl</code> <code>initial_db.ddl</code>文件(位于/others/database目录)中的表字及段进行说明,
+        内容包括字段说明与使用场景等</p>
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th style="width:10%;">表名</th>
+            <th style="width: 10%">字段名</th>
+            <th>字段类型</th>
+            <th>字段说明</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td rowspan="17">oauth2_registered_client</td>
+            <td>id</td>
+            <td>varchar</td>
+            <td>主键,系统自动生成</td>
+        </tr>
+        <tr>
+            <td>archived</td>
+            <td>tinyint</td>
+            <td>
+                用于标识客户端是否已存档(即实现逻辑删除),默认值为'0'(即未存档).
+                <br/>
+                对该字段的具体使用请参考<code>CustomJdbcClientDetailsService.java</code>,在该类中,扩展了在查询client_details的SQL加上<em>archived
+                = 0</em>条件 (扩展字段)
+            </td>
+        </tr>
+        <tr>
+            <td>create_time</td>
+            <td>datetime</td>
+            <td>数据的创建时间,精确到秒,由数据库在插入数据时取当前系统时间自动生成(扩展字段)</td>
+        </tr>
+        <tr>
+            <td>updated_time</td>
+            <td>timestamp</td>
+            <td>数据的最后更新时间,由数据库自行更新维护</td>
+        </tr>
+        <tr>
+            <td>client_id</td>
+            <td>varchar</td>
+            <td>
+                唯一,不能为空.
+                <br/>
+                用于唯一标识每一个客户端(client); 在注册时必须填写(也可由服务端自动生成).
+                <br/>
+                对于不同的grant_type,该字段都是必须的. 在实际应用中的另一个名称叫appKey,与client_id是同一个概念.
+            </td>
+        </tr>
+        <tr>
+            <td>client_id_issued_at</td>
+            <td>timestamp</td>
+            <td>client_id的签发时间, 默认为数据创建时间</td>
+        </tr>
+        <tr>
+            <td>client_secret</td>
+            <td>varchar</td>
+            <td>
+                用于指定客户端(client)的访问密匙; 在注册时必须填写(也可由服务端自动生成),加密保存.
+                <br/>
+                对于不同的grant_type,该字段都是必须的. 在实际应用中的另一个名称叫appSecret,与client_secret是同一个概念.
+            </td>
+        </tr>
+        <tr>
+            <td>client_secret_expires_at</td>
+            <td>datetime</td>
+            <td>client_secret的过期时间,null表示永不过期</td>
+        </tr>
+        <tr>
+            <td>client_name</td>
+            <td>varchar</td>
+            <td>客户端(client)的名称,一般是一个有业务意义的名称</td>
+        </tr>
+        <tr>
+            <td>client_authentication_methods</td>
+            <td>varchar</td>
+            <td>认证支持的方式,多个由逗号分隔; 如: client_secret_basic,client_secret_post; 一般指认证时传递client_secret支持哪些方式</td>
+        </tr>
+        <tr>
+            <td>authorization_grant_types</td>
+            <td>varchar</td>
+            <td>
+                指定客户端支持的grant_type,可选值包括<em>authorization_code</em>,<em>urn:ietf:params:oauth:grant-type:device_code</em>,<em>refresh_token</em>,
+                <em>urn:ietf:params:oauth:grant-type:jwt-bearer</em>,<em>client_credentials</em>,
+                若支持多个grant_type用逗号(,)分隔,如: "authorization_code,refresh_token".
+                <br/>
+                在实际应用中,当注册时,该字段是一般由服务器端指定的,而不是由申请者去选择的,最常用的grant_type组合有:
+                "authorization_code,refresh_token"(针对通过浏览器访问的客户端);
+                "client_credentials"(针对另一个服务端的场景,不需要用户参与).
+                <br/>
+                <em>urn:ietf:params:oauth:grant-type:device_code</em>与<em>urn:ietf:params:oauth:grant-type:jwt-bearer</em>是OAuth2.1中新增.
+            </td>
+        </tr>
+        <tr>
+            <td>redirect_uris</td>
+            <td>varchar</td>
+            <td>
+                OAuth2 认证后回调uri， 一般传递code, 多个由逗号分隔;
+                可为空, 当grant_type为<code>authorization_code</code>时,
+                在OAuth的流程中会使用并检查与注册时填写的redirect_uri是否一致. 下面分别说明:
+                <ul>
+                    <li>
+                        当grant_type=<code>authorization_code</code>时, 第一步 <code>从 spring-oauth-server获取
+                        'code'</code>时客户端发起请求时必须有<code>redirect_uri</code>参数, 该参数的值必须与
+                        <code>web_server_redirect_uri</code>的值一致. 第二步 <code>用 'code' 换取 'access_token'</code>
+                        时客户也必须传递相同的<code>redirect_uri</code>.
+                        <br/>
+                        在实际应用中, <em>redirect_uris</em>在注册时是必须填写的, 一般用来处理服务器返回的<code>code</code>,
+                        验证<code>state</code>是否合法与通过<code>code</code>去换取<code>access_token</code>值.
+                        <br/>
+                        在<a href="https://gitee.com/mkk/spring-oauth-client">spring-oauth-client</a>项目中,
+                        可具体参考<code>AuthorizationCodeController.java</code>中的<code>authorizationCodeCallback</code>方法.
+                    </li>
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <td>post_logout_redirect_uris</td>
+            <td>varchar</td>
+            <td> OAuth2 退出时 post 的客户端重定向 uri; 可选 多个由逗号分隔, 一般在client注册时可填写</td>
+        </tr>
+        <tr>
+            <td>scopes</td>
+            <td>varchar</td>
+            <td>
+                指定客户端申请的权限范围,可选值在OIDC协议中定义,
+                包括<em>openid</em>,<em>profile</em>,<em>email</em>,<em>address</em>,<em>phone</em>;若有多个值用逗号(,)分隔,如:
+                "openid,email".
+                <br/>
+                openid是必须有的,其他值若有则在获取的<code>id_token</code>中会包含对应的值.
+                <br/>
+                在实际应该中, 该值一般由服务端指定, 常用的值为<em>openid</em>.
+            </td>
+        </tr>
+        <tr>
+            <td>client_settings</td>
+            <td>varchar</td>
+            <td>
+                客户端的各类设置, 如是否支持PKCE，用户授权(consent)确认是否必须等; 详见代码<code>ClientSettings.java</code>;
+                此字段存储JSON格式的数据值.
+            </td>
+        </tr>
+        <tr>
+            <td>token_settings</td>
+            <td>varchar</td>
+            <td>
+                对token的各类设置; 如 token有效期, refresh_token有效期等; 详见代码<code>TokenSettings.java</code>;
+                此字段存储JSON格式的数据值.
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <p class="text-info">
+                    <em class="glyphicon glyphicon-info-sign"></em>
+                    在项目中,主要操作<code>oauth2_registered_client</code>表的类是<code>ClientDetailsController.java</code>,
+                    <code>OauthClientDetails.java</code>更多的细节请参考该类; 也可以根据实际的需要,去扩展或修改该类的实现.
+                </p>
+            </td>
+        </tr>
+        <!-- oauth2_authorization -->
+        <tr>
+            <td rowspan="35">oauth2_authorization</td>
+            <td>id</td>
+            <td>varchar</td>
+            <td>主键</td>
+        </tr>
+        <tr>
+            <td>registered_client_id</td>
+            <td>varchar</td>
+            <td>
+                外键, 关联<code>oauth2_registered_client</code>的id字段
+            </td>
+        </tr>
+        <tr>
+            <td>principal_name</td>
+            <td>varchar</td>
+            <td>认证名称, 一般指用户名或clientId; 对应OIDC中的sub字段</td>
+        </tr>
+        <tr>
+            <td>authorization_grant_type</td>
+            <td>varchar</td>
+            <td>OAuth2的 grant_type 类型</td>
+        </tr>
+        <tr>
+            <td>authorized_scopes</td>
+            <td>varchar</td>
+            <td>此次授权的范围(scope)</td>
+        </tr>
+        <tr>
+            <td>attributes</td>
+            <td>blob</td>
+            <td>进行认证授权的各类信息,JSON格式</td>
+        </tr>
+        <tr>
+            <td>state</td>
+            <td>varchar</td>
+            <td>认证请求中传递的 state 值</td>
+        </tr>
+        <tr>
+            <td>authorization_code_value</td>
+            <td>blob</td>
+            <td><code>authorization_code</code>流程中的<em>code</em>值</td>
+        </tr>
+        <tr>
+            <td>authorization_code_issued_at</td>
+            <td>datetime</td>
+            <td><code>authorization_code</code>流程中的<em>code</em>签发时间</td>
+        </tr>
+        <tr>
+            <td>authorization_code_expires_at</td>
+            <td>datetime</td>
+            <td><code>authorization_code</code>流程中的<em>code</em>过期时间</td>
+        </tr>
+        <tr>
+            <td>authorization_code_metadata</td>
+            <td>blob</td>
+            <td><code>authorization_code</code>流程中的<em>code</em>的属性设置, 如值是否有效</td>
+        </tr>
+        <tr>
+            <td>access_token_value</td>
+            <td>blob</td>
+            <td>access_token 值</td>
+        </tr>
+        <tr>
+            <td>access_token_issued_at</td>
+            <td>datetime</td>
+            <td>access_token 签发时间</td>
+        </tr>
+        <tr>
+            <td>access_token_expires_at</td>
+            <td>datetime</td>
+            <td>access_token 过期时间</td>
+        </tr>
+        <tr>
+            <td>access_token_metadata</td>
+            <td>blob</td>
+            <td>access_token 属性设置, 如各类claims中的属性与值</td>
+        </tr>
+        <tr>
+            <td>access_token_type</td>
+            <td>varchar</td>
+            <td>access_token 类型, 一般是Bearer</td>
+        </tr>
+        <tr>
+            <td>access_token_scopes</td>
+            <td>varchar</td>
+            <td>此次授权的scope范围值,如: openid,profile</td>
+        </tr>
+        <tr>
+            <td>oidc_id_token_value</td>
+            <td>blob</td>
+            <td>OIDC中id_token 值</td>
+        </tr>
+        <tr>
+            <td>oidc_id_token_issued_at</td>
+            <td>datetime</td>
+            <td>id_token 签发时间</td>
+        </tr>
+        <tr>
+            <td>oidc_id_token_expires_at</td>
+            <td>datetime</td>
+            <td>id_token 过期时间</td>
+        </tr>
+        <tr>
+            <td>oidc_id_token_metadata</td>
+            <td>blob</td>
+            <td>id_token 属性设置, 如各类claims中的属性与值</td>
+        </tr>
+        <tr>
+            <td>refresh_token_value</td>
+            <td>blob</td>
+            <td>refresh_token 值</td>
+        </tr>
+        <tr>
+            <td>refresh_token_issued_at</td>
+            <td>datetime</td>
+            <td>refresh_token 签发时间</td>
+        </tr>
+        <tr>
+            <td>refresh_token_expires_at</td>
+            <td>datetime</td>
+            <td>refresh_token 过期时间</td>
+        </tr>
+        <tr>
+            <td>refresh_token_metadata</td>
+            <td>blob</td>
+            <td>refresh_token 属性设置, 如是否复用(reuse)</td>
+        </tr>
+        <tr>
+            <td>user_code_value</td>
+            <td>blob</td>
+            <td><code>device_code</code>流程中的user_code值</td>
+        </tr>
+        <tr>
+            <td>user_code_issued_at</td>
+            <td>datetime</td>
+            <td>user_code 签发时间</td>
+        </tr>
+        <tr>
+            <td>user_code_expires_at</td>
+            <td>datetime</td>
+            <td>user_code 过期时间</td>
+        </tr>
+        <tr>
+            <td>user_code_metadata</td>
+            <td>blob</td>
+            <td>user_code 属性设置, 如是否已经验证</td>
+        </tr>
+        <tr>
+            <td>device_code_value</td>
+            <td>blob</td>
+            <td><code>device_code</code>流程中的device_code值</td>
+        </tr>
+        <tr>
+            <td>device_code_issued_at</td>
+            <td>datetime</td>
+            <td>device_code 签发时间</td>
+        </tr>
+        <tr>
+            <td>device_code_expires_at</td>
+            <td>datetime</td>
+            <td>device_code 过期时间</td>
+        </tr>
+        <tr>
+            <td>device_code_metadata</td>
+            <td>blob</td>
+            <td>device_code 属性设置, 如是否已经验证</td>
+        </tr>
+        <tr>
+            <td>updated_time</td>
+            <td>timestamp</td>
+            <td>数据的最后修改时间, 由数据库自动维护更新</td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <p class="text-info">
+                    <em class="glyphicon glyphicon-info-sign"></em> 该表用于存储在OAuth2.1授权过程中各类信息数据,
+                    支持各类<code>grant_type</code>场景;
+                    对<code>oauth2_authorization</code>表的主要操作在<code>JdbcOAuth2AuthorizationService.java</code>类中,
+                    更多的细节请参考该类.
+                    <br/>
+                    注意: 若对性能有要求, 此表的数据存储设计需要进行优化(如存redis或利用JWT特性简化一些不必要的存储字段).
+                </p>
+            </td>
+        </tr>
+        <!-- oauth2_authorization_consent -->
+        <tr>
+            <td rowspan="5">oauth2_authorization_consent</td>
+            <td>registered_client_id</td>
+            <td>varchar</td>
+            <td>外键, 关联<code>oauth2_registered_client</code>表的id字段</td>
+        </tr>
+        <tr>
+            <td>principal_name</td>
+            <td>varchar</td>
+            <td>认证名称, 一般指用户名或clientId; 对应OIDC中的sub字段</td>
+        </tr>
+        <tr>
+            <td>authorities</td>
+            <td>varchar</td>
+            <td>授权确认过期中的属性, 如scope范围</td>
+        </tr>
+        <tr>
+            <td>updated_time</td>
+            <td>timestamp</td>
+            <td>数据的最后修改时间, 由数据库自动维护更新</td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <p class="text-info">
+                    <em class="glyphicon glyphicon-info-sign"></em> 该表主要存储在授权过程中需要用户进行确认(consent)的信息;
+                    在项目中,主要操作<code>oauth2_authorization_consent</code>表的对象是<code>JdbcOAuth2AuthorizationConsentService.java</code>.
+                    更多的细节请参考该类.
+                </p>
+            </td>
+        </tr>
+        <!-- user_ -->
+        <tr>
+            <td rowspan="15">user_</td>
+            <td>id</td>
+            <td>int</td>
+            <td>主键, 自增长, 数据库自动生成</td>
+        </tr>
+        <tr>
+            <td>guid</td>
+            <td>varchar</td>
+            <td>唯一, 业务id</td>
+        </tr>
+        <tr>
+            <td>create_time</td>
+            <td>datetime</td>
+            <td>数据创建时间</td>
+        </tr>
+        <tr>
+            <td>updated_time</td>
+            <td>timestamp</td>
+            <td>数据的最后修改时间, 由数据库自动维护更新</td>
+        </tr>
+        <tr>
+            <td>username</td>
+            <td>varchar</td>
+            <td>用户名, 非空, 唯一</td>
+        </tr>
+        <tr>
+            <td>password</td>
+            <td>varchar</td>
+            <td>密码, 加密存储, 非空</td>
+        </tr>
+        <tr>
+            <td>enabled</td>
+            <td>tinyint</td>
+            <td>是否启用, 默认1(即启用)</td>
+        </tr>
+        <tr>
+            <td>phone</td>
+            <td>varchar</td>
+            <td>手机号</td>
+        </tr>
+        <tr>
+            <td>email</td>
+            <td>varchar</td>
+            <td>邮箱地址</td>
+        </tr>
+        <tr>
+            <td>address</td>
+            <td>varchar</td>
+            <td>个人地址</td>
+        </tr>
+        <tr>
+            <td>nickname</td>
+            <td>varchar</td>
+            <td>用户昵称, 别名</td>
+        </tr>
+        <tr>
+            <td>updated_at</td>
+            <td>int</td>
+            <td>最后数据更新时间值</td>
+        </tr>
+        <tr>
+            <td>default_user</td>
+            <td>tinyint</td>
+            <td>是否默认用户, 默认0(不是); 只用在初始化数据时使用</td>
+        </tr>
+        <tr>
+            <td>last_login_time</td>
+            <td>datetime</td>
+            <td>最后登录时间</td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <p class="text-info">
+                    <em class="glyphicon glyphicon-info-sign"></em> 在项目中,主要使用<code>user_</code>表的对象是<code>UserServiceImpl.java</code>;
+                    对应的实体是<code>User.java</code>;
+                    在Spring Security中, 此表存储的数据对应<code>UserDetails.java</code>类.
+                </p>
+            </td>
+        </tr>
+        <!-- user_privilege -->
+        <tr>
+            <td rowspan="3">user_privilege</td>
+            <td>user_id</td>
+            <td>int</td>
+            <td>外键, 关联<code>user_</code>的id字段</td>
+        </tr>
+        <tr>
+            <td>privilege</td>
+            <td>varchar</td>
+            <td>权限值, 如: ROLE_USER</td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <p class="text-info">
+                    <em class="glyphicon glyphicon-info-sign"></em> 此表存储用户的权限值, 一个用户可以有多个权限值.
+                </p>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="text-center">
+        <hr/>
+        <p class="text-muted">
+            &copy; 2013 - 2023 <a href="https://gitee.com/shengzhao/spring-oauth-server" target="_blank">spring-oauth-server</a>
+        </p>
+    </div>
+</div>
+
+</body>
+</html>

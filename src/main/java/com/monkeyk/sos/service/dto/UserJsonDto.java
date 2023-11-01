@@ -3,6 +3,7 @@ package com.monkeyk.sos.service.dto;
 import com.monkeyk.sos.domain.user.Privilege;
 import com.monkeyk.sos.domain.user.User;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,8 @@ import java.util.List;
  */
 public class UserJsonDto implements Serializable {
 
+    @Serial
+    private static final long serialVersionUID = -704681024783524371L;
 
     private String guid;
     private boolean archived;
