@@ -14,6 +14,7 @@ package com.monkeyk.sos.service.dto;
 import com.monkeyk.sos.domain.user.Privilege;
 import com.monkeyk.sos.domain.user.User;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ import java.util.List;
  * @author Shengzhao Li
  */
 public class UserDto implements Serializable {
+    @Serial
     private static final long serialVersionUID = -2502329463915439215L;
 
 
@@ -39,6 +41,30 @@ public class UserDto implements Serializable {
 
     private List<Privilege> privileges = new ArrayList<>();
 
+    /**
+     * true 启用
+     * false 禁用
+     *
+     * @since 3.0.0
+     */
+    private boolean enabled = true;
+
+    /**
+     * 别名
+     *
+     * @see org.springframework.security.oauth2.core.oidc.OidcScopes#PROFILE
+     * @since 3.0.0
+     */
+    private String nickname;
+
+    /**
+     * 地址
+     *
+     * @see org.springframework.security.oauth2.core.oidc.OidcScopes#ADDRESS
+     * @since 3.0.0
+     */
+    private String address;
+
 
     public UserDto() {
     }
@@ -52,6 +78,35 @@ public class UserDto implements Serializable {
 
         this.privileges = user.privileges();
         this.createTime = user.createTime().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+
+        this.enabled = user.enabled();
+        this.address = user.address();
+        this.nickname = user.nickname();
+    }
+
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getCreateTime() {

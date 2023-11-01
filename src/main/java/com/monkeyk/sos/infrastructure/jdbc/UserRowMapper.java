@@ -18,6 +18,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
+ * table: user_
  * 2015/11/16
  *
  * @author Shengzhao Li
@@ -45,6 +46,11 @@ public class UserRowMapper implements RowMapper<User> {
         user.username(rs.getString("username"));
 
         user.lastLoginTime(rs.getTimestamp("last_login_time"));
+        //v3.0.0 added
+        user.address(rs.getString("address"));
+        user.nickname(rs.getString("nickname"));
+        user.enabled(rs.getBoolean("enabled"));
+        user.updatedAt(rs.getLong("updated_at"));
 
         return user;
     }

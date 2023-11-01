@@ -4,12 +4,15 @@ import com.monkeyk.sos.domain.user.Privilege;
 import com.monkeyk.sos.domain.user.User;
 import com.monkeyk.sos.infrastructure.PasswordHandler;
 
+import java.io.Serial;
+
 /**
  * 2016/3/25
  *
  * @author Shengzhao Li
  */
 public class UserFormDto extends UserDto {
+    @Serial
     private static final long serialVersionUID = 7959857016962260738L;
 
 
@@ -38,6 +41,10 @@ public class UserFormDto extends UserDto {
                 .email(getEmail())
                 .password(PasswordHandler.encode(getPassword()));
         user.privileges().addAll(getPrivileges());
+        //v3.0.0 added
+        user.address(getAddress())
+                .nickname(getNickname())
+                .enabled(isEnabled());
         return user;
     }
 }

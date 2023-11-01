@@ -4,42 +4,133 @@ import com.monkeyk.sos.domain.oauth.OauthClientDetails;
 import com.monkeyk.sos.domain.shared.GuidGenerator;
 import com.monkeyk.sos.infrastructure.DateUtils;
 import com.monkeyk.sos.infrastructure.PasswordHandler;
-import org.apache.commons.lang.StringUtils;
+import com.monkeyk.sos.infrastructure.SettingsUtils;
+import org.apache.commons.lang3.StringUtils;
 
+import java.io.Serial;
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.springframework.security.oauth2.core.AuthorizationGrantType.*;
+
 /**
  * @author Shengzhao Li
+ * @since 1.0.0
  */
 public class OauthClientDetailsDto implements Serializable {
 
+    @Serial
+    private static final long serialVersionUID = 4011292111995231569L;
+
+
+    /**
+     * 对应数据库中的 id 字段
+     *
+     * @since 3.0.0
+     */
+    private String id;
 
     private String createTime;
     private boolean archived;
 
     private String clientId = GuidGenerator.generate();
-    private String resourceIds;
+
+
+    /**
+     * client 名称，
+     * 一般由添加时填写
+     *
+     * @since 3.0.0
+     */
+    private String clientName;
+
+
+    /**
+     * client 签发时间，一般指创建时间
+     *
+     * @since 3.0.0
+     */
+    private String clientIdIssuedAt;
+
 
     private String clientSecret = GuidGenerator.generateClientSecret();
 
-    private String scope;
 
-    private String authorizedGrantTypes;
+    /**
+     * secret 过期时间，
+     * null则无过期；
+     * 可用于一些临时签发使用
+     *
+     * @since 3.0.0
+     */
+    private String clientSecretExpiresAt;
 
-    private String webServerRedirectUri;
 
-    private String authorities;
+    /**
+     * 认证支持的方式，多个由逗号分隔
+     * 如: client_secret_basic,client_secret_post
+     *
+     * @see org.springframework.security.oauth2.core.ClientAuthenticationMethod
+     * @since 3.0.0
+     */
+    private String clientAuthenticationMethods;
 
-    private Integer accessTokenValidity;
 
-    private Integer refreshTokenValidity;
+    /**
+     * OIDC scope 值, 多个由逗号分隔
+     * 如: openid,profile,email
+     *
+     * @see org.springframework.security.oauth2.core.oidc.OidcScopes
+     */
+    private String scopes;
 
-    // optional
-    private String additionalInformation;
+    /**
+     * 授权支持的 grant_type (OAuth2.1), 多个由逗号分隔
+     * 如: authorization_code,refresh_token
+     *
+     * @see org.springframework.security.oauth2.core.AuthorizationGrantType
+     */
+    private String authorizationGrantTypes;
 
-    private boolean trusted;
+    /**
+     * OAuth2 认证后回调uri， 一般传递code, 多个由逗号分隔
+     * The re-direct URI(s) established during registration (optional, comma separated).
+     */
+    private String redirectUris;
+
+
+    /**
+     * OAuth2 退出时 post 的客户端重定向 uri，可选
+     * 多个由逗号分隔
+     * 在client注册时可填写
+     *
+     * @since 3.0.0
+     */
+    private String postLogoutRedirectUris;
+
+
+    /**
+     * 客户端的各类设置
+     * 如是否支持PKCE，用户授权(consent)确认是否必须
+     * 必须由 {ClientSettings} 生成的字符串
+     *
+     * @see org.springframework.security.oauth2.server.authorization.settings.ClientSettings
+     * @since 3.0.0
+     */
+    private ClientSettingsDto clientSettings;
+
+    /**
+     * token的各类设置
+     * 如 token有效期，refresh_token有效期
+     * 必须由 {TokenSettings} 生成的字符串
+     *
+     * @see org.springframework.security.oauth2.server.authorization.settings.TokenSettings
+     * @since 3.0.0
+     */
+    private TokenSettingsDto tokenSettings;
+
 
     public OauthClientDetailsDto() {
     }
@@ -47,21 +138,26 @@ public class OauthClientDetailsDto implements Serializable {
     public OauthClientDetailsDto(OauthClientDetails clientDetails) {
         this.clientId = clientDetails.clientId();
         this.clientSecret = clientDetails.clientSecret();
-        this.scope = clientDetails.scope();
+        this.scopes = clientDetails.scopes();
 
         this.createTime = DateUtils.toDateTime(clientDetails.createTime());
         this.archived = clientDetails.archived();
-        this.resourceIds = clientDetails.resourceIds();
+        this.postLogoutRedirectUris = clientDetails.postLogoutRedirectUris();
 
-        this.webServerRedirectUri = clientDetails.webServerRedirectUri();
-        this.authorities = clientDetails.authorities();
-        this.accessTokenValidity = clientDetails.accessTokenValidity();
+        this.redirectUris = clientDetails.redirectUris();
+        this.clientIdIssuedAt = clientDetails.clientIdIssuedAt().toString();
+        Instant clientSecretExpiresAt1 = clientDetails.clientSecretExpiresAt();
+        if (clientSecretExpiresAt1 != null) {
+            this.clientSecretExpiresAt = clientSecretExpiresAt1.toString();
+        }
 
-        this.refreshTokenValidity = clientDetails.refreshTokenValidity();
-        this.additionalInformation = clientDetails.additionalInformation();
-        this.trusted = clientDetails.trusted();
+        this.clientAuthenticationMethods = clientDetails.clientAuthenticationMethods();
+        this.clientName = clientDetails.clientName();
+        this.id = clientDetails.id();
 
-        this.authorizedGrantTypes = clientDetails.authorizedGrantTypes();
+        this.authorizationGrantTypes = clientDetails.authorizationGrantTypes();
+        this.clientSettings = new ClientSettingsDto(clientDetails.clientSettings());
+        this.tokenSettings = new TokenSettingsDto(clientDetails.tokenSettings());
     }
 
 
@@ -89,13 +185,6 @@ public class OauthClientDetailsDto implements Serializable {
         this.clientId = clientId;
     }
 
-    public String getResourceIds() {
-        return resourceIds;
-    }
-
-    public void setResourceIds(String resourceIds) {
-        this.resourceIds = resourceIds;
-    }
 
     public String getClientSecret() {
         return clientSecret;
@@ -105,77 +194,6 @@ public class OauthClientDetailsDto implements Serializable {
         this.clientSecret = clientSecret;
     }
 
-    public String getScope() {
-        return scope;
-    }
-
-
-    public String getScopeWithBlank() {
-        if (scope != null && scope.contains(",")) {
-            return scope.replaceAll(",", " ");
-        }
-        return scope;
-    }
-
-    public void setScope(String scope) {
-        this.scope = scope;
-    }
-
-    public String getAuthorizedGrantTypes() {
-        return authorizedGrantTypes;
-    }
-
-    public void setAuthorizedGrantTypes(String authorizedGrantTypes) {
-        this.authorizedGrantTypes = authorizedGrantTypes;
-    }
-
-    public String getWebServerRedirectUri() {
-        return webServerRedirectUri;
-    }
-
-    public void setWebServerRedirectUri(String webServerRedirectUri) {
-        this.webServerRedirectUri = webServerRedirectUri;
-    }
-
-    public String getAuthorities() {
-        return authorities;
-    }
-
-    public void setAuthorities(String authorities) {
-        this.authorities = authorities;
-    }
-
-    public Integer getAccessTokenValidity() {
-        return accessTokenValidity;
-    }
-
-    public void setAccessTokenValidity(Integer accessTokenValidity) {
-        this.accessTokenValidity = accessTokenValidity;
-    }
-
-    public Integer getRefreshTokenValidity() {
-        return refreshTokenValidity;
-    }
-
-    public void setRefreshTokenValidity(Integer refreshTokenValidity) {
-        this.refreshTokenValidity = refreshTokenValidity;
-    }
-
-    public String getAdditionalInformation() {
-        return additionalInformation;
-    }
-
-    public void setAdditionalInformation(String additionalInformation) {
-        this.additionalInformation = additionalInformation;
-    }
-
-    public boolean isTrusted() {
-        return trusted;
-    }
-
-    public void setTrusted(boolean trusted) {
-        this.trusted = trusted;
-    }
 
     public static List<OauthClientDetailsDto> toDtos(List<OauthClientDetails> clientDetailses) {
         List<OauthClientDetailsDto> dtos = new ArrayList<>(clientDetailses.size());
@@ -187,51 +205,191 @@ public class OauthClientDetailsDto implements Serializable {
 
 
     public boolean isContainsAuthorizationCode() {
-        return this.authorizedGrantTypes.contains("authorization_code");
+        if (!this.authorizationGrantTypes.contains(AUTHORIZATION_CODE.getValue())) {
+            return false;
+        }
+        if (clientSettings == null) {
+            return true;
+        }
+        return !clientSettings.isRequireProofKey();
     }
 
+    /**
+     * PKCE   flow
+     *
+     * @since 3.0.0
+     */
+    public boolean isContainsAuthorizationCodeWithPKCE() {
+        if (!this.authorizationGrantTypes.contains(AUTHORIZATION_CODE.getValue())) {
+            return false;
+        }
+        return clientSettings != null && clientSettings.isRequireProofKey();
+    }
+
+    /**
+     * OAuth2.1不支持
+     *
+     * @deprecated from OAuth2.1
+     */
     public boolean isContainsPassword() {
-        return this.authorizedGrantTypes.contains("password");
+        return this.authorizationGrantTypes.contains(PASSWORD.getValue());
     }
 
-    public boolean isContainsImplicit() {
-        return this.authorizedGrantTypes.contains("implicit");
-    }
+//    public boolean isContainsImplicit() {
+//        return this.authorizationGrantTypes.contains("implicit");
+//    }
 
     public boolean isContainsClientCredentials() {
-        return this.authorizedGrantTypes.contains("client_credentials");
+        return this.authorizationGrantTypes.contains(CLIENT_CREDENTIALS.getValue());
     }
 
     public boolean isContainsRefreshToken() {
-        return this.authorizedGrantTypes.contains("refresh_token");
+        return this.authorizationGrantTypes.contains(REFRESH_TOKEN.getValue());
+    }
+
+    /**
+     * @since 3.0.0
+     */
+    public boolean isContainsDeviceCode() {
+        return this.authorizationGrantTypes.contains(DEVICE_CODE.getValue());
+    }
+
+    /**
+     * @since 3.0.0
+     */
+    public boolean isContainsJwtBearer() {
+        return this.authorizationGrantTypes.contains(JWT_BEARER.getValue());
     }
 
 
     public OauthClientDetails createDomain() {
         OauthClientDetails clientDetails = new OauthClientDetails()
+                .id(GuidGenerator.generateNumber())
                 .clientId(clientId)
+                .clientName(clientName)
                 // encrypted client secret
                 .clientSecret(PasswordHandler.encode(clientSecret))
-                .resourceIds(resourceIds)
-                .authorizedGrantTypes(authorizedGrantTypes)
-                .scope(scope);
+                .postLogoutRedirectUris(postLogoutRedirectUris)
+                .authorizationGrantTypes(authorizationGrantTypes)
+                .clientAuthenticationMethods(clientAuthenticationMethods)
+                .scopes(scopes);
 
-        if (StringUtils.isNotEmpty(webServerRedirectUri)) {
-            clientDetails.webServerRedirectUri(webServerRedirectUri);
+        if (StringUtils.isNotBlank(clientIdIssuedAt)) {
+            clientDetails.clientIdIssuedAt(Instant.parse(this.clientIdIssuedAt));
         }
 
-        if (StringUtils.isNotEmpty(authorities)) {
-            clientDetails.authorities(authorities);
+        if (StringUtils.isNotBlank(clientSecretExpiresAt)) {
+            clientDetails.clientSecretExpiresAt(Instant.parse(this.clientSecretExpiresAt));
         }
 
-        clientDetails.accessTokenValidity(accessTokenValidity)
-                .refreshTokenValidity(refreshTokenValidity)
-                .trusted(trusted);
-
-        if (StringUtils.isNotEmpty(additionalInformation)) {
-            clientDetails.additionalInformation(additionalInformation);
+        if (StringUtils.isNotEmpty(redirectUris)) {
+            clientDetails.redirectUris(redirectUris);
         }
+
+        clientDetails.clientSettings(SettingsUtils.textClientSettings(this.clientSettings.toSettings()));
+        clientDetails.tokenSettings(SettingsUtils.textTokenSettings(this.tokenSettings.toSettings()));
 
         return clientDetails;
+    }
+
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getClientName() {
+        return clientName;
+    }
+
+    public void setClientName(String clientName) {
+        this.clientName = clientName;
+    }
+
+    public String getClientIdIssuedAt() {
+        return clientIdIssuedAt;
+    }
+
+    public void setClientIdIssuedAt(String clientIdIssuedAt) {
+        this.clientIdIssuedAt = clientIdIssuedAt;
+    }
+
+    public String getClientSecretExpiresAt() {
+        return clientSecretExpiresAt;
+    }
+
+    public void setClientSecretExpiresAt(String clientSecretExpiresAt) {
+        this.clientSecretExpiresAt = clientSecretExpiresAt;
+    }
+
+    public String getClientAuthenticationMethods() {
+        return clientAuthenticationMethods;
+    }
+
+    public void setClientAuthenticationMethods(String clientAuthenticationMethods) {
+        this.clientAuthenticationMethods = clientAuthenticationMethods;
+    }
+
+    public String getScopes() {
+        return scopes;
+    }
+
+    public void setScopes(String scopes) {
+        this.scopes = scopes;
+    }
+
+    public String getAuthorizationGrantTypes() {
+        return authorizationGrantTypes;
+    }
+
+    public void setAuthorizationGrantTypes(String authorizationGrantTypes) {
+        this.authorizationGrantTypes = authorizationGrantTypes;
+    }
+
+    public String getRedirectUris() {
+        return redirectUris;
+    }
+
+    public void setRedirectUris(String redirectUris) {
+        this.redirectUris = redirectUris;
+    }
+
+    public String getPostLogoutRedirectUris() {
+        return postLogoutRedirectUris;
+    }
+
+    public void setPostLogoutRedirectUris(String postLogoutRedirectUris) {
+        this.postLogoutRedirectUris = postLogoutRedirectUris;
+    }
+
+    public ClientSettingsDto getClientSettings() {
+        return clientSettings;
+    }
+
+    public void setClientSettings(ClientSettingsDto clientSettings) {
+        this.clientSettings = clientSettings;
+    }
+
+    public TokenSettingsDto getTokenSettings() {
+        return tokenSettings;
+    }
+
+    public void setTokenSettings(TokenSettingsDto tokenSettings) {
+        this.tokenSettings = tokenSettings;
+    }
+
+    /**
+     * 逗号, 转化为 ' '
+     *
+     * @return scopes
+     */
+    public String getScopesWithBlank() {
+        if (scopes != null && scopes.contains(",")) {
+            return scopes.replaceAll(",", " ");
+        }
+        return scopes;
     }
 }

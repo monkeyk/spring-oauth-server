@@ -1,8 +1,8 @@
 package com.monkeyk.sos.web;
 
-import org.apache.commons.lang.StringUtils;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Shengzhao Li
@@ -16,7 +16,7 @@ public abstract class WebUtils {
     /**
      * Sync by pom.xml   <version></version>
      */
-    public static final String VERSION = "2.0.1";
+    public static final String VERSION = "3.0.0";
 
 
     private static ThreadLocal<String> ipThreadLocal = new ThreadLocal<>();

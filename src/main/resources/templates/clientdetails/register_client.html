@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,user-scalable=no"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <link rel="shortcut icon" href="../../static/favicon.ico" th:href="@{/favicon.ico}"/>
+
+    <title>注册client - Spring Security&OAuth2.1</title>
+
+    <th:block th:insert="~{fragments/main::header-css}"/>
+    <script th:src="@{/angular.min.js}" src="../../static/angular.min.js"></script>
+</head>
+<body class="container">
+<a th:href="@{/}">Home</a>
+
+<h2>注册client</h2>
+
+<div ng-app>
+    <div class="alert alert-info">
+        若对OAuth2.1的<code>client_details</code>中的属性及作用不清楚,
+        建议你先查看项目中的<code>db_table_description.html</code>文件(位于others目录)中对表<code>oauth2_registered_client</code>的说明,
+        或在线访问<a href="https://andaily.com/spring-oauth-server/db_table_description_3.0.0.html" target="_blank">db_table_description.html</a>;
+        因为注册client实际上是向该表中按不同的条件添加数据.
+    </div>
+
+    <div ng-controller="RegisterClientCtrl">
+        <form th:object="${formDto}" th:action="@{register_client}" th:method="post" class="form-horizontal">
+            <div class="form-group">
+                <label for="clientId" class="col-sm-2 control-label">client_id<em class="text-danger">*</em></label>
+
+                <div class="col-sm-10">
+                    <input th:name="clientId" class="form-control" id="clientId" placeholder="client_id"
+                           required="required" th:field="*{clientId}" minlength="10"/>
+
+                    <p class="help-block">client_id必须输入,且必须唯一,长度至少10位; 在实际应用中的另一个名称叫appKey,与client_id是同一个概念.</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="clientName" class="col-sm-2 control-label">client_name<em class="text-danger">*</em></label>
+
+                <div class="col-sm-10">
+                    <input th:name="clientName" class="form-control" id="clientName" placeholder="client_name"
+                           required="required" th:field="*{clientName}" minlength="4"/>
+                    <em class="label label-success">OAuth2.1新增</em>
+                    <p class="help-block">Client有意义的名称.</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="clientSecret" class="col-sm-2 control-label">client_secret<em
+                        class="text-danger">*</em></label>
+
+                <div class="col-sm-10">
+                    <input th:name="clientSecret" class="form-control" id="clientSecret" minlength="10"
+                           placeholder="client_secret" required="required" th:field="*{clientSecret}"/>
+
+                    <p class="help-block">client_secret必须输入,且长度至少10位; 在实际应用中的另一个名称叫appSecret,与client_secret是同一个概念.
+                        <br/>
+                        <strong class="label label-warning">注意: </strong> 由于client_secret 会加密存储, 请先复制并保留client_secret值
+                    </p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">authentication_methods<em
+                        class="text-danger">*</em></label>
+
+                <div class="col-sm-10">
+                    <label class="checkbox-inline">
+                        <input type="checkbox" th:name="clientAuthenticationMethods" th:value="client_secret_post"
+                               th:field="*{clientAuthenticationMethods}"/> client_secret_post
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" th:name="clientAuthenticationMethods" th:value="client_secret_basic"
+                               th:field="*{clientAuthenticationMethods}"/> client_secret_basic
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" th:name="clientAuthenticationMethods" th:value="client_secret_jwt"
+                               th:field="*{clientAuthenticationMethods}"/> client_secret_jwt
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" th:name="clientAuthenticationMethods" th:value="private_key_jwt"
+                               th:field="*{clientAuthenticationMethods}"/> private_key_jwt
+                    </label>
+                    <br/>
+                    <em class="label label-success">OAuth2.1新增</em>
+                    <p class="help-block">
+                        选择在认证时支持传递<em>client_secret</em>参数的方式；在正式环境中，此值一般不需要选择而是由后台创建时根据业务设置即可;
+                        <br/>
+                        <code>client_secret_jwt</code>与<code>private_key_jwt</code>只在grant_type=jwt-bearer中会使用到
+                    </p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">scopes<em class="text-danger">*</em></label>
+
+                <div class="col-sm-10">
+                    <label class="checkbox-inline">
+                        <input type="checkbox" th:name="scopes" th:value="openid" th:field="*{scopes}"/> openid
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" th:name="scopes" th:value="profile" th:field="*{scopes}"/> profile
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" th:name="scopes" th:value="email" th:field="*{scopes}"/> email
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" th:name="scopes" th:value="address" th:field="*{scopes}"/> address
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" th:name="scopes" th:value="phone" th:field="*{scopes}"/> phone
+                    </label>
+
+                    <p class="help-block">scopes值由OIDC 1.0协议中定义(详见<a
+                            href="https://openid.net/specs/openid-connect-core-1_0.html#ScopeClaims" target="_blank">#ScopeClaims</a>)，<em>openid</em>必须选择；在正式环境中，此值一般不需要选择而是由后台创建时根据业务设置即可
+                    </p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">grant_type(s)<em class="text-danger">*</em></label>
+
+                <div class="col-sm-10">
+                    <label class="checkbox-inline">
+                        <input type="checkbox" th:name="authorizationGrantTypes" th:value="authorization_code"
+                               th:field="*{authorizationGrantTypes}"/> authorization_code
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" th:name="authorizationGrantTypes" th:value="password"
+                               th:field="*{authorizationGrantTypes}"/> password <em
+                            class="label label-danger">OAuth2.1不支持</em>
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" th:name="authorizationGrantTypes"
+                               value="urn:ietf:params:oauth:grant-type:device_code"
+                               th:field="*{authorizationGrantTypes}"/> device_code <em class="label label-success">OAuth2.1新增</em>
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" th:name="authorizationGrantTypes"
+                               value="urn:ietf:params:oauth:grant-type:jwt-bearer"
+                               th:field="*{authorizationGrantTypes}"/> jwt-bearer <em class="label label-success">OAuth2.1新增</em>
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" th:name="authorizationGrantTypes" th:value="client_credentials"
+                               th:field="*{authorizationGrantTypes}"/> client_credentials
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" th:name="authorizationGrantTypes" th:value="refresh_token"
+                               th:field="*{authorizationGrantTypes}"/> refresh_token
+                    </label>
+
+                    <p class="help-block">
+                        至少勾选一项grant_type(s), 且不能只单独勾选<code>refresh_token</code>; 当勾选<code>jwt-bearer</code>时需要将'authentication_methods'中的
+                        <em>client_secret_jwt</em>与<em>private_key_jwt</em>至少勾选一个
+                    </p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="redirectUris" class="col-sm-2 control-label">redirect_uris</label>
+
+                <div class="col-sm-10">
+                    <input th:name="redirectUris" id="redirectUris" placeholder="https://..." class="form-control"
+                           th:field="*{redirectUris}"/>
+
+                    <p class="help-block">若<code>grant_type</code>包括<em>authorization_code</em>, 则必须输入至少一个 redirect_uri
+                        (多个uri用半角逗号分隔)</p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="postLogoutRedirectUris" class="col-sm-2 control-label">logout_redirect_uris</label>
+
+                <div class="col-sm-10">
+                    <input th:name="postLogoutRedirectUris" id="postLogoutRedirectUris" placeholder="https://..."
+                           class="form-control"
+                           th:field="*{postLogoutRedirectUris}"/>
+
+                    <p class="help-block">OAuth2 退出时<em>post</em>的客户端重定向 uri (多个uri用半角逗号分隔)，可选</p>
+                    <em class="label label-success">OAuth2.1新增</em>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-10">
+                    <a href="javascript:void(0);" ng-click="showMore()"><strong>更多选项...</strong></a>
+                </div>
+            </div>
+
+            <div ng-show="visible">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">require_proof_key(PKCE)</label>
+
+                    <div class="col-sm-10">
+                        <label class="checkbox-inline">
+                            <input type="radio" th:name="clientSettings.requireProofKey" th:value="true"
+                                   th:field="*{clientSettings.requireProofKey}"/> 支持PKCE
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="radio" th:name="clientSettings.requireProofKey" th:value="false"
+                                   th:field="*{clientSettings.requireProofKey}"/> 不支持PKCE
+                        </label>
+
+                        <p class="help-block">是否在<em>authorization_code</em>流程中支持PKCE(Proof Key for Code Exchange)</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">授权需要用户确认</label>
+
+                    <div class="col-sm-10">
+                        <label class="checkbox-inline">
+                            <input type="radio" th:name="clientSettings.requireAuthorizationConsent" th:value="true"
+                                   th:field="*{clientSettings.requireAuthorizationConsent}"/> Yes
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="radio" th:name="clientSettings.requireAuthorizationConsent" th:value="false"
+                                   th:field="*{clientSettings.requireAuthorizationConsent}"/> No
+                        </label>
+
+                        <p class="help-block">是否在<em>authorization_code</em>流程中授权时需要用户进行确认</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="easa" class="col-sm-2 control-label">认证jwt签名算法</label>
+
+                    <div class="col-sm-10">
+                        <select id="easa" th:name="clientSettings.tokenEndpointAuthenticationSigningAlgorithm"
+                                th:field="*{clientSettings.tokenEndpointAuthenticationSigningAlgorithm}"
+                                class="form-control">
+                            <option th:value="RS256">RS256</option>
+                            <option th:value="ES256">ES256</option>
+                            <option th:value="HS256">HS256</option>
+                        </select>
+
+                        <p class="help-block">选择在调用<em>/oauth2/token</em>
+                            API时使用的签名算法(当grant_type为jwt-bearer时会用到)；<code>HS256</code>是对称算法(secret是client_secret加密后的值),
+                            <code>RS256</code>与<code>ES256</code>是非对称算法(public-key由提供的<em>jwk_set_url</em>获取)
+                        </p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="jwkSetUrl" class="col-sm-2 control-label">jwk_set_url</label>
+
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" th:name="clientSettings.jwkSetUrl"
+                               id="jwkSetUrl" placeholder="https://..." th:field="*{clientSettings.jwkSetUrl}"/>
+
+                        <p class="help-block">
+                            设置client提供的获取jwk的URL地址(当grant_type为jwt-bearer且'认证jwt签名算法'选择<code>RS256</code>或<code>ES256</code>时会用到);
+                            此URL返回的jwk格式要与<em>spring-oauth-server</em>提供的<a th:href="@{/oauth2/jwks}" target="_blank">jwks</a>一致
+                            (参考实现类<code>JwtBearerJwksController.java</code>)
+                        </p>
+                    </div>
+                </div>
+
+                <hr/>
+
+                <div class="form-group">
+                    <label for="authorizationCodeTimeToLive" class="col-sm-2 control-label">code有效时长</label>
+
+                    <div class="col-sm-10">
+                        <input type="number" class="form-control" th:name="tokenSettings.authorizationCodeTimeToLive"
+                               id="authorizationCodeTimeToLive"
+                               placeholder="300" th:field="*{tokenSettings.authorizationCodeTimeToLive}"/>
+
+                        <p class="help-block">设定<em>authorization_code</em>流程中<em>code</em>的有效时长(单位:秒)；默认300（5分钟）</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="deviceCodeTimeToLive" class="col-sm-2 control-label">device_code有效时长</label>
+
+                    <div class="col-sm-10">
+                        <input type="number" class="form-control" th:name="tokenSettings.deviceCodeTimeToLive"
+                               id="deviceCodeTimeToLive"
+                               placeholder="300" th:field="*{tokenSettings.deviceCodeTimeToLive}"/>
+
+                        <p class="help-block">设定<em>device_code</em>流程中<em>code</em>的有效时长(单位:秒)；默认300（5分钟）</p>
+                        <em class="label label-success">OAuth2.1新增</em>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="accessTokenTimeToLive" class="col-sm-2 control-label">access_token有效时长</label>
+
+                    <div class="col-sm-10">
+                        <input type="number" class="form-control" th:name="tokenSettings.accessTokenTimeToLive"
+                               id="accessTokenTimeToLive"
+                               placeholder="3600" th:field="*{tokenSettings.accessTokenTimeToLive}"/>
+
+                        <p class="help-block">设定客户端<em>access_token</em>的有效时长(单位:秒),可选, 若不设定值则使用默认的有效时间值(3600秒);
+                            若设定则必须是大于0的整数值(推荐不小于60)</p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="refreshTokenTimeToLive" class="col-sm-2 control-label">refresh_token有效时长</label>
+
+                    <div class="col-sm-10">
+                        <input type="number" class="form-control" th:name="tokenSettings.refreshTokenTimeToLive"
+                               id="refreshTokenTimeToLive"
+                               placeholder="43200" th:field="*{tokenSettings.refreshTokenTimeToLive}"/>
+
+                        <p class="help-block">设定客户端<em>refresh_token</em>的有效时长(单位:秒),可选, 若不设定值则使用默认的有效时间值(43200秒);
+                            若设定则必须是大于0的整数值且不能小于<em>access_token</em>有效时长</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">复用refresh_token</label>
+
+                    <div class="col-sm-10">
+                        <label class="radio-inline">
+                            <input type="radio" th:name="tokenSettings.reuseRefreshTokens"
+                                   th:field="*{tokenSettings.reuseRefreshTokens}" th:value="true"/> Yes
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" th:name="tokenSettings.reuseRefreshTokens"
+                                   th:field="*{tokenSettings.reuseRefreshTokens}" th:value="false"/> No
+                        </label>
+
+                        <p class="help-block">当调用refresh token API后是否继续使用之前的<em>refresh_token</em>值，Yes则继续使用，No则每次调用refresh
+                            token API后会返回一新的<em>refresh_token</em>值(即refresh_token只能使用一次,安全性更高)</p>
+                        <em class="label label-success">OAuth2.1新增</em>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">access_token格式</label>
+
+                    <div class="col-sm-10">
+                        <label class="radio-inline">
+                            <input type="radio" th:name="tokenSettings.accessTokenFormat"
+                                   th:field="*{tokenSettings.accessTokenFormat}" th:value="self-contained"/>
+                            self-contained(jwt)
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" th:name="tokenSettings.accessTokenFormat"
+                                   th:field="*{tokenSettings.accessTokenFormat}" th:value="reference"/> reference(uuid)
+                        </label>
+
+                        <p class="help-block">设置<em>access_token</em>值的格式，<code>self-contained</code>使用JWT格式(默认)，<code>reference</code>使用类UUID格式
+                        </p>
+                        <em class="label label-success">OAuth2.1新增</em>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="idTokenSignatureAlgorithm" class="col-sm-2 control-label">id_token签名使用的算法</label>
+
+                    <div class="col-sm-10">
+                        <select id="idTokenSignatureAlgorithm" th:name="tokenSettings.idTokenSignatureAlgorithm"
+                                th:field="*{tokenSettings.idTokenSignatureAlgorithm}"
+                                class="form-control">
+                            <option th:value="RS256">RS256</option>
+                            <option th:value="ES256">ES256</option>
+                        </select>
+
+                        <p class="help-block">选择生成<em>id_token</em>时使用的算法；注意：支持的算法要有对应用<em>jwk</em> (jwks.json
+                            文件)，判断支持哪些key可访问
+                            <a th:href="@{/.well-known/openid-configuration}" target="_blank">/.well-known/openid-configuration</a>进行查看
+                        </p>
+                        <em class="label label-success">OAuth2.1新增</em>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-10">
+                    <span class="text-danger" th:errors="*"></span>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-10">
+                    <button type="submit" class="btn btn-success">注册</button>
+                    <a th:href="@{client_details}">取消</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    var RegisterClientCtrl = ["$scope", function ($scope) {
+        $scope.visible = false;
+
+        $scope.showMore = function () {
+            $scope.visible = !$scope.visible;
+        };
+    }];
+</script>
+
+<div th:replace="~{fragments/main :: footer}"/>
+</body>
+</html>
