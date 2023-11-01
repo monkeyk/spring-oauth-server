@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon"/>
+    <link href="../bootstrap.min.css" rel="stylesheet"/>
+    <title>spring-oauth-server API</title>
+
+    <style>
+        body {
+            font-family: "Microsoft YaHei", Arial;
+        }
+    </style>
+</head>
+<body class="container-fluid">
+<h2 class="page-header">spring-oauth-server
+    <small>v3.0.0</small>
+</h2>
+
+<div class="alert alert-info">
+    <strong>说明</strong>: 本文档用于描述spring-oauth-server对外开发的接口(API)使用, 所有标记
+    <small class="badge">public</small>
+    的API都是公开的, 其他的API则需要先授权获取
+    <mark>access_token</mark>
+    后可调用 (如何传递access_token请查看 <a href="https://andaily.com/blog/?p=500"
+                                 target="_blank">https://andaily.com/blog/?p=500</a>).
+</div>
+
+<div class="row">
+    <div class="col-md-2">
+        <ul class="list-group">
+            <li class="list-group-item"><a href="#getTokenAuthCode">获取access_token (grant_type=authorization_code)</a>
+            </li>
+            <li class="list-group-item"><a href="#getTokenCred">获取access_token (grant_type=client_credentials)</a></li>
+            <li class="list-group-item"><a href="#refreshToken">刷新access_token (grant_type=refresh_token)</a></li>
+            <li class="list-group-item"><a href="#getTokenRest">获取access_token (Restful API)</a></li>
+            <li class="list-group-item"><a href="#verifyToken">检查token (/oauth2/introspect)</a></li>
+            <li class="list-group-item"><a href="#revokeToken">撤销token (/oauth2/revoke)</a></li>
+            <li class="list-group-item"><a href="#deviceAuthor">[device_code]流程 - 发起认证(/oauth2/device_authorization)</a>
+            </li>
+            <li class="list-group-item"><a href="#deviceToken">[device_code]流程 - 获取token(/oauth2/token)</a></li>
+            <li class="list-group-item"><a href="#jwtBearerToken">[jwt-bearer] - 获取token(/oauth2/token)</a></li>
+            <li class="list-group-item"><a href="#oidcUserinfo">OIDC /userinfo</a></li>
+            <li class="list-group-item"><a href="#oidcConfig">OIDC /openid-configuration</a></li>
+            <li class="list-group-item"><a href="#oauth2Server">OAuth2.1 /oauth-authorization-server</a></li>
+        </ul>
+    </div>
+    <div class="col-md-10">
+
+        <div class="well well-sm" id="getTokenAuthCode">
+            <h3>获取access_token (grant_type=authorization_code)
+                <small class="badge">public</small>
+            </h3>
+
+            <p class="text-muted">使用grant_type=authorization_code 方式来获取access_token, 需要先获取code</p>
+
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <p>
+                        请求URI: <code>/oauth2/token</code> <span
+                            class="label label-warning">POST</span>
+                    </p>
+
+                    <div>
+                        请求参数说明:
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>参数名</th>
+                                <th>参数值</th>
+                                <th>必须?</th>
+                                <th>备注</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>client_id</td>
+                                <td>{client_id}</td>
+                                <td>是</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>client_secret</td>
+                                <td>{client_secret}</td>
+                                <td>是</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>grant_type</td>
+                                <td>authorization_code</td>
+                                <td>是</td>
+                                <td>固定值</td>
+                            </tr>
+                            <tr>
+                                <td>code</td>
+                                <td>{code}</td>
+                                <td>是</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>redirect_uri</td>
+                                <td>{redirect_uri}</td>
+                                <td>是</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>code_verifier</td>
+                                <td>{code_verifier}</td>
+                                <td>否</td>
+                                <td>PKCE时必须</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        请求示例:
+                        <div>
+                            <pre>  curl --location 'http://localhost:8080/oauth2/token' \
+  --header 'Content-Type: application/json' \
+  --form 'client_id="client11"' \
+  --form 'grant_type="authorization_code"' \
+  --form 'redirect_uri="http://localhost:8083/oauth2/callback"' \
+  --form 'code="-VEnyAcEflDxjMh4Hr-6YejZq4Mel5gihFy_FMyotDxLhILeMBQheJkL4mdJ0sKD_C8xpa_sMNGf_I2tYJIVki8a4ktT2QsHojhbV3HpbGLVhJ0qDc8kfXjWt7u_24QO"' \
+  --form 'client_secret="secret22"'</pre>
+                        </div>
+
+                    </div>
+                    <br/>
+
+                    <strong>响应</strong>
+
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <div>
+                                正常 [200]<br/>
+                                <pre>{
+  "access_token": "7154afT_cxvLDq1naSg6Aq9ueSFSW8xRr5txryW5MlddRe7nV0RogTYwPsJc_rrRqwaIvLleerLhkjtIN2E2U-4J_BzvYNCsv8BVLqeerCObwgwpP3t__NMMUakzRL2i",
+  "refresh_token": "TZ9tzVwE_VLoJxALUSw4A4A0Nj7SLSWXCc69U9rvNmSnqR8Hbz-1m4uHebJWsAK0sa7SDIR4SNXOB3iaM0p1bH_8EBrljoBApQgdYi1uYzcVwYq55OVV2RUHN2BJwfSr",
+  "scope": "openid profile",
+  "id_token": "eyJraWQiOiJzb3MtZWNjLWtpZDEiLCJhbGciOiJFUzI1NiJ9.eyJzdWIiOiJ1bml0eSIsImF1ZCI6IjZ1ck5MZ1I2b3NrMkU1NmVrcCIsInVwZGF0ZWRfYXQiOiIiLCJhenAiOiI2dXJOTGdSNm9zazJFNTZla3AiLCJhdXRoX3RpbWUiOjE2OTc3MDczNTQsImlzcyI6Imh0dHA6Ly8xMjcuMC4wLjE6ODA4MCIsIm5pY2tuYW1lIjoiIiwiZXhwIjoxNjk3NzA5MjA4LCJpYXQiOjE2OTc3MDc0MDgsImp0aSI6IjEyNTc0MjU2NTk4MDI2ODY2NzI3NDAwMTMxNjk5NDk0Iiwic2lkIjoidXdwN255RnJwdlNtWmlQS2hCdWVSVFZfcVRKYkN6ZjAyTmYwQTZGN1lrSSJ9.3w-7EY9SwKA-UkXlhDfD2BbSwP6nCSLZxNgKwhkkMY8YPbMkygbj374SmEmsit7NlpRXHCtW6ULZ9_IVZ9MTBg",
+  "token_type": "Bearer",
+  "expires_in": 3599
+}</pre>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div>
+                                异常 [401]<br/>
+                                <pre>{
+    "error": "invalid_grant"
+}</pre>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="well well-sm" id="getTokenCred">
+            <p class="pull-right"><a href="">返回</a></p>
+
+            <h3>获取access_token (grant_type=client_credentials)
+                <small class="badge">public</small>
+            </h3>
+
+            <p class="text-muted">使用grant_type=client_credentials 方式来获取access_token, 不需要username, password</p>
+
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <p>
+                        请求URI: <code>/oauth2/token</code> <span
+                            class="label label-warning">POST</span>
+                    </p>
+
+                    <div>
+                        请求参数说明:
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>参数名</th>
+                                <th>参数值</th>
+                                <th>必须?</th>
+                                <th>备注</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>client_id</td>
+                                <td>{client_id}</td>
+                                <td>是</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>client_secret</td>
+                                <td>{client_secret}</td>
+                                <td>是</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>grant_type</td>
+                                <td>client_credentials</td>
+                                <td>是</td>
+                                <td>固定值</td>
+                            </tr>
+                            <tr>
+                                <td>scope</td>
+                                <td>{scope}</td>
+                                <td>是</td>
+                                <td>如: openid</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        请求示例:
+                        <pre>curl --location 'http://localhost:8080/oauth2/token' \
+--header 'Content-Type: application/json' \
+--form 'client_id="6urNLgR6osk2E56ekp"' \
+--form 'client_secret="6urNLgR6osk2E56ekp"' \
+--form 'grant_type="client_credentials"' \
+--form 'scope="openid profile"'</pre>
+
+                    </div>
+                    <br/>
+
+                    <strong>响应</strong>
+
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <div>
+                                正常 [200]<br/>
+                                <pre>{
+    "access_token": "p2i1WHiiFBCgTJFTs63OvO9-bclB9DbsgsebDo_ntMw_BAleu2RzIQzzFfaaJAR5oiL3xwN3xMyNTRZSrXM_1ANycleysPU5l3xuZ0aQX4V-Va178qg6e-PvLqLBsD_i",
+    "scope": "openid profile",
+    "token_type": "Bearer",
+    "expires_in": 3599
+}</pre>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div>
+                                异常 [401]<br/>
+                                <pre>{
+    "error": "invalid_client"
+}</pre>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="well well-sm" id="refreshToken">
+            <p class="pull-right"><a href="">返回</a></p>
+
+            <h3>刷新access_token (grant_type=refresh_token)
+                <small class="badge">public</small>
+            </h3>
+
+            <p class="text-muted">用于在access_token要过期时换取新的access_token (grant_type需要有refresh_token)</p>
+
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <p>
+                        请求URI: <code>/oauth2/token</code> <span
+                            class="label label-warning">POST</span>
+                    </p>
+
+                    <div>
+                        请求参数说明:
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>参数名</th>
+                                <th>参数值</th>
+                                <th>必须?</th>
+                                <th>备注</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>client_id</td>
+                                <td>{client_id}</td>
+                                <td>是</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>client_secret</td>
+                                <td>{client_secret}</td>
+                                <td>是</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>grant_type</td>
+                                <td>refresh_token</td>
+                                <td>是</td>
+                                <td>固定值</td>
+                            </tr>
+                            <tr>
+                                <td>refresh_token</td>
+                                <td>{refresh_token}</td>
+                                <td>是</td>
+                                <td></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        请求示例:
+                        <pre>curl --location 'http://localhost:8080/oauth2/token' \
+--header 'Content-Type: application/json' \
+--form 'client_id="6urNLgR6osk2E56ekp"' \
+--form 'client_secret="6urNLgR6osk2E56ekp"' \
+--form 'grant_type="refresh_token"' \
+--form 'refresh_token="TZ9tzVwE_VLoJxALUSw4A4A0Nj7SLSWXCc69U9rvNmSnqR8Hbz-1m4uHebJWsAK0sa7SDIR4SNXOB3iaM0p1bH_8EBrljoBApQgdYi1uYzcVwYq55OVV2RUHN2BJwfSr"'</pre>
+
+                    </div>
+                    <br/>
+
+                    <strong>响应</strong>
+
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <div>
+                                正常 [200]<br/>
+                                <pre>{
+    "access_token": "YnVdTXl0MhslsrOjiz1ffSixvPnWCN-XS-UBlkS89daZbd_TvXtSSo_ODuFVWPWw1KsO5WQykVPjwSe_Kreo8ngIP9DglaXJMbYJJu4Wa6_geOINj5ksmnbfb6pHrQHr",
+    "refresh_token": "TZ9tzVwE_VLoJxALUSw4A4A0Nj7SLSWXCc69U9rvNmSnqR8Hbz-1m4uHebJWsAK0sa7SDIR4SNXOB3iaM0p1bH_8EBrljoBApQgdYi1uYzcVwYq55OVV2RUHN2BJwfSr",
+    "scope": "openid profile",
+    "id_token": "eyJraWQiOiJzb3MtZWNjLWtpZDEiLCJhbGciOiJFUzI1NiJ9.eyJzdWIiOiJ1bml0eSIsImF1ZCI6IjZ1ck5MZ1I2b3NrMkU1NmVrcCIsInVwZGF0ZWRfYXQiOjAsImF6cCI6IjZ1ck5MZ1I2b3NrMkU1NmVrcCIsImF1dGhfdGltZSI6MTY5NzcwNzM1NCwiaXNzIjoiaHR0cDovLzEyNy4wLjAuMTo4MDgwIiwibmlja25hbWUiOiIiLCJleHAiOjE2OTc3MjQyNjMsImlhdCI6MTY5NzcyMjQ2MywianRpIjoiMDc4OTc4MTUxNzEwNTgwNDE2ODY0NzgxMDQ1OTM5MDYiLCJzaWQiOiJ1d3A3bnlGcnB2U21aaVBLaEJ1ZVJUVl9xVEpiQ3pmMDJOZjBBNkY3WWtJIn0.j0KVv7bAi85zbX-0wvWe83n_CQdmJLGrHJNFwF5jA1-wa8QzaSwJbznpjbHLGTv-UbI2YeHLn8N5iGXDarbC9Q",
+    "token_type": "Bearer",
+    "expires_in": 3599
+}</pre>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div>
+                                异常 [401]<br/>
+                                <pre>{
+    "error": "invalid_client"
+}</pre>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="well well-sm" id="getTokenRest">
+            <h3>获取access_token (Restful API)
+                <small class="badge">public</small>
+            </h3>
+
+            <p class="text-muted">Restful API 获取access_token,
+                适用于grant_type为authorization_code,refresh_token,client_credentials</p>
+
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <p>
+                        请求URI: <code>/oauth2/rest_token</code> <span
+                            class="label label-warning">POST</span> <span class="label label-success">REST</span>
+                    </p>
+
+                    <p>
+                        Content-Type:
+                        <mark>application/json</mark>
+                    </p>
+                    <div>
+                        请求Body参数说明:
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>参数名</th>
+                                <th>参数值</th>
+                                <th>必须?</th>
+                                <th>备注</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>grant_type</td>
+                                <td>{grant_type}</td>
+                                <td>是</td>
+                                <td>authorization_code,refresh_token,client_credentials</td>
+                            </tr>
+                            <tr>
+                                <td>scope</td>
+                                <td>{scope}</td>
+                                <td>是</td>
+                                <td>如 openid</td>
+                            </tr>
+                            <tr>
+                                <td>client_id</td>
+                                <td>{client_id}</td>
+                                <td>是</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>client_secret</td>
+                                <td>{client_secret}</td>
+                                <td>是</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>code</td>
+                                <td>{code}</td>
+                                <td>否</td>
+                                <td>grant_type=authorization_code时必须有</td>
+                            </tr>
+                            <tr>
+                                <td>code_verifier</td>
+                                <td>{code_verifier}</td>
+                                <td>否</td>
+                                <td>grant_type=authorization_code + PKCE时必须有</td>
+                            </tr>
+                            <tr>
+                                <td>refresh_token</td>
+                                <td>{refresh_token}</td>
+                                <td>否</td>
+                                <td>grant_type=refresh_token时必须有</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        请求Body示例:
+                        <pre>{
+    "client_id": "cRG45sAr1hJ2SSKzmB5UsjPIgd7VVlM0",
+    "client_secret": "cRG45sAr1hJ2SSKzmB5UsjPIgd7VVlM0",
+    "grant_type": "authorization_code",
+    "redirect_uri": "https://andaily.com/oauth2/callback",
+    "scope": "openid profile",
+    "code": "AL-Q-OUhhgDrG-x-nFCKILadiBA2gTgvnDYh4AaPuviiQYqPTzLl-BVDXH2VNILS4X3qnDhC7rGaiWY9Qdm9SUTAvttaSXox_g_V8Qn27PeI21xv3RFkGE21BJJWdaUB",
+    "code_verifier": "UUdEMjhQMG1OZkF0NEFNcW12TmdOanVnaHpWeHREMGI="
+}</pre>
+                        或
+                        <pre>{
+    "client_id": "cRG45sAr1hJ2SSKzmB5UsjPIgd7VVlM0",
+    "client_secret": "cRG45sAr1hJ2SSKzmB5UsjPIgd7VVlM0",
+    "grant_type": "refresh_token",
+    "refresh_token": "-ETmWRoPkWvH2bC4ufB2fZwyeXXaqwmUq17zS_vEGGHb9dHnXd1W8HRZnUCEP03kJEn0IQ5w8E6jyAYb_oDC3iTgbT0OwRmIbnKWbcqbp5uxjB4RpNKBtyUMxax-EU1_"
+}</pre>
+
+                    </div>
+                    <br/>
+
+                    <strong>响应</strong>
+
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <div>
+                                正常 [200]<br/>
+                                <pre>{
+    "access_token": "eyJraWQiOiJzb3MtcnNhLWtpZDIiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImF1ZCI6ImNSRzQ1c0FyMWhKMlNTS3ptQjVVc2pQSWdkN1ZWbE0wIiwibmJmIjoxNjk4NzUyNTQzLCJzY29wZSI6WyJvcGVuaWQiLCJwcm9maWxlIiwiZW1haWwiXSwiaXNzIjoiaHR0cDovLzEyNy4wLjAuMTo4MDgwIiwiZXhwIjoxNjk4NzU2MTQzLCJpYXQiOjE2OTg3NTI1NDMsImp0aSI6IjU3MDA1MDQ1Nzc1MzMwMTI1OTYyMjIzNzUxNjE2MjE1In0.PlrUmTd5DUq10Sj-p2MZYoQuciVLixnsUT-RMah1eHLBvVlP4YsoCOgvzlFQQLVT8TRv-XM8JIJQCo0o151ZHhGmDzaWHEsDdPGlJvWL959LbZjw8f3BR8MvMGaBgjjMV6uWgY_nZBTef10KwWsZZwrVtR25n_qHk9SZkyFDzI6Bk7S6BvlOMFNYp80Ik8khRTwYphFykBtQQE9D8wzR59YuLP6aQVfbU8gkM6aNYmV7vYELtoQqI_Co9pOCC1Fwb7Ae-qgQzknr_FsARoui9cIgSBk7r0i5v-1fKXFC8I1idtuw-CA9GGXqNPoohDpV-e1AkygT1rbhuYavuNnv-g",
+    "refresh_token": "L_3boxXBZFbA2odSvrrMD9tku58L_MkIAcnP8ahP2OhpuZIYDHFPqGNr0rHuhuM_1zeXu8cLKCIMsoS8leL9ZvIBJ2h84ZXs5PgcNX2jZPCedpMwTN6pKZe236Sz1Y0j",
+    "scope": "openid profile email",
+    "id_token": "eyJraWQiOiJzb3MtZWNjLWtpZDEiLCJhbGciOiJFUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlzcyI6Imh0dHA6Ly8xMjcuMC4wLjE6ODA4MCIsInNpZCI6IjN3a3JXR3NucHg5SW9aQXd2d09sbkQyZ0RhTVNBSWZaazBkY2VLeHZlaVkiLCJhdWQiOiJjUkc0NXNBcjFoSjJTU0t6bUI1VXNqUElnZDdWVmxNMCIsInVwZGF0ZWRfYXQiOjAsImF6cCI6ImNSRzQ1c0FyMWhKMlNTS3ptQjVVc2pQSWdkN1ZWbE0wIiwiYXV0aF90aW1lIjoxNjk4NzUyMzQ3LCJuaWNrbmFtZSI6IiIsImV4cCI6MTY5ODc1NDM0MywiaWF0IjoxNjk4NzUyNTQzLCJqdGkiOiIyNDc3NTYyNjQxMDEwMTQxNTEyNzMwMjQ0MDQ4OTMzMyIsImVtYWlsIjoiYWRtaW5AYW5kYWlseS5jb20ifQ.k8zdBJE9aq-Tp_rz_ssUrTBxV4e8ZpKOn10s71j6xjGp7kZq1RiATrU8t00wx1RNRC4E1V62nTeYpJuTy4mdlA",
+    "token_type": "Bearer",
+    "expires_in": 3599
+}</pre>
+                                <p class="help-block">根据不同的grant_type, 返回的结果不同</p>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div>
+                                异常 [400]或[401]<br/>
+                                <pre>{
+    "error": "invalid_grant"
+}</pre>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="well well-sm" id="verifyToken">
+            <h3>检查token (/oauth2/introspect)
+                <small class="badge">public</small>
+            </h3>
+
+            <p class="text-muted">校验, 检查token的有效性</p>
+
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <p>
+                        请求URI: <code>/oauth2/introspect</code> <span
+                            class="label label-warning">POST</span>
+                    </p>
+
+                    <div>
+                        请求参数说明:
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>参数名</th>
+                                <th>参数值</th>
+                                <th>必须?</th>
+                                <th>备注</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>client_id</td>
+                                <td>{client_id}</td>
+                                <td>是</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>client_secret</td>
+                                <td>{client_secret}</td>
+                                <td>是</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>token</td>
+                                <td>{token}</td>
+                                <td>是</td>
+                                <td>token可以是<em>access_token</em>, <em>refresh_token</em> 或 <em>id_token</em></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        请求示例:
+                        <pre>curl --location 'http://localhost:8080/oauth2/introspect' \
+--header 'Content-Type: application/json' \
+--form 'client_id="6urNLgR6osk2E56ekp"' \
+--form 'client_secret="6urNLgR6osk2E56ekp"' \
+--form 'token="GaHu88XEEAz41xMHfDk05bg9uSJ5Go1RF6jOe5eX7OhHD_52NK_fuwvVWq_dTRIhK8WR9SnCAtBBc0fVsOyGgz8-MhmVTG-dcDi6QtGQQtYxwmGrD-fOhpmePdUv6pwV"'</pre>
+
+                    </div>
+                    <br/>
+
+                    <strong>响应</strong>
+
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <div>
+                                正常 [200]<br/>
+                                <pre>{
+    "active": true,
+    "sub": "admin",
+    "aud": [
+        "6urNLgR6osk2E56ekp"
+    ],
+    "nbf": 1697721873,
+    "scope": "openid profile",
+    "iss": "http://127.0.0.1:8080",
+    "exp": 1697725474,
+    "iat": 1697721874,
+    "jti": "a1aa8f82-c885-45b3-a469-c2f595e8f12d",
+    "client_id": "6urNLgR6osk2E56ekp",
+    "token_type": "Bearer"
+}</pre>
+                                <p class="help-block">根据不同类型的token响应结果不相同; active=true表示token为有效的</p>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div>
+                                异常 [200]<br/>
+                                <pre>{
+    "active": false
+}</pre>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="well well-sm" id="revokeToken">
+            <p class="pull-right"><a href="">返回</a></p>
+            <h3>撤销token (/oauth2/revoke)
+                <small class="badge">public</small>
+            </h3>
+
+            <p class="text-muted">撤销已经签发的token</p>
+
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <p>
+                        请求URI: <code>/oauth2/revoke</code> <span
+                            class="label label-warning">POST</span>
+                    </p>
+
+                    <div>
+                        请求参数说明:
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>参数名</th>
+                                <th>参数值</th>
+                                <th>必须?</th>
+                                <th>备注</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>client_id</td>
+                                <td>{client_id}</td>
+                                <td>是</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>client_secret</td>
+                                <td>{client_secret}</td>
+                                <td>是</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>token</td>
+                                <td>{token}</td>
+                                <td>是</td>
+                                <td>token可以是<em>access_token</em>, <em>refresh_token</em> 或 <em>id_token</em></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        请求示例:
+                        <pre>curl --location 'http://localhost:8080/oauth2/revoke' \
+--header 'Content-Type: application/json' \
+--form 'client_id="6urNLgR6osk2E56ekp"' \
+--form 'client_secret="6urNLgR6osk2E56ekp"' \
+--form 'token="TZ9tzVwE_VLoJxALUSw4A4A0Nj7SLSWXCc69U9rvNmSnqR8Hbz-1m4uHebJWsAK0sa7SDIR4SNXOB3iaM0p1bH_8EBrljoBApQgdYi1uYzcVwYq55OVV2RUHN2BJwfSr"'</pre>
+
+                    </div>
+                    <br/>
+
+                    <strong>响应</strong>
+
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <div>
+                                正常 [200]<br/>
+                                <pre></pre>
+                                <p class="help-block">此API不管什么token结果都响应200; 若token是有效的会成功撤销</p>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div>
+                                异常 [200]
+                                <pre></pre>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="well well-sm" id="deviceAuthor">
+            <h3>[device_code]流程 - 发起认证(/oauth2/device_authorization)<small class="badge">public</small></h3>
+
+            <p class="text-muted">发起认证, 获取user_code, device_code等信息</p>
+
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <p>
+                        请求URI: <code>/oauth2/device_authorization</code> <span
+                            class="label label-warning">POST</span>
+                    </p>
+
+                    <div>
+                        请求参数说明:
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>参数名</th>
+                                <th>参数值</th>
+                                <th>必须?</th>
+                                <th>备注</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>client_id</td>
+                                <td>{client_id}</td>
+                                <td>是</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>client_secret</td>
+                                <td>{client_secret}</td>
+                                <td>是</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>scope</td>
+                                <td>{scope}</td>
+                                <td>是</td>
+                                <td>如: openid profile</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        请求示例:
+                        <pre>curl --location 'http://localhost:8080/oauth2/device_authorization' \
+--header 'Content-Type: application/json' \
+--form 'client_id="6urNLgR6osk2E56ekp"' \
+--form 'client_secret="6urNLgR6osk2E56ekp"' \
+--form 'scope="openid profile"'</pre>
+
+                    </div>
+                    <br/>
+
+                    <strong>响应</strong>
+
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <div>
+                                正常 [200]<br/>
+                                <pre>{
+    "user_code": "PCKJ-FWZS",
+    "device_code": "ZPMq2sfyHPj_pJ78T6J4yGcsAAi_XbuBjtQz2NLxYWKDHbcqUhg2nFHe3Ynp3V1SyCOwYEoaz9lPvqt-oj0sXKxJDnC5usJmANVqMQ-8Qjpp1ROi9gljdQY2NO3YYvIo",
+    "verification_uri_complete": "http://127.0.0.1:8080/oauth2/device_verification?user_code=PCKJ-FWZS",
+    "verification_uri": "http://127.0.0.1:8080/oauth2/device_verification",
+    "expires_in": 300
+}</pre>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div>
+                                异常 [401]<br/>
+                                <pre>{
+    "error": "invalid_client"
+}</pre>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="well well-sm" id="deviceToken">
+            <h3>[device_code]流程 - 获取token(/oauth2/token)<small class="badge">public</small></h3>
+
+            <p class="text-muted">设备上轮循调用, 获取token</p>
+
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <p>
+                        请求URI: <code>/oauth2/token</code> <span
+                            class="label label-warning">POST</span>
+                    </p>
+
+                    <div>
+                        请求参数说明:
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>参数名</th>
+                                <th>参数值</th>
+                                <th>必须?</th>
+                                <th>备注</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>client_id</td>
+                                <td>{client_id}</td>
+                                <td>是</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>client_secret</td>
+                                <td>{client_secret}</td>
+                                <td>是</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>grant_type</td>
+                                <td>urn:ietf:params:oauth:grant-type:device_code</td>
+                                <td>是</td>
+                                <td>固定值</td>
+                            </tr>
+                            <tr>
+                                <td>device_code</td>
+                                <td>{device_code}</td>
+                                <td>是</td>
+                                <td>发起认证时返回的device_code值</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        请求示例:
+                        <pre>curl --location 'http://localhost:8080/oauth2/token' \
+--header 'Content-Type: application/json' \
+--form 'client_id="6urNLgR6osk2E56ekp"' \
+--form 'client_secret="6urNLgR6osk2E56ekp"' \
+--form 'grant_type="urn:ietf:params:oauth:grant-type:device_code"' \
+--form 'device_code="iBv-_clBQtJR4w2eN8bgGBnwWgcoem6FCJlHgahhHNOq9oImcJAWLYKJ-jJOk207X19uE-glkArRLnhXgpm0C0pQcoxAZyoMmgznvWxOITQUYFYdAluBTo-fmDteKSgh"'</pre>
+
+                    </div>
+                    <br/>
+
+                    <strong>响应</strong>
+
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <div>
+                                正常 [200]<br/>
+                                <pre>{
+    "access_token": "QqPGuiF9c2HKYQEdxrs9E0WsRijEl_z9sINI6CFD5yMulXaZutLTktVtLP3zcr22XuYJOzWZMzOgvjWl2tqAoMo3S2MHBgxjPmx5gfr6DjeQPsW3fFPVc6pOa5Ll6u4S",
+    "refresh_token": "7vtQtkU95tjt7nkaX8DZnDVntrgPYIoXB6_4WsV9FzMi-ppoPB_H5qmufi4EHqAuJPwdlxXYdDbVYoGudXd0iCPfmqT5B8CcW7zRsgaKQOHQlPw9Ju3wMGNSRk14YRWI",
+    "scope": "profile",
+    "token_type": "Bearer",
+    "expires_in": 3599
+}</pre>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div>
+                                异常 [400]<br/>
+                                <pre>{
+    "error": "authorization_pending",
+    "error_uri": "https://datatracker.ietf.org/doc/html/rfc8628#section-3.5"
+}</pre>
+                                <p class="help-block">说明: error=authorization_pending 表示授权正在进行中, 设备上需要轮循继续等待授权结果</p>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="well well-sm" id="jwtBearerToken">
+            <h3>[jwt-bearer] - 获取token(/oauth2/token)<small class="badge">public</small></h3>
+
+            <p class="text-muted">jwt-bearer流程, 获取token</p>
+
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <p>
+                        请求URI: <code>/oauth2/token</code> <span
+                            class="label label-warning">POST</span>
+                    </p>
+
+                    <div>
+                        请求参数说明:
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>参数名</th>
+                                <th>参数值</th>
+                                <th>必须?</th>
+                                <th>备注</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>client_id</td>
+                                <td>{client_id}</td>
+                                <td>是</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>client_secret</td>
+                                <td>{client_secret}</td>
+                                <td>是</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>grant_type</td>
+                                <td>{grant_type}</td>
+                                <td>是</td>
+                                <td>可选值: authorization_code, client_credentials, refresh_token</td>
+                            </tr>
+                            <tr>
+                                <td>scope</td>
+                                <td>{scope}</td>
+                                <td>是</td>
+                                <td>可选值: openid, email, profile 等</td>
+                            </tr>
+                            <tr>
+                                <td>client_assertion_type</td>
+                                <td>urn:ietf:params:oauth:client-assertion-type:jwt-bearer</td>
+                                <td>是</td>
+                                <td>固定值</td>
+                            </tr>
+                            <tr>
+                                <td>client_assertion</td>
+                                <td>{client_assertion}</td>
+                                <td>是</td>
+                                <td>一个根据算法生成的JWT值, 详见<code>JwtBearerFlowTest.java</code></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        请求示例:
+                        <pre>curl --location 'http://localhost:8080/oauth2/token' \
+  --header 'Content-Type: application/json' \
+  --form 'client_id="dofOx6hjxlWw9qe2bnFvqbiPhuWwGWdn"' \
+  --form 'client_assertion_type="urn:ietf:params:oauth:client-assertion-type:jwt-bearer"' \
+  --form 'scope="openid"' \
+  --form 'grant_type="client_credentials"' \
+  --form 'client_assertion="eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJkb2ZPeDZoanhsV3c5cWUyYm5GdnFiaVBodVd3R1dkbiIsInN1YiI6ImRvZk94NmhqeGxXdzlxZTJibkZ2cWJpUGh1V3dHV2RuIiwiYXVkIjoiaHR0cDovLzEyNy4wLjAuMTo4MDgwIiwiZXhwIjoxNjk4MzI4NDI0fQ.A-CMlBoOqtlWVQiu8RjK9xWKG4lqBMT7IMCVIDJc3hsSZk7KvApL2lPx3k2b9bDM8Ysr7VXnFPfQbN8RN4sTsf2x-cpzDQ-vFBGMFqgaXZckuba21moT42GWyTULQ2_HRYy8bLCfOiX7BG4HyJYHf2JDrZgQ3pPu3VhH5D9bJ5_y6WcZxDlVMBUMXGRuhwl0tCTc8L0Ss3azPD82wMblDavCUTxNzOvb0qc3orVEjgUW77cxzGi929TtWtCvBH8dyNh_CAsvYJKAJDskTnLKv6GihL33pNHBhfjwSUP2s-_LPD6Z7gjf9GJHSSz7TeztX3NU9-FaoJZjYGR2lq2F2A"' \
+  --form 'client_secret="dofOx6hjxlWw9qe2bnFvqbiPhuWwGWdn"'</pre>
+
+                    </div>
+                    <br/>
+
+                    <strong>响应</strong>
+
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <div>
+                                正常 [200]<br/>
+                                <pre>{
+    "access_token": "QqPGuiF9c2HKYQEdxrs9E0WsRijEl_z9sINI6CFD5yMulXaZutLTktVtLP3zcr22XuYJOzWZMzOgvjWl2tqAoMo3S2MHBgxjPmx5gfr6DjeQPsW3fFPVc6pOa5Ll6u4S",
+    "refresh_token": "7vtQtkU95tjt7nkaX8DZnDVntrgPYIoXB6_4WsV9FzMi-ppoPB_H5qmufi4EHqAuJPwdlxXYdDbVYoGudXd0iCPfmqT5B8CcW7zRsgaKQOHQlPw9Ju3wMGNSRk14YRWI",
+    "scope": "profile",
+    "token_type": "Bearer",
+    "expires_in": 3599
+}</pre>
+                                <p class="help-block">根据不同的grant_type, 响应结果有所不同.</p>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div>
+                                异常 [400]<br/>
+                                <pre>{
+    "error": "invalid_grant"
+}</pre>
+                                <p class="help-block">说明: 根据不同的grant_type,响应异常结果有差别.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="well well-sm" id="oidcUserinfo">
+            <h3>OIDC /userinfo</h3>
+
+            <p class="text-muted">客户端带上access_token获取用户信息</p>
+
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <p>
+                        请求URI: <code>/userinfo</code> <span
+                            class="label label-info">GET</span>
+                    </p>
+
+                    <div>
+                        请求参数说明:
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>参数名</th>
+                                <th>参数值</th>
+                                <th>必须?</th>
+                                <th>备注</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td colspan="4">无</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        请求示例:
+                        <pre>curl --location 'http://localhost:8080/userinfo' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer eyJraWQiOiJzb3MtcnNhLWtpZDIiLCJhbGciOiJSUzI1NiJ9.eyJzdWI...'</pre>
+
+                    </div>
+                    <br/>
+
+                    <strong>响应</strong>
+
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <div>
+                                正常 [200]<br/>
+                                <pre>{
+    "sub": "unity",
+    "updated_at": 0,
+    "nickname": ""
+}</pre>
+                                <p class="help-block">具体有哪些属性值由<code>scope</code>范围来决定</p>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div>
+                                异常 [401]<br/>
+                                <pre></pre>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="well well-sm" id="oidcConfig">
+            <h3>OIDC /openid-configuration<small class="badge">public</small></h3>
+
+            <p class="text-muted">OIDC well-known API</p>
+
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <p>
+                        请求URI: <code>/.well-known/openid-configuration</code> <span
+                            class="label label-info">GET</span>
+                    </p>
+
+                    <div>
+                        请求参数说明:
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>参数名</th>
+                                <th>参数值</th>
+                                <th>必须?</th>
+                                <th>备注</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td colspan="4">无</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        请求示例:
+                        <pre>curl --location 'http://localhost:8080/.well-known/openid-configuration' \
+--header 'Content-Type: application/json'</pre>
+
+                    </div>
+                    <br/>
+
+                    <strong>响应</strong>
+
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <div>
+                                正常 [200]<br/>
+                                <pre>{
+    "issuer": "http://127.0.0.1:8080",
+    "authorization_endpoint": "http://127.0.0.1:8080/oauth2/authorize",
+    "device_authorization_endpoint": "http://127.0.0.1:8080/oauth2/device_authorization",
+    "token_endpoint": "http://127.0.0.1:8080/oauth2/token",
+    "token_endpoint_auth_methods_supported": [
+        "client_secret_basic",
+        "client_secret_post",
+        "client_secret_jwt",
+        "private_key_jwt"
+    ],
+    "jwks_uri": "http://127.0.0.1:8080/oauth2/jwks",
+    "userinfo_endpoint": "http://127.0.0.1:8080/userinfo",
+    "end_session_endpoint": "http://127.0.0.1:8080/connect/logout",
+    "response_types_supported": [
+        "code"
+    ],
+    "grant_types_supported": [
+        "authorization_code",
+        "client_credentials",
+        "refresh_token",
+        "urn:ietf:params:oauth:grant-type:device_code",
+        "password",
+        "urn:ietf:params:oauth:grant-type:jwt-bearer"
+    ],
+    "revocation_endpoint": "http://127.0.0.1:8080/oauth2/revoke",
+    "revocation_endpoint_auth_methods_supported": [
+        "client_secret_basic",
+        "client_secret_post",
+        "client_secret_jwt",
+        "private_key_jwt"
+    ],
+    "introspection_endpoint": "http://127.0.0.1:8080/oauth2/introspect",
+    "introspection_endpoint_auth_methods_supported": [
+        "client_secret_basic",
+        "client_secret_post",
+        "client_secret_jwt",
+        "private_key_jwt"
+    ],
+    "subject_types_supported": [
+        "public"
+    ],
+    "id_token_signing_alg_values_supported": [
+        "RS256",
+        "ES256"
+    ],
+    "scopes_supported": [
+        "openid",
+        "profile",
+        "email",
+        "address",
+        "phone"
+    ]
+}</pre>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div>
+                                异常 [400]<br/>
+                                <pre></pre>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="well well-sm" id="oauth2Server">
+            <p class="pull-right"><a href="">返回</a></p>
+            <h3>OAuth2.1 /oauth-authorization-server<small class="badge">public</small></h3>
+
+            <p class="text-muted">OAuth2.1 well-known API</p>
+
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <p>
+                        请求URI: <code>/.well-known/oauth-authorization-server</code> <span
+                            class="label label-info">GET</span>
+                    </p>
+
+                    <div>
+                        请求参数说明:
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>参数名</th>
+                                <th>参数值</th>
+                                <th>必须?</th>
+                                <th>备注</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td colspan="4">无</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        请求示例:
+                        <pre>curl --location 'http://localhost:8080/.well-known/oauth-authorization-server' \
+--header 'Content-Type: application/json'</pre>
+
+                    </div>
+                    <br/>
+
+                    <strong>响应</strong>
+
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <div>
+                                正常 [200]<br/>
+                                <pre>{
+    "issuer": "http://127.0.0.1:8080",
+    "authorization_endpoint": "http://127.0.0.1:8080/oauth2/authorize",
+    "device_authorization_endpoint": "http://127.0.0.1:8080/oauth2/device_authorization",
+    "token_endpoint": "http://127.0.0.1:8080/oauth2/token",
+    "token_endpoint_auth_methods_supported": [
+        "client_secret_basic",
+        "client_secret_post",
+        "client_secret_jwt",
+        "private_key_jwt"
+    ],
+    "jwks_uri": "http://127.0.0.1:8080/oauth2/jwks",
+    "response_types_supported": [
+        "code"
+    ],
+    "grant_types_supported": [
+        "authorization_code",
+        "client_credentials",
+        "refresh_token",
+        "urn:ietf:params:oauth:grant-type:device_code"
+    ],
+    "revocation_endpoint": "http://127.0.0.1:8080/oauth2/revoke",
+    "revocation_endpoint_auth_methods_supported": [
+        "client_secret_basic",
+        "client_secret_post",
+        "client_secret_jwt",
+        "private_key_jwt"
+    ],
+    "introspection_endpoint": "http://127.0.0.1:8080/oauth2/introspect",
+    "introspection_endpoint_auth_methods_supported": [
+        "client_secret_basic",
+        "client_secret_post",
+        "client_secret_jwt",
+        "private_key_jwt"
+    ],
+    "code_challenge_methods_supported": [
+        "S256"
+    ]
+}</pre>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div>
+                                异常 [400]<br/>
+                                <pre></pre>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <hr/>
+        <p class="text-center text-muted">
+            &copy; 2013 - 2023 <a href="https://gitee.com/shengzhao/spring-oauth-server" target="_blank">spring-oauth-server</a>
+        </p>
+    </div>
+</div>
+</body>
+</html>

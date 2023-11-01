@@ -1,29 +1,23 @@
 package com.monkeyk.sos.service.business;
 
 import com.monkeyk.sos.service.dto.AccessTokenDto;
-import com.monkeyk.sos.web.context.SOSContextHolder;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.oauth2.common.OAuth2AccessToken;
-import org.springframework.security.oauth2.provider.*;
-import org.springframework.security.oauth2.provider.request.DefaultOAuth2RequestFactory;
-import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
 import org.springframework.util.Assert;
 
 import java.util.Map;
 
-import static org.springframework.security.oauth2.common.util.OAuth2Utils.CLIENT_ID;
-import static org.springframework.security.oauth2.common.util.OAuth2Utils.GRANT_TYPE;
-import static org.springframework.security.oauth2.common.util.OAuth2Utils.SCOPE;
+import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.*;
+
 
 /**
  * 2019/7/5
  *
  * @author Shengzhao Li
- * @see org.springframework.security.oauth2.provider.endpoint.TokenEndpoint
+ * @see org.springframework.security.oauth2.server.authorization.web.OAuth2TokenEndpointFilter
  * @since 2.0.1
  */
 public abstract class InlineAccessTokenInvoker implements InitializingBean {
@@ -32,11 +26,11 @@ public abstract class InlineAccessTokenInvoker implements InitializingBean {
     private static final Logger LOG = LoggerFactory.getLogger(InlineAccessTokenInvoker.class);
 
 
-    protected transient AuthenticationManager authenticationManager = SOSContextHolder.getBean(AuthenticationManager.class);
+//    protected transient AuthenticationManager authenticationManager = SOSContextHolder.getBean(AuthenticationManager.class);
 
-    protected transient AuthorizationServerTokenServices tokenServices = SOSContextHolder.getBean(AuthorizationServerTokenServices.class);
-    ;
-    protected transient ClientDetailsService clientDetailsService = SOSContextHolder.getBean(ClientDetailsService.class);
+//    protected transient AuthorizationServerTokenServices tokenServices = SOSContextHolder.getBean(AuthorizationServerTokenServices.class);
+//
+//    protected transient ClientDetailsService clientDetailsService = SOSContextHolder.getBean(ClientDetailsService.class);
 
 
     public InlineAccessTokenInvoker() {
@@ -62,26 +56,27 @@ public abstract class InlineAccessTokenInvoker implements InitializingBean {
 
         String clientId = validateParams(params);
 
-        final ClientDetails clientDetails = clientDetailsService.loadClientByClientId(clientId);
-        if (clientDetails == null) {
-            LOG.warn("Not found ClientDetails by clientId: {}", clientId);
-            return null;
-        }
+//        final ClientDetails clientDetails = clientDetailsService.loadClientByClientId(clientId);
+//        if (clientDetails == null) {
+//            LOG.warn("Not found ClientDetails by clientId: {}", clientId);
+//            return null;
+//        }
+//
+//        OAuth2RequestFactory oAuth2RequestFactory = createOAuth2RequestFactory();
+//        TokenGranter tokenGranter = getTokenGranter(oAuth2RequestFactory);
+//        LOG.debug("Use TokenGranter: {}", tokenGranter);
 
-        OAuth2RequestFactory oAuth2RequestFactory = createOAuth2RequestFactory();
-        TokenGranter tokenGranter = getTokenGranter(oAuth2RequestFactory);
-        LOG.debug("Use TokenGranter: {}", tokenGranter);
-
-        TokenRequest tokenRequest = oAuth2RequestFactory.createTokenRequest(params, clientDetails);
-        final OAuth2AccessToken oAuth2AccessToken = tokenGranter.grant(getGrantType(params), tokenRequest);
-
-        if (oAuth2AccessToken == null) {
-            LOG.warn("TokenGranter: {} grant OAuth2AccessToken null", tokenGranter);
-            return null;
-        }
-        AccessTokenDto accessTokenDto = new AccessTokenDto(oAuth2AccessToken);
-        LOG.debug("Invoked accessTokenDto: {}", accessTokenDto);
-        return accessTokenDto;
+//        TokenRequest tokenRequest = oAuth2RequestFactory.createTokenRequest(params, clientDetails);
+//        final OAuth2AccessToken oAuth2AccessToken = tokenGranter.grant(getGrantType(params), tokenRequest);
+//
+//        if (oAuth2AccessToken == null) {
+//            LOG.warn("TokenGranter: {} grant OAuth2AccessToken null", tokenGranter);
+//            return null;
+//        }
+//        AccessTokenDto accessTokenDto = new AccessTokenDto(oAuth2AccessToken);
+//        LOG.debug("Invoked accessTokenDto: {}", accessTokenDto);
+//        return accessTokenDto;
+        throw new UnsupportedOperationException("Not yet implements");
     }
 
 
@@ -125,40 +120,40 @@ public abstract class InlineAccessTokenInvoker implements InitializingBean {
     }
 
 
-    /**
-     * Get TokenGranter implement
-     *
-     * @return TokenGranter
-     */
-    protected abstract TokenGranter getTokenGranter(OAuth2RequestFactory oAuth2RequestFactory);
+//    /**
+//     * Get TokenGranter implement
+//     *
+//     * @return TokenGranter
+//     */
+//    protected abstract TokenGranter getTokenGranter(OAuth2RequestFactory oAuth2RequestFactory);
+//
+//    /**
+//     * Create  OAuth2RequestFactory
+//     *
+//     * @return OAuth2RequestFactory instance
+//     */
+//    protected OAuth2RequestFactory createOAuth2RequestFactory() {
+//        return new DefaultOAuth2RequestFactory(this.clientDetailsService);
+//    }
 
-    /**
-     * Create  OAuth2RequestFactory
-     *
-     * @return OAuth2RequestFactory instance
-     */
-    protected OAuth2RequestFactory createOAuth2RequestFactory() {
-        return new DefaultOAuth2RequestFactory(this.clientDetailsService);
-    }
 
+//    public void setAuthenticationManager(AuthenticationManager authenticationManager) {
+//        this.authenticationManager = authenticationManager;
+//    }
 
-    public void setAuthenticationManager(AuthenticationManager authenticationManager) {
-        this.authenticationManager = authenticationManager;
-    }
-
-    public void setTokenServices(AuthorizationServerTokenServices tokenServices) {
-        this.tokenServices = tokenServices;
-    }
-
-    public void setClientDetailsService(ClientDetailsService clientDetailsService) {
-        this.clientDetailsService = clientDetailsService;
-    }
+//    public void setTokenServices(AuthorizationServerTokenServices tokenServices) {
+//        this.tokenServices = tokenServices;
+//    }
+//
+//    public void setClientDetailsService(ClientDetailsService clientDetailsService) {
+//        this.clientDetailsService = clientDetailsService;
+//    }
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        Assert.notNull(this.authenticationManager, "authenticationManager is null");
-        Assert.notNull(this.tokenServices, "tokenServices is null");
+//        Assert.notNull(this.authenticationManager, "authenticationManager is null");
+//        Assert.notNull(this.tokenServices, "tokenServices is null");
 
-        Assert.notNull(this.clientDetailsService, "clientDetailsService is null");
+//        Assert.notNull(this.clientDetailsService, "clientDetailsService is null");
     }
 }

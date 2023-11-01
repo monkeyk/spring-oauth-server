@@ -3,7 +3,7 @@ package com.monkeyk.sos.web.controller;
 import com.monkeyk.sos.service.dto.UserFormDto;
 import com.monkeyk.sos.domain.user.Privilege;
 import com.monkeyk.sos.service.UserService;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -48,6 +48,8 @@ public class UserFormDtoValidator implements Validator {
         final String password = formDto.getPassword();
         if (StringUtils.isEmpty(password)) {
             errors.rejectValue("password", null, "Password is required");
+        } else if (password.length() < 10) {
+            errors.rejectValue("password", null, "Password length must be >= 10");
         }
     }
 

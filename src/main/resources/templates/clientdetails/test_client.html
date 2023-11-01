@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,user-scalable=no"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <link rel="shortcut icon" href="../../static/favicon.ico" th:href="@{/favicon.ico}"/>
+
+    <title>Test [[${clientDetailsDto.clientId}]] - Spring Security&OAuth2.1</title>
+
+    <th:block th:insert="~{fragments/main::header-css}"/>
+    <script th:src="@{/angular.min.js}" src="../../static/angular.min.js"></script>
+</head>
+<body class="container">
+<div ng-app>
+    <a th:href="@{/}">Home</a>
+
+    <h2>Test [[${clientDetailsDto.clientId}]]</h2>
+
+    <p>
+        针对不同的<code>grant_type</code>提供不同的测试URL,
+        完整的OAuth测试请访问<a href="https://gitee.com/mkk/spring-oauth-client" target="_blank">spring-oauth-client</a>项目.
+    </p>
+
+    <div ng-controller="TestClientCtrl">
+        <div class="alert alert-danger">
+            请先输入client_secret: <input type="text" value="" placeholder="client_secret" ng-model="clientSecret"
+                                      size="100" required="required"/>
+        </div>
+        <hr/>
+        <div th:if="${clientDetailsDto.containsAuthorizationCode}" class="panel panel-default">
+            <div class="panel-heading">Test [authorization_code]</div>
+            <div class="panel-body">
+                <p class="text-muted">输入每一步必要的信息后点击其下面的按钮地址.</p>
+                <ol>
+                    <li>
+                        <div>
+                            <code>从 spring-oauth-server获取 'code'</code>
+                            <br/>
+                            <form th:action="@{/oauth2/authorize}" th:method="get" target="_blank">
+                                <table class="table table-striped table-bordered table-hover">
+                                    <tr>
+                                        <td>client_id</td>
+                                        <td>
+                                            <input readonly="readonly" name="client_id" size="70" value="{{clientId}}"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>redirect_uri</td>
+                                        <td>
+                                            <input type="text" name="redirect_uri" size="70"
+                                                   value="{{redirectUri}}" placeholder="https://..."/>
+                                            <p class="help-block">若配置有多个<code>redirect_uri</code>可自行修改(默认使用第一个)</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>scope</td>
+                                        <td>
+                                            <input type="text" readonly="readonly" name="scope" size="70"
+                                                   value="{{scope}}"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>state</td>
+                                        <td>
+                                            <input readonly="readonly" name="state" size="70" value="{{state}}"/>
+                                            <p class="help-block">每次随机生成, spring-oauth-server原封不动返回(防止会话劫持攻击)</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>response_type</td>
+                                        <td>
+                                            <input readonly="readonly" name="response_type" size="70" value="code"/>
+                                            <p class="help-block">固定值</p>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <button class="btn btn-info" type="submit">/oauth2/authorize</button>
+                                <span class="label label-info">GET</span>
+                            </form>
+                        </div>
+                    </li>
+                    <li>
+                        <code>用 'code' 换取 'access_token'</code>
+                        <br/>
+                        输入第一步获取的'code'并点击按钮链接地址.
+                        <br/>
+
+                        <form th:action="@{/oauth2/token}" th:method="post" target="_blank">
+                            <table class="table table-striped table-bordered table-hover">
+                                <tr>
+                                    <td>client_id</td>
+                                    <td>
+                                        <input readonly="readonly" name="client_id" size="70" value="{{clientId}}"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>client_secret</td>
+                                    <td>
+                                        <input readonly="readonly" name="client_secret" size="70" required="required"
+                                               value="{{clientSecret}}" placeholder="请先在页面最上面输入client_secret"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>redirect_uri</td>
+                                    <td>
+                                        <input type="text" name="redirect_uri" size="70"
+                                               value="{{redirectUri}}" placeholder="https://..."/>
+                                        <p class="help-block">若配置有多个<code>redirect_uri</code>可自行修改(默认使用第一个)</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>grant_type</td>
+                                    <td>
+                                        <input readonly="readonly" name="grant_type" size="70"
+                                               value="authorization_code"/>
+                                        <p class="help-block">固定值</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>code</td>
+                                    <td>
+                                        <input type="text" name="code" value="" ng-model="code"
+                                               placeholder="Laulaadi78kB0DkQKv..." size="70" required="required"/>
+                                        <p class="help-block">请输入code值</p>
+                                    </td>
+                                </tr>
+                            </table>
+                            <button class="btn btn-primary" type="submit">/oauth2/token</button>
+                            <span class="label label-warning">POST</span>
+                        </form>
+                    </li>
+                </ol>
+            </div>
+        </div>
+
+        <div th:if="${clientDetailsDto.containsAuthorizationCodeWithPKCE}" class="panel panel-default">
+            <div class="panel-heading">Test [authorization_code + PKCE]</div>
+            <div class="panel-body">
+                <p class="text-muted">输入每一步必要的信息后点击其下面的链接地址.</p>
+                <ol>
+                    <li>
+                        <div>
+                            <code>从 spring-oauth-server获取 'code'</code>
+                            <div class="text-muted">
+                                PKCE流程在开始前需要先通过代码生成<code>code_verifier</code>与<code>code_challenge</code> (如何生成详见工具类
+                                <mark>PKCEUtils.java</mark>
+                                );
+                                <br/>
+                                生成后在获取'code'时要在已有的参数基础上再增加两个参数：
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <td><code>code_challenge</code></td>
+                                        <td>对 code_verifier 使用指定算法进行计算(digest)并base encode的值</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>code_challenge_method</code></td>
+                                        <td>固定值：S256</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <br/>
+                            <form th:action="@{/oauth2/authorize}" th:method="get" target="_blank">
+                                <table class="table table-striped table-bordered table-hover">
+                                    <tr>
+                                        <td>client_id</td>
+                                        <td>
+                                            <input readonly="readonly" name="client_id" size="70" value="{{clientId}}"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>redirect_uri</td>
+                                        <td>
+                                            <input type="text" name="redirect_uri" size="70"
+                                                   value="{{redirectUri}}" placeholder="https://..."/>
+                                            <p class="help-block">若配置有多个<code>redirect_uri</code>可自行修改(默认使用第一个)</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>scope</td>
+                                        <td>
+                                            <input type="text" readonly="readonly" name="scope" size="70"
+                                                   value="{{scope}}"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>state</td>
+                                        <td>
+                                            <input readonly="readonly" name="state" size="70" value="{{state}}"/>
+                                            <p class="help-block">每次随机生成, spring-oauth-server原封不动返回(防止会话劫持攻击)</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>response_type</td>
+                                        <td>
+                                            <input readonly="readonly" name="response_type" size="70" value="code"/>
+                                            <p class="help-block">固定值</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>code_challenge_method</td>
+                                        <td>
+                                            <input readonly="readonly" name="code_challenge_method" size="70" value="S256"/>
+                                            <p class="help-block">固定值</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>code_challenge</td>
+                                        <td>
+                                            <input type="text" value="" ng-model="codeChallenge" size="70"
+                                                   readonly="readonly" name="code_challenge"/>
+                                            <p class="help-block">(后台代码生成,不可修改)</p>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <button class="btn btn-info" type="submit">/oauth2/authorize</button>
+                                <span class="label label-info">GET</span>
+                            </form>
+
+                        </div>
+                    </li>
+                    <li>
+                        <code>用 'code' 换取 'access_token'</code>
+                        <br/>
+                        输入第一步获取的code并点击按钮地址.
+
+                        <form th:action="@{/oauth2/token}" th:method="post" target="_blank">
+                            <table class="table table-striped table-bordered table-hover">
+                                <tr>
+                                    <td>client_id</td>
+                                    <td>
+                                        <input readonly="readonly" name="client_id" size="70" value="{{clientId}}"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>client_secret</td>
+                                    <td>
+                                        <input readonly="readonly" name="client_secret" size="70" required="required"
+                                               value="{{clientSecret}}" placeholder="请先在页面最上面输入client_secret"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>redirect_uri</td>
+                                    <td>
+                                        <input type="text" name="redirect_uri" size="70"
+                                               value="{{redirectUri}}" placeholder="https://..."/>
+                                        <p class="help-block">若配置有多个<code>redirect_uri</code>可自行修改(默认使用第一个)</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>grant_type</td>
+                                    <td>
+                                        <input readonly="readonly" name="grant_type" size="70"
+                                               value="authorization_code"/>
+                                        <p class="help-block">固定值</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>code</td>
+                                    <td>
+                                        <input type="text" name="code" value="" ng-model="code"
+                                               placeholder="Laulaadi78kB0DkQKv..." size="70" required="required"/>
+                                        <p class="help-block">请输入code值</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>code_verifier</td>
+                                    <td>
+                                        <input type="text" name="code_verifier" value="" ng-model="codeVerifier"
+                                               readonly="readonly" size="70" />
+                                        <p class="help-block">(后台代码生成,不可修改)</p>
+                                    </td>
+                                </tr>
+                            </table>
+                            <button class="btn btn-primary" type="submit">/oauth2/token</button>
+                            <span class="label label-warning">POST</span>
+                        </form>
+                    </li>
+                </ol>
+            </div>
+        </div>
+
+        <div th:if="${clientDetailsDto.containsPassword}" class="panel panel-default">
+            <div class="panel-heading">Test [password] <em class="label label-danger">OAuth2.1不支持</em></div>
+            <div class="panel-body">
+                <p class="text-muted">输入username, password 后点击链接地址.</p>
+                username: <input type="text" required="required" ng-model="username"/>
+                <br/>
+                password: <input type="text" required="required" ng-model="password"/>
+
+                <br/>
+
+                <form th:action="@{/oauth2/token}" th:method="post" target="_blank">
+                    <input type="hidden" name="client_id" value="{{clientId}}"/>
+                    <input type="hidden" name="client_secret" value="{{clientSecret}}"/>
+                    <input type="hidden" name="username" value="{{username}}"/>
+                    <input type="hidden" name="password" value="{{password}}"/>
+                    <input type="hidden" name="scope" value="{{scope}}"/>
+                    <input type="hidden" name="grant_type" value="password"/>
+                    <button class="btn btn-link" type="submit">
+                        /oauth2/token?client_id={{clientId}}&client_secret={{clientSecret}}&grant_type=password&scope={{scope}}&username={{username}}&password={{password}}
+                    </button>
+                    <span class="label label-warning">POST</span>
+                </form>
+            </div>
+        </div>
+
+        <div th:if="${clientDetailsDto.containsDeviceCode}" class="panel panel-default">
+            <div class="panel-heading">Test [device_code] <em class="label label-success">OAuth2.1新增</em></div>
+            <div class="panel-body">
+                <ol>
+                    <li>
+                        <p>设备上请求 <code>/oauth2/device_authorization</code>获取 <em>user_code</em>,
+                            <em>device_code</em>,<em>verification_uri</em>等</p>
+                        <form th:action="@{/oauth2/device_authorization}" th:method="post" target="_blank">
+                            <table class="table table-striped table-bordered table-hover">
+                                <tr>
+                                    <td>client_id</td>
+                                    <td>
+                                        <input type="text" readonly="readonly" name="client_id" size="70" value="{{clientId}}"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>client_secret</td>
+                                    <td>
+                                        <input type="text" readonly="readonly" name="client_secret" size="70"
+                                               value="{{clientSecret}}" placeholder="请先在页面最上面输入client_secret"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>scope</td>
+                                    <td>
+                                        <input type="text" readonly="readonly" name="scope" size="70" value="{{scope}}"/>
+                                    </td>
+                                </tr>
+                            </table>
+                            <button class="btn btn-info" type="submit">/oauth2/device_authorization</button>
+                            <span class="label label-warning">POST</span>
+                        </form>
+                        <p class="help-block">一般此步骤是在设备上通过代码来完成, 此处只作演示流程</p>
+                    </li>
+                    <li>
+                        <p>在设备上展示<em>user_code</em>或显示一个二维码(内容为<em>verification_uri_complete</em> URL)</p>
+                        <p>用已经登录成功的浏览器(或另一个已经认证的设备)访问<em>verification_uri_complete</em> URL(可通过扫码等方式获取内容)</p>
+                        <p class="text-success">
+                            此处方便演示, 请点击<a th:href="@{/oauth2/device_verification}" target="_blank">/oauth2/device_verification</a>并输入上一步获取到的<em>user_code</em>
+                            (若未认证将跳转到登录)
+                        </p>
+                        <p class="help-block">提示：此步骤必须在有效时间内完成, <em>user_code</em>的有效时长在上一步中返回的数据<em>expires_in</em>来决定(单位:秒,
+                            默认5分钟)</p>
+                    </li>
+                    <li>
+                        <p>
+                            在第2步进行的同时,
+                            设备上后台将定时(如每隔5秒)向<code>spring-oauth-server</code>发起获取token的请求<code>/oauth2/token</code>
+                            (需要使用第1步中获取到 <em>device_code</em> 的值),
+                            <br/>
+                            直到获取成功(即第2步操作完成授权设备登录)或超时(即设备轮询请求等待的时长超出第1步返回的时间<em>expires_in</em>)
+                        </p>
+                        <p class="help-block">请输入device_code后点击按钮地址.</p>
+                        <form th:action="@{/oauth2/token}" th:method="post" target="_blank">
+                            <table class="table table-striped table-bordered table-hover">
+                                <tr>
+                                    <td>client_id</td>
+                                    <td>
+                                        <input type="text" readonly="readonly" name="client_id" size="70" value="{{clientId}}"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>client_secret</td>
+                                    <td>
+                                        <input type="text" readonly="readonly" name="client_secret" size="70"
+                                               value="{{clientSecret}}" placeholder="请先在页面最上面输入client_secret"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>grant_type</td>
+                                    <td>
+                                        <input type="text" readonly="readonly" name="grant_type" size="70" value="urn:ietf:params:oauth:grant-type:device_code"/>
+                                        <p class="help-block">固定值</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>device_code</td>
+                                    <td>
+                                        <input type="text" ng-model="deviceCode" name="device_code" required="required"
+                                               placeholder="GQ-K6n5kwLfu3XpDja-b3SlPbTfqYir..." size="70"/>
+                                        <p class="help-block">请输入device_code</p>
+                                    </td>
+                                </tr>
+                            </table>
+                            <button class="btn btn-primary" type="submit">/oauth2/token</button>
+                            <span class="label label-warning">POST</span>
+                        </form>
+                        <p class="help-block">提示：在第2步进行过程中调用第3步获取token API时会响应等待授权的结果(Http状态码 400,
+                            error='authorization_pending')</p>
+                    </li>
+                </ol>
+
+            </div>
+        </div>
+
+        <div th:if="${clientDetailsDto.containsJwtBearer}" class="panel panel-default">
+            <div class="panel-heading">Test [jwt-bearer] <em class="label label-success">OAuth2.1新增</em></div>
+            <div class="panel-body">
+                <ul>
+                    <li>
+                        <p><code>jwt-bearer</code>是一类增强client端请求安全性的断言(assertion)实现;
+                            通过类似'双向SSL'的机制来让server端验证client端的签名实现强安全性.</p>
+                    </li>
+                    <li>
+                        <p>当注册或添加client端时需要填写一个jwk URL地址(用来获取验签的公钥), 指定认证jwt签名算法(如RS256),
+                            设置methods为<code>client_secret_jwt</code>(对称算法,
+                            使用client_secret为MacKey)或<code>private_key_jwt</code>(非对称算法)</p>
+                        <p class="text-warning">注意: grant_type不能只有jwt-bearer, 无实用意义</p>
+                    </li>
+                </ul>
+
+                <div>
+                    cURL示例:
+                    <pre>curl --location 'http://localhost:8080/oauth2/token' \
+  --header 'Content-Type: application/json' \
+  --form 'client_id="dofOx6hjxlWw9qe2bnFvqbiPhuWwGWdn"' \
+  --form 'client_assertion_type="urn:ietf:params:oauth:client-assertion-type:jwt-bearer"' \
+  --form 'scope="openid"' \
+  --form 'grant_type="client_credentials"' \
+  --form 'client_assertion="eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJkb2ZPeDZoanhsV3c5..."' \
+  --form 'client_secret="dofOx6hjxlWw9qe2bnFvqbiPhuWwGWdn"'</pre>
+                    增加两个请求参数:
+                    <table class="table table-striped table-bordered table-hover">
+                        <tr>
+                            <td>client_assertion_type</td>
+                            <td>固定值: <em>urn:ietf:params:oauth:client-assertion-type:jwt-bearer</em></td>
+                        </tr>
+                        <tr>
+                            <td>client_assertion</td>
+                            <td>
+                                使用提供的 jwk URL中的 private_key进行签名生成的 JWT(如何生成详见: <code>JwtBearerFlowTest.java</code>)
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <p class="text-muted">输入<code>client_assertion</code>值, 点击按钮地址即可测试</p>
+                <form th:action="@{/oauth2/token}" th:method="post" target="_blank">
+                    <table class="table table-striped table-bordered table-hover">
+                        <tr>
+                            <td>client_id</td>
+                            <td>
+                                <input type="text" readonly="readonly" name="client_id" size="70" value="{{clientId}}"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>client_secret</td>
+                            <td>
+                                <input type="text" readonly="readonly" name="client_secret" size="70"
+                                       value="{{clientSecret}}" placeholder="请先在页面最上面输入client_secret"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>scope</td>
+                            <td>
+                                <input type="text" readonly="readonly" name="scope" size="70" value="{{scope}}"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>grant_type</td>
+                            <td>
+                                <input readonly="readonly" name="grant_type" size="70" value="client_credentials"/>
+                                <p class="help-block">grant_type根据需要值可以是<code>authorization_code</code> <code>refresh_token</code>等
+                                </p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>client_assertion_type</td>
+                            <td>
+                                <input readonly="readonly" size="70" name="client_assertion_type"
+                                       value="urn:ietf:params:oauth:client-assertion-type:jwt-bearer"/>
+                                <p class="help-block">固定值</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>client_assertion</td>
+                            <td>
+                                <input name="client_assertion" size="70" value="{{clientAssertion}}"
+                                       placeholder="eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJkb2ZPeDZo..."/>
+                                <p class="help-block">如何生成client_assertion, 详见示例类: <code>JwtBearerFlowTest.java</code>
+                                </p>
+                            </td>
+                        </tr>
+                    </table>
+                    <button class="btn btn-primary" type="submit">/oauth2/token</button>
+                    <span class="label label-warning">POST</span>
+                </form>
+
+            </div>
+        </div>
+
+        <div th:if="${clientDetailsDto.containsClientCredentials}" class="panel panel-default">
+            <div class="panel-heading">Test [client_credentials]</div>
+            <div class="panel-body">
+                <p class="text-muted">点击按钮地址即可测试</p>
+
+
+                <form th:action="@{/oauth2/token}" th:method="post" target="_blank">
+                    <table class="table table-striped table-bordered table-hover">
+                        <tr>
+                            <td>client_id</td>
+                            <td>
+                                <input type="text" readonly="readonly" name="client_id" size="70" value="{{clientId}}"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>client_secret</td>
+                            <td>
+                                <input type="text" readonly="readonly" name="client_secret" size="70" required="required"
+                                       value="{{clientSecret}}" placeholder="请先在页面最上面输入client_secret"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>scope</td>
+                            <td>
+                                <input type="text" readonly="readonly" name="scope" size="70" value="{{scope}}"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>grant_type</td>
+                            <td>
+                                <input readonly="readonly" name="grant_type" size="70" value="client_credentials"/>
+                                <p class="help-block">固定值</p>
+                            </td>
+                        </tr>
+                    </table>
+                    <button class="btn btn-primary" type="submit">/oauth2/token</button>
+                    <span class="label label-warning">POST</span>
+                </form>
+            </div>
+        </div>
+
+        <div th:if="${clientDetailsDto.containsRefreshToken}" class="panel panel-default">
+            <div class="panel-heading">Test [refresh_token]</div>
+            <div class="panel-body">
+                <p class="text-muted">输入refresh_token 后点击链接地址.</p>
+
+                <form th:action="@{/oauth2/token}" th:method="post" target="_blank">
+                    <table class="table table-striped table-bordered table-hover">
+                        <tr>
+                            <td>client_id</td>
+                            <td>
+                                <input type="text" readonly="readonly" name="client_id" size="70" value="{{clientId}}"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>client_secret</td>
+                            <td>
+                                <input type="text" readonly="readonly" name="client_secret" size="70" required="required"
+                                       value="{{clientSecret}}" placeholder="请先在页面最上面输入client_secret"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>grant_type</td>
+                            <td>
+                                <input readonly="readonly" name="grant_type" size="70" value="refresh_token"/>
+                                <p class="help-block">固定值</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>refresh_token</td>
+                            <td>
+                                <input type="text" ng-model="refreshToken" placeholder="xYCsaPu7YV_hB6TfLb..."
+                                       size="70" name="refresh_token" required="required"/>
+                                <p class="help-block">请输入 refresh_token 值</p>
+                            </td>
+                        </tr>
+                    </table>
+                    <button class="btn btn-primary" type="submit">/oauth2/token</button>
+                    <span class="label label-warning">POST</span>
+                    <br/>
+                    <span class="text-muted">复用refresh_token: <span class="text-info"
+                                                                    th:text="${clientDetailsDto.tokenSettings.reuseRefreshTokens}"></span></span>
+                </form>
+            </div>
+        </div>
+
+        <div class="panel panel-info">
+            <div class="panel-heading">Test OIDC-Logout <em class="label label-success">OAuth2.1新增</em></div>
+            <div class="panel-body">
+                <p class="text-muted">将'spring-oauth-server'退出并重定向会指定的uri(添加client端时的字段<code>logout_redirect_uris</code>), 由client端通过浏览器发起调用.</p>
+
+                <form th:action="@{/connect/logout}" th:method="post" target="_blank">
+                    <table class="table table-striped table-bordered table-hover">
+                        <tr>
+                            <td>client_id</td>
+                            <td>
+                                <input type="text" readonly="readonly" name="client_id" size="70" value="{{clientId}}"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>id_token_hint</td>
+                            <td>
+                                <input name="id_token_hint" size="70" required="required"
+                                       value="" placeholder="请输入已经签发且有效的id_token值"/>
+                                <p class="help-block">填写一个已经签发且有效的id_token</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>post_logout_redirect_uri</td>
+                            <td>
+                                <input name="post_logout_redirect_uri" size="70" value="{{post_logout_redirect_uri}}" required="required" placeholder="https://...."/>
+                                <p class="help-block">退出后通过post重定向的uri</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>state</td>
+                            <td>
+                                <input readonly="readonly" name="state" size="70" value="{{state}}"/>
+                                <p class="help-block">每次随机生成, spring-oauth-server原封不动返回(防止会话劫持攻击)</p>
+                            </td>
+                        </tr>
+                    </table>
+                    <button class="btn btn-success" type="submit">/connect/logout</button>
+                    <span class="label label-warning">POST</span>
+
+                </form>
+            </div>
+        </div>
+
+        <div class="text-center">
+            <a th:href="@{/client_details}" class="btn btn-default">Back</a>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    var TestClientCtrl = ["$scope", function ($scope) {
+        $scope.clientId = [[${clientDetailsDto.clientId}]];
+        $scope.clientSecret = "";
+        $scope.deviceCode = "";
+        $scope.scope = [[${clientDetailsDto.scopesWithBlank}]];
+
+        $scope.codeChallenge = [[${codeChallenge}]];
+        $scope.codeVerifier = [[${codeVerifier}]];
+
+        var redirectUri = [[${clientDetailsDto.redirectUris}]];
+        if (redirectUri === '') {
+            $scope.implicitRedirectUri = location.href;
+            $scope.redirectUri = "http://localhost:8080/unity/dashboard";
+        } else {
+            $scope.implicitRedirectUri = [[${clientDetailsDto.redirectUris}]];
+            $scope.redirectUri = [[${clientDetailsDto.redirectUris}]];
+        }
+
+        $scope.username = "mobile";
+        $scope.password = "mobile";
+        //a temp value
+        $scope.refreshToken = "";
+        $scope.clientAssertion = "";
+        $scope.post_logout_redirect_uri =  [[${clientDetailsDto.postLogoutRedirectUris}]];
+        $scope.state = Math.floor(Math.random() * 1000000000).toString();
+
+    }];
+</script>
+
+<div th:replace="~{fragments/main :: footer}"/>
+</body>
+</html>

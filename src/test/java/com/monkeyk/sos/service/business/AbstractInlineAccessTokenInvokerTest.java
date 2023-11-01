@@ -2,15 +2,14 @@ package com.monkeyk.sos.service.business;
 
 import com.monkeyk.sos.domain.oauth.OauthClientDetails;
 import com.monkeyk.sos.domain.oauth.OauthRepository;
+import com.monkeyk.sos.domain.shared.GuidGenerator;
 import com.monkeyk.sos.domain.user.Privilege;
 import com.monkeyk.sos.domain.user.User;
 import com.monkeyk.sos.domain.user.UserRepository;
 import com.monkeyk.sos.infrastructure.AbstractRepositoryTest;
 import com.monkeyk.sos.infrastructure.PasswordHandler;
-import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import static com.monkeyk.sos.config.OAuth2ServerConfiguration.RESOURCE_ID;
 
 /**
  * 2019/7/6
@@ -52,11 +51,16 @@ public abstract class AbstractInlineAccessTokenInvokerTest extends AbstractRepos
     OauthClientDetails createClientDetails() {
         OauthClientDetails clientDetails = new OauthClientDetails();
         clientDetails.clientId(clientId)
+                .clientName("TestClient")
+                .id(GuidGenerator.generateNumber())
                 .clientSecret(PasswordHandler.encode(clientSecret))
-                .authorizedGrantTypes(grantTypes())
-                .scope("read")
-                .accessTokenValidity(200)
-                .resourceIds(RESOURCE_ID);
+                .authorizationGrantTypes(grantTypes())
+                .clientAuthenticationMethods("client_secret_post")
+                .clientSettings("")
+                .tokenSettings("")
+                .scopes("openid");
+//                .accessTokenValidity(200)
+//                .resourceIds(RESOURCE_ID);
 
 
         oauthRepository.saveOauthClientDetails(clientDetails);
@@ -64,7 +68,7 @@ public abstract class AbstractInlineAccessTokenInvokerTest extends AbstractRepos
     }
 
     String grantTypes() {
-        return "authorization_code,password,implicit,client_credentials,refresh_token";
+        return "authorization_code,password,client_credentials,refresh_token";
     }
 
 }

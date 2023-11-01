@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,user-scalable=no"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <link rel="shortcut icon" href="../../static/favicon.ico" th:href="@{/favicon.ico}"/>
+
+    <title>client_details - Spring Security&OAuth2.1</title>
+
+    <th:block th:insert="~{fragments/main::header-css}"/>
+    <style>
+        .list-group li:hover {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body class="container">
+<a th:href="@{/}">Home</a>
+
+<div class="row">
+    <div class="col-md-10">
+        <h3>client_details</h3>
+    </div>
+    <div class="col-md-2">
+        <div class="pull-right">
+            <a th:href="@{register_client}" class="btn btn-success btn-sm">注册client</a>
+        </div>
+    </div>
+</div>
+
+<hr/>
+
+<div>
+    <ul class="list-group">
+        <li th:each="cli:${clientDetailsDtoList}" class="list-group-item">
+            <div class="pull-right">
+                <div th:if="${not cli.archived}">
+                    <a th:href="@{'test_client/' + ${cli.clientId}}">test</a>
+                    <a th:href="@{'archive_client/' + ${cli.clientId}}" class="text-danger"
+                       onclick="return confirm('Are you sure archive the client ?')">archive</a>
+                </div>
+                <strong th:if="${cli.archived}" class="text-muted">Archived</strong>
+            </div>
+            <h3 class="list-group-item-heading">
+                [[${cli.clientId}]] - <span th:text="${cli.clientName}" class="text-primary"></span>
+                <small th:text="${cli.authorizationGrantTypes}"></small>
+            </h3>
+
+            <div class="list-group-item-text text-muted">
+                client_id: <span class="text-danger" th:text="${cli.clientId}"></span>&nbsp;
+                client_secret: <span class="text-primary">***</span>&nbsp;
+                <br/>
+                grant_types: <span class="text-primary" th:text="${cli.authorizationGrantTypes}"></span>&nbsp;
+                authentication_methods: <span class="text-primary" th:text="${cli.clientAuthenticationMethods}"></span>&nbsp;
+                <br/>
+                scopes: <span class="text-primary" th:text="${cli.scopes}"></span>&nbsp;
+                redirect_uri: <span class="text-primary" th:text="${cli.redirectUris}"></span>&nbsp;
+                <br/>
+                client_id_issued: <span class="text-primary" th:text="${cli.clientIdIssuedAt}"></span>&nbsp;
+                client_secret_expires: <span class="text-primary" th:text="${cli.clientSecretExpiresAt}"></span>
+                <br/>
+                client_settings: <span class="text-primary" th:text="${cli.clientSettings}"></span>
+                <br/>
+                token_settings: <span class="text-primary" th:text="${cli.tokenSettings}"></span>
+                <br/>
+                create_time: <span class="text-primary" th:text="${cli.createTime}"></span>&nbsp;
+                archived: <strong th:class="${cli.archived?'text-warning':'text-primary'}"
+                                  th:text="${cli.archived}"></strong>&nbsp;
+            </div>
+        </li>
+
+    </ul>
+    <div class="help-block">
+        每一个item对应<code>oauth2_registered_client</code>表中的一条数据; 共<strong
+            th:text="${clientDetailsDtoList.size()}"></strong>条数据.
+        <br/>
+        对数据库表的详细说明请访问
+        <a href="https://andaily.com/spring-oauth-server/db_table_description_3.0.0.html" target="_blank">https://andaily.com/spring-oauth-server/db_table_description_3.0.0.html</a>
+        (或访问项目others目录的db_table_description_3.0.0.html文件)
+    </div>
+</div>
+
+<div th:replace="~{fragments/main :: footer}"/>
+</body>
+</html>

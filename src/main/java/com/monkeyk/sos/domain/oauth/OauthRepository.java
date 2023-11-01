@@ -6,6 +6,7 @@ import java.util.List;
 
 /**
  * @author Shengzhao Li
+ * @since 1.0.0
  */
 public interface OauthRepository extends Repository {
 

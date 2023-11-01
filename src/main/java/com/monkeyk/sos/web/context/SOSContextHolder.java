@@ -1,5 +1,6 @@
 package com.monkeyk.sos.web.context;
 
+import com.monkeyk.sos.web.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -7,7 +8,6 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.util.Assert;
 
 /**
@@ -82,9 +82,13 @@ public class SOSContextHolder implements BeanFactoryAware, InitializingBean {
     public void afterPropertiesSet() throws Exception {
         Assert.notNull(beanFactory, "beanFactory is null");
 
-        if (LOG.isDebugEnabled()) {
-            TokenStore tokenStore = getBean(TokenStore.class);
-            LOG.debug("{} use tokenStore: {}", this.applicationName, tokenStore);
+//        if (LOG.isDebugEnabled()) {
+//            TokenStore tokenStore = getBean(TokenStore.class);
+//            LOG.debug("{} use tokenStore: {}", this.applicationName, tokenStore);
+//        }
+
+        if (LOG.isInfoEnabled()) {
+            LOG.info("{} context initialized, version: {}", this.applicationName, WebUtils.VERSION);
         }
     }
 

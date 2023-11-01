@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,user-scalable=no"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <link rel="shortcut icon" href="../../static/favicon.ico" th:href="@{/favicon.ico}"/>
+
+    <title>Mobile 资源 - Spring Security&OAuth2.1</title>
+
+    <th:block th:insert="~{fragments/main::header-css}"/>
+</head>
+<body class="container">
+<a th:href="@{/}">Home</a>
+
+<h2>Hi Mobile
+    <small>你已成功访问 [mobile] 资源</small>
+</h2>
+
+用户信息:
+<br/>
+<strong th:text="${#authentication.principal.username}"></strong>
+<br/>
+<br/>
+<p class="text-muted">
+    访问API
+</p>
+<a th:href="@{/m/user_info(access_token=${param.access_token})}">用户信息(JSON)</a>
+
+
+<div th:replace="~{fragments/main :: footer}"/>
+</body>
+</html>

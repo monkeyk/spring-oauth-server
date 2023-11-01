@@ -1,97 +1,40 @@
 package com.monkeyk.sos.domain.shared.security;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.monkeyk.sos.domain.user.Privilege;
 import com.monkeyk.sos.domain.user.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.io.Serial;
 
 /**
  * @author Shengzhao Li
  */
-public class SOSUserDetails implements UserDetails {
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "@class")
+public class SOSUserDetails extends org.springframework.security.core.userdetails.User {
 
+    @Serial
     private static final long serialVersionUID = 3957586021470480642L;
 
-    protected static final String ROLE_PREFIX = "ROLE_";
-    protected static final GrantedAuthority DEFAULT_USER_ROLE = new SimpleGrantedAuthority(ROLE_PREFIX + Privilege.USER.name());
+    public static final String ROLE_PREFIX = "ROLE_";
 
-    protected User user;
-
-    protected List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-
-    public SOSUserDetails() {
-    }
-
-    public SOSUserDetails(User user) {
-        this.user = user;
-        initialAuthorities();
-    }
-
-    private void initialAuthorities() {
-        //Default, everyone have it
-        this.grantedAuthorities.add(DEFAULT_USER_ROLE);
-
-        final List<Privilege> privileges = user.privileges();
-        for (Privilege privilege : privileges) {
-            this.grantedAuthorities.add(new SimpleGrantedAuthority(ROLE_PREFIX + privilege.name()));
-        }
-    }
+    public static final GrantedAuthority DEFAULT_USER_ROLE = new SimpleGrantedAuthority(ROLE_PREFIX + Privilege.USER.name());
 
     /**
-     * Return authorities, more information see {@link #initialAuthorities()}
-     *
-     * @return Collection of GrantedAuthority
+     * @since 3.0.0
      */
-    @Override
-    public Collection<GrantedAuthority> getAuthorities() {
-        return this.grantedAuthorities;
-    }
-
-    @Override
-    public String getPassword() {
-        return user.password();
-    }
-
-    @Override
-    public String getUsername() {
-        return user.username();
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
-
-    public User user() {
-        return user;
-    }
+    protected String userGuid;
 
 
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder();
-        sb.append("{user=").append(user);
-        sb.append('}');
-        return sb.toString();
+    public SOSUserDetails(User user) {
+        super(user.username(), user.password(), user.enabled(),
+                true, true, true, user.generateAuthorities());
+        this.userGuid = user.guid();
     }
+
+    public String getUserGuid() {
+        return userGuid;
+    }
+
 }

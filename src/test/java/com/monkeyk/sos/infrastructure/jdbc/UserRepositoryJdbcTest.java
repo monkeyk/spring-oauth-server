@@ -14,23 +14,46 @@ package com.monkeyk.sos.infrastructure.jdbc;
 import com.monkeyk.sos.domain.user.User;
 import com.monkeyk.sos.domain.user.UserRepository;
 import com.monkeyk.sos.infrastructure.AbstractRepositoryTest;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 /*
-  * @author Shengzhao Li
-  */
+ * @author Shengzhao Li
+ */
 public class UserRepositoryJdbcTest extends AbstractRepositoryTest {
 
 
     @Autowired
     private UserRepository userRepository;
+
+
+    /**
+     * @since 3.0.0
+     */
+    @Test
+    void findProfileByUsername() {
+
+        String username = "userxxxx";
+        User user = userRepository.findProfileByUsername(username);
+        assertNull(user);
+
+        User user2 = new User(username, "{123}", "123", "ewo@honyee.cc");
+        user2.address("address").nickname("nick-name");
+        userRepository.saveUser(user2);
+
+        User user3 = userRepository.findProfileByUsername(username);
+        assertNotNull(user3);
+        assertNotNull(user3.phone());
+        assertNotNull(user3.email());
+
+    }
 
 
     @Test
@@ -95,8 +118,8 @@ public class UserRepositoryJdbcTest extends AbstractRepositoryTest {
 
 
     /*
-    * Run the test must initial db firstly
-    * */
+     * Run the test must initial db firstly
+     * */
 //    @Test()
     public void testPrivilege() {
 
