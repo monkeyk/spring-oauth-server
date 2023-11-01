@@ -3,7 +3,7 @@
 <br/>
 java config版本
 
-<strong>Spring与OAuth2的整合示例. OIDC1.x + OAuth2.1</strong>
+<strong>Spring与OAuth2的整合示例. OIDC1.0 + OAuth2.1</strong>
 
 
 项目用Maven管理
@@ -58,7 +58,7 @@ Base on SpringBoot
 
 1. OAuth2客户端项目请访问 <a href="https://gitee.com/mkk/spring-oauth-client">spring-oauth-client</a>
 
-2. 在线测试访问地址 <a href="https://andaily.com/spring-oauth-server">https://andaily.com/spring-oauth-server</a>
+2. 在线测试访问地址 <a href="https://andaily.com/spring-oauth-server">https://andaily.com/spring-oauth-server</a> (v1.0)
 
 3. Shiro与OLTU整合的OAuth2项目 <a href="https://gitee.com/mkk/oauth2-shiro">https://gitee.com/mkk/oauth2-shiro</a>
    (相比spring-oauth-server, 该项目入门门槛相对较低, 代码更加透明, 理解更容易,可扩展性更强, 且模块化开发)
@@ -69,7 +69,7 @@ Base on SpringBoot
 
 1. 项目是Maven管理的, 需要本地安装Maven(开发用的maven版本号为3.6.0), 还有MySql(开发用的mysql版本号为5.7.22)
 
-2. <a href="https://gitee.com/shengzhao/spring-oauth-server/repository/archive?ref=master">下载</a>(或clone)项目源码到本地
+2. <a href="https://gitee.com/shengzhao/spring-oauth-server">下载</a>(或clone)项目源码到本地
 
 3. 创建MySQL数据库(默认数据库名oauth2_boot), 并运行相应的SQL脚本(脚本文件位于others/database目录),
    运行脚本的顺序: <code>initial_db.ddl -> oauth.ddl -> initial_data.ddl</code>
