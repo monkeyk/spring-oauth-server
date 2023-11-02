@@ -6,6 +6,7 @@
 Core-Class: OAuth2AuthorizationEndpointFilter
 
 1. start authorize
+- Core-Class: OAuth2AuthorizationEndpointFilter
 
    http://127.0.0.1:8080/oauth2/authorize?response_type=code&client_id=client11&scope=openid&redirect_uri=http://localhost:8083/oauth2/callback&state=93820ss0-32p
    http://127.0.0.1:8080/oauth2/authorize?response_type=code&client_id=client11&scope=openid profile&redirect_uri=http://localhost:8083/oauth2/callback&state=93820ss0-32p
