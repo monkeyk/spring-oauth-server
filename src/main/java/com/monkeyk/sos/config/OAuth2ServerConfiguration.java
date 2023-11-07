@@ -2,15 +2,15 @@ package com.monkeyk.sos.config;
 
 
 import com.monkeyk.sos.domain.oauth.ClaimsOAuth2TokenCustomizer;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
-import com.nimbusds.jose.jwk.source.JWKSourceBuilder;
 import com.nimbusds.jose.proc.SecurityContext;
+import com.nimbusds.jose.util.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -37,6 +37,9 @@ import org.springframework.security.web.authentication.LoginUrlAuthenticationEnt
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
 import java.util.function.Consumer;
 
 import static com.monkeyk.sos.domain.shared.SOSConstants.CUSTOM_CONSENT_PAGE_URI;
@@ -215,10 +218,12 @@ public class OAuth2ServerConfiguration {
      * @since 3.0.0
      */
     @Bean
-    public JWKSource<SecurityContext> jwkSource() throws IOException {
+    public JWKSource<SecurityContext> jwkSource() throws IOException, ParseException {
 
-        Resource resource = new ClassPathResource(KEYSTORE_NAME);
-        return JWKSourceBuilder.create(resource.getURL()).build();
+        try (InputStream is = getClass().getClassLoader().getResourceAsStream(KEYSTORE_NAME)) {
+            String keyJson = IOUtils.readInputStreamToString(is, StandardCharsets.UTF_8);
+            return new ImmutableJWKSet<>(JWKSet.parse(keyJson));
+        }
     }
 
 
