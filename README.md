@@ -14,7 +14,7 @@ Base on SpringBoot
 使用的主要技术与版本号
 <ol>
  <li>JDK (openjdk 17)</li>
- <li>Spring Boot(3.1.2)</li>
+ <li>Spring Boot(3.1.5)</li>
  <li>Spring Core(6.0.11)</li>
  <li>spring-security-oauth2-authorization-server (1.1.1)</li>
  <li>thymeleaf (3.1.1.RELEASE)</li>
