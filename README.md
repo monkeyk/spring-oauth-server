@@ -482,6 +482,9 @@ Base on SpringBoot
        </li>
         <li>
             <p><a href="https://openid.net/developers/how-connect-works/">OIDC官方网站</a></p>       
+       </li>        
+       <li>
+            <p><a href="https://andaily.com/blog/?p=24223">SpringSecurity中OAuth2.1/OIDC1.0升级变化明细</a></p>       
        </li>
 </ul>
 
