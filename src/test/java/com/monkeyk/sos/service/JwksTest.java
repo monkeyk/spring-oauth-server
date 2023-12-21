@@ -4,14 +4,10 @@ import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.jwk.Curve;
 import com.nimbusds.jose.jwk.ECKey;
 import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jose.jwk.gen.ECKeyGenerator;
+import com.nimbusds.jose.jwk.gen.RSAKeyGenerator;
 import org.junit.jupiter.api.Test;
 
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.interfaces.ECPublicKey;
-import java.security.interfaces.RSAPublicKey;
 import java.util.Set;
 
 import static com.nimbusds.jose.jwk.KeyOperation.*;
@@ -41,18 +37,8 @@ public class JwksTest {
 //        Curve point = Curve.P_384;
 //        Curve point = Curve.P_521;
 
-        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("EC");
-        keyPairGenerator.initialize(point.toECParameterSpec());
-
-        KeyPair keyPair = keyPairGenerator.generateKeyPair();
-
-        PublicKey aPublic = keyPair.getPublic();
-        PrivateKey aPrivate = keyPair.getPrivate();
-
-
-        ECKey key = new ECKey.Builder(point, (ECPublicKey) aPublic)
-                .privateKey(aPrivate)
-                .keyOperations(Set.of(
+        ECKeyGenerator ecKeyGenerator = new ECKeyGenerator(point);
+        ecKeyGenerator.keyOperations(Set.of(
                         SIGN,
                         VERIFY,
                         ENCRYPT,
@@ -60,8 +46,8 @@ public class JwksTest {
                         DERIVE_KEY))
                 // keyId 必须唯一
                 .keyID("sos-ecc-kid1")
-                .algorithm(JWSAlgorithm.ES256)
-                .build();
+                .algorithm(JWSAlgorithm.ES256);
+        ECKey key = ecKeyGenerator.generate();
         assertNotNull(key);
 
         String json = key.toJSONString();
@@ -79,27 +65,17 @@ public class JwksTest {
     @Test
     void jwkRS() throws Exception {
 
-        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-        keyPairGenerator.initialize(2048);
-        KeyPair keyPair = keyPairGenerator.generateKeyPair();
-
-        PrivateKey aPrivate = keyPair.getPrivate();
-        PublicKey aPublic = keyPair.getPublic();
-
-
-        RSAKey key = new RSAKey.Builder((RSAPublicKey) aPublic)
-                .privateKey(aPrivate)
-//                .keyUse(KeyUse.SIGNATURE)
+        RSAKeyGenerator rsaKeyGenerator = new RSAKeyGenerator(2048);
+        rsaKeyGenerator.keyID("sos-rsa-kid2")
+                .algorithm(JWSAlgorithm.RS256)
                 .keyOperations(Set.of(
                         SIGN,
                         VERIFY,
                         ENCRYPT,
                         DECRYPT,
-                        DERIVE_KEY))
-                .algorithm(JWSAlgorithm.RS256)
-                .keyID("sos-rsa-kid2")
-                .build();
+                        DERIVE_KEY));
 
+        RSAKey key = rsaKeyGenerator.generate();
         assertNotNull(key);
         String json = key.toJSONString();
         assertNotNull(json);
