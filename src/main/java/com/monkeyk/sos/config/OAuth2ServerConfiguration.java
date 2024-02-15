@@ -66,6 +66,7 @@ public class OAuth2ServerConfiguration {
 
     /**
      * keystore file name
+     * TODO: 请在不同的环境使用不同的key(即更换jwks.json中的文件内容); 如何生成不同的key请参考 JwksTest.java 类.
      *
      * @since 3.0.0
      */
@@ -213,6 +214,7 @@ public class OAuth2ServerConfiguration {
     /**
      * 提供加密/解密的 source
      * 可多个 key, 根据不同的需要来选择使用
+     * TODO: 请在不同的环境使用不同的key(即更换jwks.json中的文件内容); 如何生成不同的key请参考 JwksTest.java 类.
      *
      * @return JWKSource
      * @since 3.0.0

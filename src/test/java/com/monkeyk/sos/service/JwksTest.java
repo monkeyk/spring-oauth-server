@@ -38,6 +38,7 @@ public class JwksTest {
 //        Curve point = Curve.P_521;
 
         ECKeyGenerator ecKeyGenerator = new ECKeyGenerator(point);
+        //key 使用范围请根据业务场景设置, 范围越小越好
         ecKeyGenerator.keyOperations(Set.of(
                         SIGN,
                         VERIFY,
@@ -64,10 +65,12 @@ public class JwksTest {
      */
     @Test
     void jwkRS() throws Exception {
-
+        //size 至少 1024, 推荐 2048
         RSAKeyGenerator rsaKeyGenerator = new RSAKeyGenerator(2048);
+        // keyId 必须唯一
         rsaKeyGenerator.keyID("sos-rsa-kid2")
                 .algorithm(JWSAlgorithm.RS256)
+                //key 使用范围请根据业务场景设置, 范围越小越好
                 .keyOperations(Set.of(
                         SIGN,
                         VERIFY,
