@@ -31,7 +31,7 @@ Core-Class: OAuth2AuthorizationEndpointFilter
   --form 'client_secret="secret22"'
 
 response
-
+```
 {
 "access_token": "7154afT_cxvLDq1naSg6Aq9ueSFSW8xRr5txryW5MlddRe7nV0RogTYwPsJc_rrRqwaIvLleerLhkjtIN2E2U-4J_BzvYNCsv8BVLqeerCObwgwpP3t__NMMUakzRL2i",
 "refresh_token": "TZ9tzVwE_VLoJxALUSw4A4A0Nj7SLSWXCc69U9rvNmSnqR8Hbz-1m4uHebJWsAK0sa7SDIR4SNXOB3iaM0p1bH_8EBrljoBApQgdYi1uYzcVwYq55OVV2RUHN2BJwfSr",
@@ -40,7 +40,7 @@ response
 "token_type": "Bearer",
 "expires_in": 3599
 }
-
+```
 
 4. refresh access_token
 
@@ -56,7 +56,7 @@ response
   --form 'refresh_token="TZ9tzVwE_VLoJxALUSw4A4A0Nj7SLSWXCc69U9rvNmSnqR8Hbz-1m4uHebJWsAK0sa7SDIR4SNXOB3iaM0p1bH_8EBrljoBApQgdYi1uYzcVwYq55OVV2RUHN2BJwfSr"'
 
 response
-
+```
 {
 "access_token": "YnVdTXl0MhslsrOjiz1ffSixvPnWCN-XS-UBlkS89daZbd_TvXtSSo_ODuFVWPWw1KsO5WQykVPjwSe_Kreo8ngIP9DglaXJMbYJJu4Wa6_geOINj5ksmnbfb6pHrQHr",
 "refresh_token": "TZ9tzVwE_VLoJxALUSw4A4A0Nj7SLSWXCc69U9rvNmSnqR8Hbz-1m4uHebJWsAK0sa7SDIR4SNXOB3iaM0p1bH_8EBrljoBApQgdYi1uYzcVwYq55OVV2RUHN2BJwfSr",
@@ -65,7 +65,7 @@ response
 "token_type": "Bearer",
 "expires_in": 3599
 }
-
+```
 
 5. get userinfo
 - Core-Class: OidcUserInfoEndpointFilter
@@ -76,12 +76,13 @@ response
   --header 'Authorization: Bearer eyJraWQiOiJteW9pZGMta2V5aWQiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImF1ZCI6ImNsaWVudDExIiwibmJmIjoxNjkyMDg0OTQ2LCJzY29wZSI6WyJvcGVuaWQiLCJwcm9maWxlIl0sImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODc4MSIsImV4cCI6MTY5MjA5MjE0NiwiaWF0IjoxNjkyMDg0OTQ2LCJqdGkiOiJkMDI0NTNhNS0xNmRmLTRiZGYtOTBhMS1lOGYyYjMxOWY5YzMifQ.hvVjgkGHsmDfFZia-B4H1D3vo03Yuj0Kd2KvF-EGuS9BzZTzvee8XetiRO-C6mqRw1s-Wa6wZB4QwB9-WyLc7tpu0TgfKDDn71nJQNZ2QgzcNIUlclxG5K21mVMmrA-c4Le5HGPLWsGItDkpqA1OtgL4U622kGHrf0RJCmpC_WxPnECYsI84dgILE6n9s27UZQhYtYLiq5aoovvHImrztTClRmNTwc4iB9RX_gpb9YFs0diMWvIBgDokEAJE_K9BY0HZqpqj7T1ilecfbcv_T2Ebd8JnnZyCTUcpIyZ4DlWqzvnEp70cz945NuaYQG-_VPSjhGiymsNxWkP0HMGRuQ' \
 
 response
+```
 {
 "sub": "admin",
 "updated_at": "123456990",
 "nickname": "xxx"
 }
-
+```
 
 ## client_credentials  flow
 
@@ -95,14 +96,14 @@ response
   --form 'scope="openid profile"'
 
 response
-
+```
 {
 "access_token": "p2i1WHiiFBCgTJFTs63OvO9-bclB9DbsgsebDo_ntMw_BAleu2RzIQzzFfaaJAR5oiL3xwN3xMyNTRZSrXM_1ANycleysPU5l3xuZ0aQX4V-Va178qg6e-PvLqLBsD_i",
 "scope": "openid profile",
 "token_type": "Bearer",
 "expires_in": 3599
 }
-
+```
 ## authorization_code + PKCE  flow
     Proof Key for Code Exchange (RFC7636)
 
@@ -127,7 +128,7 @@ curl --location 'http://localhost:8080/oauth2/token' \
 --form 'code_verifier="OXhHcFQ5TWIzSTdBUGJ0RlBZZm5xUEN2QnIzSkpyTXFCOVlSMHFBd2ZCSmhjZ1FK"'
 
 response
-
+```
 {
 "access_token": "eyJraWQiOiJteW9pZGMta2V5aWQiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImF1ZCI6ImNsaWVudDExIiwibmJmIjoxNjkyNzYyNjA5LCJzY29wZSI6WyJvcGVuaWQiLCJwcm9maWxlIl0sImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODc4MSIsImV4cCI6MTY5Mjc2OTgwOSwiaWF0IjoxNjkyNzYyNjA5LCJqdGkiOiJkNmRlZGVmNi1lYmFhLTRjOTEtYjhjZC1kM2QxZGQ2OTIzNzEifQ.Fuuu9jI1uXEevvJswgqvsyR0PZkvn8ijYX3PjDhJj4_t_L0U0DbWTJNr8-dQWVA2AuIjlLs_5SsI8mq_sZOfZc8TBZRhJYbSiluLoNKxaHTHfMimY0Zb712x2mZ9NS_DzEPJeNLTTxvm0X7mmLgoXdc2hYSEbXVYicIGaidIBy6rFaSMyA5bdmSoI3gfwW2PQ58NBHDQDkEZmWmLZ6ZkLKGANzSpWUmraA7lhV_UphmHqk55kcgqEWQKNqD3x6OZ20jpUgtrkr6TjbtFmjMOYV7r0_jMGihmPSjXoXYspDcrS9T9fE9oW7_rSe1YUnQaR9s5ghkqFCki7WS7Tnzj-w",
 "refresh_token": "VWbIs3Ls2pAZknHSXGV5oH_VHNQwoiWmSDQi0UbQesApSWR1xpYB2Ggyct4iCzITKE5STJEbRPKZUTJNvuFfWFv3rgJYD4ggZ0nHnkQ3GQ_a471DxWU--smzwRpb4vxx",
@@ -136,7 +137,7 @@ response
 "token_type": "Bearer",
 "expires_in": 7199
 }
-
+```
 
 
 
@@ -152,7 +153,7 @@ curl --location 'http://localhost:8080/oauth2/device_authorization' \
 --form 'scope="openid profile"'
 
 response
-
+```
 {
 "user_code": "PCKJ-FWZS",
 "device_code": "ZPMq2sfyHPj_pJ78T6J4yGcsAAi_XbuBjtQz2NLxYWKDHbcqUhg2nFHe3Ynp3V1SyCOwYEoaz9lPvqt-oj0sXKxJDnC5usJmANVqMQ-8Qjpp1ROi9gljdQY2NO3YYvIo",
@@ -160,7 +161,7 @@ response
 "verification_uri": "http://127.0.0.1:8080/oauth2/device_verification",
 "expires_in": 300
 }
-
+```
 2. Logged user visit  verification_uri_complete  using a browser (or another authorized device use QR and so on)
    http://localhost:8080/oauth2/device_verification
    then type user_code and submit the form
@@ -178,7 +179,7 @@ curl --location 'http://localhost:8080/oauth2/token' \
 --form 'device_code="voqSMpNJAvVlMBQ1_R65a_MMWD344YKQqrlo86JG-VeFRz6iCMdhn5VBLwbNoHaidP9db33BJDaLWHHtpEP98NpwEf9wre_X-o8kq1_Dg8aj0r9lRP5aH-ZNI8wpon6b"'
 
 response [200]
-
+```
 {
 "access_token": "QqPGuiF9c2HKYQEdxrs9E0WsRijEl_z9sINI6CFD5yMulXaZutLTktVtLP3zcr22XuYJOzWZMzOgvjWl2tqAoMo3S2MHBgxjPmx5gfr6DjeQPsW3fFPVc6pOa5Ll6u4S",
 "refresh_token": "7vtQtkU95tjt7nkaX8DZnDVntrgPYIoXB6_4WsV9FzMi-ppoPB_H5qmufi4EHqAuJPwdlxXYdDbVYoGudXd0iCPfmqT5B8CcW7zRsgaKQOHQlPw9Ju3wMGNSRk14YRWI",
@@ -186,14 +187,14 @@ response [200]
 "token_type": "Bearer",
 "expires_in": 3599
 }
-
+```
 or [400]
-
+```
 {
 "error": "authorization_pending",
 "error_uri": "https://datatracker.ietf.org/doc/html/rfc8628#section-3.5"
 }
-
+```
 
 
 ## JWT_BEARER flow
@@ -236,7 +237,9 @@ curl --location 'http://localhost:8080/oauth2/revoke' \
 
 response
 
+```
 200 [HTTP]
+```
 
 ## introspect token API
 Core-Class: OAuth2TokenIntrospectionEndpointFilter
@@ -250,7 +253,7 @@ curl --location 'http://localhost:8080/oauth2/introspect' \
 --form 'token="GaHu88XEEAz41xMHfDk05bg9uSJ5Go1RF6jOe5eX7OhHD_52NK_fuwvVWq_dTRIhK8WR9SnCAtBBc0fVsOyGgz8-MhmVTG-dcDi6QtGQQtYxwmGrD-fOhpmePdUv6pwV"'
 
 response
-
+```
 {
 "active": true,
 "sub": "admin",
@@ -266,7 +269,7 @@ response
 "client_id": "6urNLgR6osk2E56ekp",
 "token_type": "Bearer"
 }
-
+```
 
 ## logout token API
 Core-Class: OidcLogoutEndpointFilter
@@ -280,19 +283,26 @@ URL: http://localhost:8080/connect/logout?id_token_hint=${id_token}&client_id={c
 ### OIDC 1.0
 - URL: http://localhost:8080/.well-known/openid-configuration
 - Core-Class: OidcProviderConfigurationEndpointFilter
-- Response: {"issuer":"http://localhost:8080","authorization_endpoint":"http://localhost:8080/oauth2/authorize","device_authorization_endpoint":"http://localhost:8080/oauth2/device_authorization","token_endpoint":"http://localhost:8080/oauth2/token","token_endpoint_auth_methods_supported":["client_secret_basic","client_secret_post","client_secret_jwt","private_key_jwt"],"jwks_uri":"http://localhost:8080/oauth2/jwks","userinfo_endpoint":"http://localhost:8080/userinfo","end_session_endpoint":"http://localhost:8080/connect/logout","response_types_supported":["code"],"grant_types_supported":["authorization_code","client_credentials","refresh_token","urn:ietf:params:oauth:grant-type:device_code"],"revocation_endpoint":"http://localhost:8080/oauth2/revoke","revocation_endpoint_auth_methods_supported":["client_secret_basic","client_secret_post","client_secret_jwt","private_key_jwt"],"introspection_endpoint":"http://localhost:8080/oauth2/introspect","introspection_endpoint_auth_methods_supported":["client_secret_basic","client_secret_post","client_secret_jwt","private_key_jwt"],"subject_types_supported":["public"],"id_token_signing_alg_values_supported":["RS256"],"scopes_supported":["openid"]}
+- Response:
+```
+{"issuer":"http://localhost:8080","authorization_endpoint":"http://localhost:8080/oauth2/authorize","device_authorization_endpoint":"http://localhost:8080/oauth2/device_authorization","token_endpoint":"http://localhost:8080/oauth2/token","token_endpoint_auth_methods_supported":["client_secret_basic","client_secret_post","client_secret_jwt","private_key_jwt"],"jwks_uri":"http://localhost:8080/oauth2/jwks","userinfo_endpoint":"http://localhost:8080/userinfo","end_session_endpoint":"http://localhost:8080/connect/logout","response_types_supported":["code"],"grant_types_supported":["authorization_code","client_credentials","refresh_token","urn:ietf:params:oauth:grant-type:device_code"],"revocation_endpoint":"http://localhost:8080/oauth2/revoke","revocation_endpoint_auth_methods_supported":["client_secret_basic","client_secret_post","client_secret_jwt","private_key_jwt"],"introspection_endpoint":"http://localhost:8080/oauth2/introspect","introspection_endpoint_auth_methods_supported":["client_secret_basic","client_secret_post","client_secret_jwt","private_key_jwt"],"subject_types_supported":["public"],"id_token_signing_alg_values_supported":["RS256"],"scopes_supported":["openid"]}
+```
 
 ### OAuth 2.1
 - URL: http://localhost:8080/.well-known/oauth-authorization-server
 - Core-Class: OAuth2AuthorizationServerMetadataEndpointFilter
-- Response: {"issuer":"http://localhost:8080","authorization_endpoint":"http://localhost:8080/oauth2/authorize","device_authorization_endpoint":"http://localhost:8080/oauth2/device_authorization","token_endpoint":"http://localhost:8080/oauth2/token","token_endpoint_auth_methods_supported":["client_secret_basic","client_secret_post","client_secret_jwt","private_key_jwt"],"jwks_uri":"http://localhost:8080/oauth2/jwks","response_types_supported":["code"],"grant_types_supported":["authorization_code","client_credentials","refresh_token","urn:ietf:params:oauth:grant-type:device_code"],"revocation_endpoint":"http://localhost:8080/oauth2/revoke","revocation_endpoint_auth_methods_supported":["client_secret_basic","client_secret_post","client_secret_jwt","private_key_jwt"],"introspection_endpoint":"http://localhost:8080/oauth2/introspect","introspection_endpoint_auth_methods_supported":["client_secret_basic","client_secret_post","client_secret_jwt","private_key_jwt"],"code_challenge_methods_supported":["S256"]}
-
+- Response: 
+```
+{"issuer":"http://localhost:8080","authorization_endpoint":"http://localhost:8080/oauth2/authorize","device_authorization_endpoint":"http://localhost:8080/oauth2/device_authorization","token_endpoint":"http://localhost:8080/oauth2/token","token_endpoint_auth_methods_supported":["client_secret_basic","client_secret_post","client_secret_jwt","private_key_jwt"],"jwks_uri":"http://localhost:8080/oauth2/jwks","response_types_supported":["code"],"grant_types_supported":["authorization_code","client_credentials","refresh_token","urn:ietf:params:oauth:grant-type:device_code"],"revocation_endpoint":"http://localhost:8080/oauth2/revoke","revocation_endpoint_auth_methods_supported":["client_secret_basic","client_secret_post","client_secret_jwt","private_key_jwt"],"introspection_endpoint":"http://localhost:8080/oauth2/introspect","introspection_endpoint_auth_methods_supported":["client_secret_basic","client_secret_post","client_secret_jwt","private_key_jwt"],"code_challenge_methods_supported":["S256"]}
+```
 
 ## jwks URL
 - URL: http://localhost:8080/oauth2/jwks
 - Core-Class: NimbusJwkSetEndpointFilter
-- Response: {"keys":[{"kty":"EC","crv":"P-256","kid":"sos-ecc-kid1","key_ops":["sign","deriveKey","decrypt","encrypt","verify"],"x":"UyCuPXhC0_KLRqfWPNDU4ZljSx7lQ_vP7VbYDiOZmsk","y":"2HuQhn3bfkmYiB6BLQKlN8tkI8awkeOiKaNk1cu06ow","alg":"ES256"},{"kty":"RSA","e":"AQAB","kid":"sos-rsa-kid2","key_ops":["deriveKey","verify","encrypt","decrypt","sign"],"alg":"RS256","n":"st2IswiZyQXHy86KBYQdEYv3sAfWpyx-e4o0Dcqvpck0E1FpZfVcFzbLy9B7YHvXv1SseVcg93iiNYgGlPDeZxPllz4-oIisDvSmEJdAidhqQxxpMeSjeQzvVu4CKjGFG9jA68pTm-KDia3Y516b4tPyKhHGIUZq2yJrNIs2QjTikYbn5AxAQ244cDPTsuEV5yqdOdyWvdlrn4WSFLiPt31MboT6et7Hmm90fwbMDSaWWb2XNo2gOnzWFwlNO2s8zK_Z1IWhmreb_XH5mW9xirrT03nbnLTLcmLtZYHFKjP55zRFDgKsXeo9BQNG3dkCsWz0N8pURaN6cuXYoYGU7Q"}]}
-
+- Response: 
+```
+{"keys":[{"kty":"EC","crv":"P-256","kid":"sos-ecc-kid1","key_ops":["sign","deriveKey","decrypt","encrypt","verify"],"x":"UyCuPXhC0_KLRqfWPNDU4ZljSx7lQ_vP7VbYDiOZmsk","y":"2HuQhn3bfkmYiB6BLQKlN8tkI8awkeOiKaNk1cu06ow","alg":"ES256"},{"kty":"RSA","e":"AQAB","kid":"sos-rsa-kid2","key_ops":["deriveKey","verify","encrypt","decrypt","sign"],"alg":"RS256","n":"st2IswiZyQXHy86KBYQdEYv3sAfWpyx-e4o0Dcqvpck0E1FpZfVcFzbLy9B7YHvXv1SseVcg93iiNYgGlPDeZxPllz4-oIisDvSmEJdAidhqQxxpMeSjeQzvVu4CKjGFG9jA68pTm-KDia3Y516b4tPyKhHGIUZq2yJrNIs2QjTikYbn5AxAQ244cDPTsuEV5yqdOdyWvdlrn4WSFLiPt31MboT6et7Hmm90fwbMDSaWWb2XNo2gOnzWFwlNO2s8zK_Z1IWhmreb_XH5mW9xirrT03nbnLTLcmLtZYHFKjP55zRFDgKsXeo9BQNG3dkCsWz0N8pURaN6cuXYoYGU7Q"}]}
+```
 
 ---
 ## reference doc
