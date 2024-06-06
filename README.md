@@ -187,6 +187,16 @@ Base on SpringBoot
 <ul>    
 	   <li>
             <p>
+                Version: <strong>3.0.1</strong> [planning]
+                <br/>
+                Date: 2024-xx-xx / 2024-xx-xx
+            </p>
+            <ol>
+                <li><p>增加WebAuthn 支持, 实现无密码登录</p></li>
+            </ol>
+       </li>
+	   <li>
+            <p>
                 Version: <strong>3.0.0</strong> [finished]
                 <br/>
                 Date: 2023-10-10 / 2023-10-31
