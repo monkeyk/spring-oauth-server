@@ -3,12 +3,11 @@
 <br/>
 java config版本
 
-<strong>Spring与OAuth2的整合示例. OIDC1.0 + OAuth2.1</strong>
+<strong>Spring与OAuth2/OIDC的整合完整示例. OIDC1.0 + OAuth2.1</strong>
 
 
 项目用Maven管理
-<br/>
-Base on SpringBoot
+
 
 
 使用的主要技术与版本号
