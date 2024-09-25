@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 /**
  * 2018/4/19
  * <p>
- * starup
+ * startup
  *
  * @author Shengzhao Li
  */
@@ -32,10 +32,14 @@ public class SOSController {
     }
 
 
-    //Go login
+    /**
+     * Go login
+     */
     @GetMapping(value = {"/login"})
     public String login(Model model) {
-        LOG.info("Go to login, IP: {}", WebUtils.getIp());
+        if (LOG.isInfoEnabled()) {
+            LOG.info("Go to login, IP: {}", WebUtils.getIp());
+        }
         return "login";
     }
 

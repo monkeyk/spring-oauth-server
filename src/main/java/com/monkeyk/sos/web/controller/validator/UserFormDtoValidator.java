@@ -1,4 +1,4 @@
-package com.monkeyk.sos.web.controller;
+package com.monkeyk.sos.web.controller.validator;
 
 import com.monkeyk.sos.service.dto.UserFormDto;
 import com.monkeyk.sos.domain.user.Privilege;

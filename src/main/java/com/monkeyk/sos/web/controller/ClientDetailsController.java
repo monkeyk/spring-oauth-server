@@ -3,6 +3,7 @@ package com.monkeyk.sos.web.controller;
 import com.monkeyk.sos.infrastructure.PKCEUtils;
 import com.monkeyk.sos.service.dto.OauthClientDetailsDto;
 import com.monkeyk.sos.service.OauthService;
+import com.monkeyk.sos.web.controller.validator.OauthClientDetailsDtoValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;

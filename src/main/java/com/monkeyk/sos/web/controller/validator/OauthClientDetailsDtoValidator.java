@@ -1,4 +1,4 @@
-package com.monkeyk.sos.web.controller;
+package com.monkeyk.sos.web.controller.validator;
 
 import com.monkeyk.sos.service.dto.OauthClientDetailsDto;
 import com.monkeyk.sos.service.OauthService;
@@ -11,6 +11,8 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 /**
+ * 2015/5/26 15:28
+ *
  * @author Shengzhao Li
  */
 @Component
