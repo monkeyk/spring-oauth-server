@@ -1,4 +1,4 @@
-## spring-oauth-server
+# spring-oauth-server
 
 <br/>
 java config版本
@@ -19,12 +19,13 @@ java config版本
  <li>thymeleaf (3.1.1.RELEASE)</li>
 </ol>
 
-<hr/>
-<h3>授权协议</h3>
+
+## 授权协议
+
 <em><a href="https://gitee.com/shengzhao/spring-oauth-server/tree/master/LICENSE">GPL-2.0</a></em>
 
-<hr/>
-<h3>技术视频</h3>
+
+## 技术视频
 <ol>
     <li> <a href="https://v.youku.com/v_show/id_XMzgyNjQwMjA4OA==.html?f=51900110&o=1">spring-oauth-server开源项目背景</a> 2018-09-16</li>
     <li> <a href="https://v.youku.com/v_show/id_XMzgyNzYzNjAzMg==.html?f=51900110&o=1">如何在本地运行spring-oauth-server(传统版本) </a> 2018-09-17</li>
@@ -43,7 +44,7 @@ java config版本
 </p>
 <hr/>
 
-<h3>版本分支介绍</h3>
+## 版本分支介绍
 
 - MySQL版本请访问Branch: <a href="https://gitee.com/shengzhao/spring-oauth-server/">master</a>
 
@@ -53,7 +54,7 @@ java config版本
 
 <hr/>
 
-<h3>相关项目</h3>
+## 相关项目
 
 1. OAuth2客户端项目请访问 <a href="https://gitee.com/mkk/spring-oauth-client">spring-oauth-client</a>
 
@@ -64,7 +65,7 @@ java config版本
 
 <hr/>
 
-<h3>如何使用?</h3>
+## 如何使用?
 
 1. 项目是Maven管理的, 需要本地安装Maven(开发用的maven版本号为3.6.0), 还有MySql(开发用的mysql版本号为5.7.22)
 
@@ -101,8 +102,8 @@ java config版本
     </table>
 </div>
 
-<hr/>
-<h3>grant_type 介绍</h3>
+
+## grant_type 介绍
 
 说明OAuth2.1支持的grant_type(授权方式)与功能
 <ol>
@@ -118,7 +119,9 @@ java config版本
 > 注意：相比OAuth2.0，去掉了 **implicit** 模式
 
 <hr/>
-<h3>帮助与改进</h3>
+
+## 帮助与改进
+
 <ol>
 <li>
 <p>
@@ -145,8 +148,8 @@ java config版本
 </li>
 </ol>
 
-<hr/>
-<h3>功能扩展</h3>
+## 功能扩展
+
 <ol>
     <li>
         <code>oauth_code存入数据库的配置</code>,  请下载文件 <a href="https://git.oschina.net/shengzhao/spring-oauth-server/attach_files/download?i=4858&u=http%3A%2F%2Ffiles.git.oschina.net%2Fgroup1%2FM00%2F00%2F31%2FcHwGbFQXzC-AeseiAAfnNw23X70580.jpg%3Ftoken%3De81934223d99a0fddc02639017b568a6%26ts%3D1421151523%26filename%3Doauth_code%E5%AD%98%E5%85%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E9%85%8D%E7%BD%AE.jpg">oauth_code存入数据库的配置.jpg</a>
@@ -175,9 +178,10 @@ java config版本
     </li>
 </ol>
 
-
 <hr/>
-<h3>开发计划</h3>
+
+## 开发计划
+
 <p>
 从 0.3版本开始将项目的所有计划的开发内容列出来, 方便大家跟进, 也欢迎你加入.
 <br/>
@@ -376,10 +380,11 @@ java config版本
             </ol>
        </li>
 </ul>
-<br/>
 
 <hr/>
-<h3>数据库表字段说明</h3>
+
+## 数据库表字段说明
+
 <p>
     在0.3版本中添加了<code>db_table_description.html</code>文件(位于/others目录, 3.0.0版本db_table_description_3.0.0.html), 
 用来说明数据库脚本文件<code>oauth.ddl</code>中各表,各字段的用途及使用场合.
@@ -388,8 +393,9 @@ java config版本
 </p>
 
 
-<hr/>
-<h3>Project Log</h3>
+
+## Project Log
+
 <div>
     <ol>
         <li><p><em>2013-11-19</em>     Initial project, start push code</p></li>
@@ -419,8 +425,8 @@ java config版本
 </div>
 
 
-<hr/>
-<h3>更多资源</h3>
+## 更多资源
+
 <p>以下是在学习工作中收集的更多关于OAuth2的资源,对深入理解与运用OAuth2有帮助</p>
 <ul>
        <li>
@@ -510,7 +516,9 @@ java config版本
 
 
 <hr/>
-<h3>使用案例</h3>
+
+## 使用案例
+
 <p>以下是已知的使用(或基于) spring-oauth-server 开源项目的各类商业项目(排名不分先后), 若你有案例希望添加, 请联系作者.</p>
 <ul>
     <li><p>Hongkong Parkway Online (在线医疗服务系统)</p></li>
@@ -524,23 +532,23 @@ java config版本
 
 
 <hr/>
-<div>
-    <h3>捐助</h3>
 
-    支付宝: monkeyking1987@126.com (**钊)
+## 捐助
+
+> 支付宝: monkeyking1987@126.com (**钊)
 
 - 快意江湖 -- 100元
 - yufan -- 100元
-</div>
 
-<hr/>
-<h3>其他...</h3>
+
+## 其他...
+
 <p>
  关注更多开源项目请访问 <a href="https://andaily.com/my_projects.html">https://andaily.com/my_projects.html</a>
 </p>
 
 <p>
- <em>欢迎联系作者 <a href="mailto:sz@monkeyk.com">sz@monkeyk.com</a> 进行探讨</em>
+ <em>欢迎联系作者 <a href="mailto:sz@monkeyk.com">sz@monkeyk.com</a> 进行探讨与合作.</em>
 </p>
 
 
