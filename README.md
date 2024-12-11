@@ -195,7 +195,7 @@ java config版本
                 Date: 2024-xx-xx / 2024-xx-xx
             </p>
             <ol>
-                <li><p>增加WebAuthn 支持, 实现无密码登录</p></li>
+                <li><p>增加Passkeys(WebAuthn) 支持, 实现浏览器无密码登录(使用设备认证)</p></li>
             </ol>
        </li>
 	   <li>
