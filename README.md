@@ -1,8 +1,6 @@
 # spring-oauth-server
 
 <br/>
-java config版本
-
 <strong>Spring与OAuth2/OIDC的整合完整示例. OIDC1.0 + OAuth2.1</strong>
 
 
@@ -85,23 +83,26 @@ java config版本
 6. 参考<a href="https://gitee.com/shengzhao/spring-oauth-server/blob/config/others/oauth2.1-flow.md">oauth2.1-flow.md</a>(位于others目录)的内容并测试之(也可在浏览器中访问相应的地址,如: http://localhost:8080/ 在界面上操作).
 
 
-<div>
-    <h4>配置参数说明</h4>
-    说明配置文件<em>application.properties</em>中的主要变量。
-    <table>
-        <thead>
-            <tr><th>参数名</th><th>必须?</th><th>默认值</th><th>说明</th></tr>
-        </thead>
-        <tbody>
-            <tr><td>spring.datasource.*</td><td>是</td><td>-</td><td>数据库连接相关配置</td></tr>
-            <tr><td>spring.thymeleaf.*</td><td>是</td><td>-</td><td>Spring MVC thymeleaf相关配置</td></tr>
-            <tr><td>server.port</td><td>是</td><td>8080</td><td>服务运行端口号</td></tr>
-            <tr><td>spring.security.oauth2.authorizationserver.issuer</td><td>是</td><td></td><td>OAuth2 issuer, 生产环境配置对外访问完整地址</td></tr>
-            <tr><td>spring.application.name</td><td>是</td><td></td><td>应用组件名称</td></tr>
-        </tbody>
-    </table>
-</div>
+### 配置参数说明
+说明配置文件<em>application.properties</em>中的主要配置参数。
+<table>
+    <thead>
+        <tr><th>参数名</th><th>必须?</th><th>默认值</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>spring.datasource.*</td><td>是</td><td>-</td><td>数据库连接相关配置</td></tr>
+        <tr><td>spring.thymeleaf.*</td><td>是</td><td>-</td><td>Spring MVC thymeleaf相关配置</td></tr>
+        <tr><td>server.port</td><td>是</td><td>8080</td><td>服务运行端口号</td></tr>
+        <tr><td>spring.security.oauth2.authorizationserver.issuer</td><td>是</td><td></td><td>OAuth2 issuer, 生产环境配置对外访问完整地址</td></tr>
+        <tr><td>spring.application.name</td><td>是</td><td></td><td>应用组件名称</td></tr>
+    </tbody>
+</table>
 
+
+### jwks.json 说明
+
+为了安全使用OIDC, 请在不同的环境使用不同的JWK(即更换 <a href="https://gitee.com/shengzhao/spring-oauth-server/blob/config/src/main/resources/jwks.json">jwks.json</a> 中的文件内容); 
+如何生成新的JWK请参考 <a href="https://gitee.com/shengzhao/spring-oauth-server/blob/config/src/test/java/com/monkeyk/sos/service/JwksTest.java">JwksTest.java</a> 类.
 
 ## grant_type 介绍
 
