@@ -82,6 +82,8 @@
 
 6. 参考<a href="https://gitee.com/shengzhao/spring-oauth-server/blob/config/others/oauth2.1-flow.md">oauth2.1-flow.md</a>(位于others目录)的内容并测试之(也可在浏览器中访问相应的地址,如: http://localhost:8080/ 在界面上操作).
 
+7. 若需要了解 Passkeys(WebAuthn) 的使用方式、配置要求、注意事项与常见问题, 请参考<a href="https://gitee.com/shengzhao/spring-oauth-server/blob/config/others/passkeys-webauthn-user-guide.md">passkeys-webauthn-user-guide.md</a>(位于others目录).
+
 
 ### 配置参数说明
 说明配置文件<em>application.properties</em>中的主要配置参数。

@@ -15,7 +15,7 @@
 </head>
 <body class="container">
 <h2>Spring Security&OAuth2.1
-    <small class="badge" title="Version">3.0.0</small>
+    <small class="badge" title="Version">3.0.1</small>
 </h2>
 
 <div>
@@ -93,6 +93,11 @@
     <li sec:authorize="hasRole('ROLE_ADMIN')">
         <p>
             <a th:href="@{/user/overview}">User</a> <span class="text-muted">- 管理User</span>
+        </p>
+    </li>
+    <li sec:authorize="isAuthenticated()">
+        <p>
+            <a th:href="@{/passkeys}">Passkeys</a> <span class="text-muted">- 管理当前账号的 Passkeys/WebAuthn 凭据</span>
         </p>
     </li>
     <li sec:authorize="hasRole('ROLE_UNITY')">

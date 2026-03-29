@@ -47,7 +47,7 @@ public class WebSecurityConfigurer {
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
 
         http.csrf(csrfConfigurer -> {
-            csrfConfigurer.ignoringRequestMatchers("/oauth2/rest_token");
+            csrfConfigurer.ignoringRequestMatchers("/oauth2/rest_token", "/webauthn/**");
         });
 
         http.authorizeHttpRequests(matcherRegistry -> {
@@ -55,6 +55,7 @@ public class WebSecurityConfigurer {
             matcherRegistry
                     .requestMatchers("/favicon.ico*", "/oauth2/rest_token*", "*.js", "*.css").permitAll()
                     .requestMatchers("/api/public/**").permitAll()
+                    .requestMatchers("/webauthn/authentication/**").permitAll()
                     .requestMatchers(HttpMethod.GET, "/login*").anonymous()
 
                     // /user/ 开头的URL需要 ADMIN 权限

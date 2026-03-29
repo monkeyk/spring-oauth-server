@@ -49,3 +49,23 @@ CREATE TABLE user_privilege
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
 
+
+Drop table if exists user_passkey;
+CREATE TABLE user_passkey
+(
+    id                   int(11)      NOT NULL auto_increment,
+    guid                 varchar(255) not null unique,
+    create_time          datetime,
+    updated_time         TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    user_guid            varchar(255) not null,
+    credential_id        varchar(255) not null unique,
+    public_key           varchar(4096) not null,
+    public_key_algorithm int(11)      not null,
+    sign_count           bigint       default 0,
+    label                varchar(255),
+    transports           varchar(255),
+    last_used_time       datetime,
+    PRIMARY KEY (id),
+    index idx_user_guid (user_guid)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;

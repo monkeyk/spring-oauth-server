@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,user-scalable=no"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>Passkeys - Spring OAuth Server</title>
+    <th:block th:insert="~{fragments/main::header-css}"/>
+</head>
+<body class="container">
+<h2 class="page-header">Passkeys</h2>
+
+<div class="alert alert-info">
+    当前账号：<strong th:text="${#authentication.name}"></strong>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">Register Passkey</div>
+    <div class="panel-body">
+        <div class="form-inline">
+            <div class="form-group">
+                <label for="passkeyLabel">Label</label>
+                <input type="text" id="passkeyLabel" class="form-control" placeholder="Current device or browser"/>
+            </div>
+            <button type="button" id="registerPasskeyBtn" class="btn btn-primary">Register Current Device</button>
+            <span id="registerMessage" class="label label-danger" style="display:none;"></span>
+        </div>
+        <p class="text-muted" style="margin-top: 12px;">建议先使用账号密码登录一次，再为当前浏览器或设备绑定 Passkey。</p>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">Registered Passkeys</div>
+    <div class="panel-body">
+        <table class="table table-bordered" th:if="${!#lists.isEmpty(passkeys)}">
+            <thead>
+            <tr>
+                <th>Label</th>
+                <th>Credential ID</th>
+                <th>Transports</th>
+                <th>Sign Count</th>
+                <th>Created</th>
+                <th>Last Used</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${passkeys}">
+                <td th:text="${item.label}"></td>
+                <td th:text="${item.credentialId}"></td>
+                <td th:text="${item.transports}"></td>
+                <td th:text="${item.signCount}"></td>
+                <td th:text="${item.createTime}"></td>
+                <td th:text="${item.lastUsedTime}"></td>
+                <td>
+                    <form th:action="@{'/webauthn/passkeys/delete/' + ${item.credentialId}}" method="post">
+                        <button type="submit" class="btn btn-danger btn-xs">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="text-muted" th:if="${#lists.isEmpty(passkeys)}">当前账号还没有绑定任何 Passkey。</div>
+    </div>
+</div>
+
+<p><a th:href="@{/}">Back Home</a></p>
+
+<div th:replace="~{fragments/main :: footer}"/>
+<script>
+    const base64UrlToBytes = (value) => {
+        const padding = '='.repeat((4 - value.length % 4) % 4);
+        const base64 = (value + padding).replace(/-/g, '+').replace(/_/g, '/');
+        const raw = atob(base64);
+        return Uint8Array.from(raw, char => char.charCodeAt(0));
+    };
+
+    const bytesToBase64Url = (bytes) => {
+        let binary = '';
+        bytes.forEach(byte => binary += String.fromCharCode(byte));
+        return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+    };
+
+    const showRegisterMessage = (message, success) => {
+        const element = document.getElementById('registerMessage');
+        element.innerText = message;
+        element.className = success ? 'label label-success' : 'label label-danger';
+        element.style.display = 'inline';
+    };
+
+    document.getElementById('registerPasskeyBtn').addEventListener('click', async () => {
+        try {
+            const optionsResponse = await fetch('/webauthn/registration/options', {
+                method: 'POST'
+            });
+            const optionsJson = await optionsResponse.json();
+            if (!optionsResponse.ok || optionsJson.success === false) {
+                throw new Error(optionsJson.message || 'Prepare passkey register failed');
+            }
+
+            optionsJson.challenge = base64UrlToBytes(optionsJson.challenge);
+            optionsJson.user.id = base64UrlToBytes(optionsJson.user.id);
+            optionsJson.authenticatorSelection = {
+                residentKey: optionsJson.residentKey,
+                userVerification: optionsJson.userVerification
+            };
+            delete optionsJson.residentKey;
+            delete optionsJson.userVerification;
+
+            const credential = await navigator.credentials.create({publicKey: optionsJson});
+            if (!credential) {
+                throw new Error('Passkey registration was cancelled');
+            }
+
+            if (!credential.response.getPublicKey || !credential.response.getAuthenticatorData) {
+                throw new Error('Current browser does not support required WebAuthn APIs');
+            }
+
+            const publicKey = credential.response.getPublicKey();
+            const authenticatorData = credential.response.getAuthenticatorData();
+            if (!publicKey || !authenticatorData) {
+                throw new Error('Current browser did not return passkey public key data');
+            }
+
+            const verifyResponse = await fetch('/webauthn/registration/verify', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    credentialId: bytesToBase64Url(new Uint8Array(credential.rawId)),
+                    publicKey: bytesToBase64Url(new Uint8Array(publicKey)),
+                    publicKeyAlgorithm: credential.response.getPublicKeyAlgorithm(),
+                    clientDataJSON: bytesToBase64Url(new Uint8Array(credential.response.clientDataJSON)),
+                    authenticatorData: bytesToBase64Url(new Uint8Array(authenticatorData)),
+                    transports: credential.response.getTransports ? (credential.response.getTransports() || []).join(',') : '',
+                    label: document.getElementById('passkeyLabel').value.trim()
+                })
+            });
+            const verifyJson = await verifyResponse.json();
+            if (!verifyResponse.ok || verifyJson.success === false) {
+                throw new Error(verifyJson.message || 'Passkey registration failed');
+            }
+            showRegisterMessage(verifyJson.message || 'Passkey registered successfully', true);
+            window.setTimeout(() => window.location.reload(), 800);
+        } catch (error) {
+            showRegisterMessage(error.message || 'Passkey registration failed', false);
+        }
+    });
+</script>
+</body>
+</html>
