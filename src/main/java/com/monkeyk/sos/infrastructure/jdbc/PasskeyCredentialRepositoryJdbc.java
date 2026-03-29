@@ -28,7 +28,7 @@ public class PasskeyCredentialRepositoryJdbc implements PasskeyCredentialReposit
      */
     @Override
     public void savePasskeyCredential(PasskeyCredential credential) {
-        final String sql = " insert into user_passkey(guid,create_time,user_guid,credential_id,public_key,public_key_algorithm,sign_count,label,transports,last_used_time) values (?,?,?,?,?,?,?,?,?,?) ";
+        final String sql = " insert into passkey_credential(guid,create_time,user_guid,credential_id,public_key,public_key_algorithm,sign_count,label,transports,last_used_time) values (?,?,?,?,?,?,?,?,?,?) ";
         this.jdbcTemplate.update(sql, ps -> {
             int index = 1;
             ps.setString(index++, credential.guid());
@@ -49,7 +49,7 @@ public class PasskeyCredentialRepositoryJdbc implements PasskeyCredentialReposit
      */
     @Override
     public List<PasskeyCredential> findPasskeyCredentialsByUserGuid(String userGuid) {
-        final String sql = " select * from user_passkey where user_guid = ? order by create_time desc ";
+        final String sql = " select * from passkey_credential where user_guid = ? order by create_time desc ";
         return this.jdbcTemplate.query(sql, rowMapper, userGuid);
     }
 
@@ -58,7 +58,7 @@ public class PasskeyCredentialRepositoryJdbc implements PasskeyCredentialReposit
      */
     @Override
     public PasskeyCredential findPasskeyCredential(String credentialId) {
-        final String sql = " select * from user_passkey where credential_id = ? ";
+        final String sql = " select * from passkey_credential where credential_id = ? ";
         final List<PasskeyCredential> list = this.jdbcTemplate.query(sql, rowMapper, credentialId);
         return list.isEmpty() ? null : list.get(0);
     }
@@ -68,7 +68,7 @@ public class PasskeyCredentialRepositoryJdbc implements PasskeyCredentialReposit
      */
     @Override
     public void updatePasskeyCredentialCounter(String credentialId, long signCount) {
-        final String sql = " update user_passkey set sign_count = ?, last_used_time = now() where credential_id = ? ";
+        final String sql = " update passkey_credential set sign_count = ?, last_used_time = now() where credential_id = ? ";
         this.jdbcTemplate.update(sql, signCount, credentialId);
     }
 
@@ -77,7 +77,7 @@ public class PasskeyCredentialRepositoryJdbc implements PasskeyCredentialReposit
      */
     @Override
     public void deletePasskeyCredential(String credentialId, String userGuid) {
-        final String sql = " delete from user_passkey where credential_id = ? and user_guid = ? ";
+        final String sql = " delete from passkey_credential where credential_id = ? and user_guid = ? ";
         this.jdbcTemplate.update(sql, credentialId, userGuid);
     }
 }

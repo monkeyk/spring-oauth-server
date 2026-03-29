@@ -34,7 +34,7 @@ CREATE TABLE user_
     index idx_username (username)
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 20
-  DEFAULT CHARSET = utf8;
+  DEFAULT CHARSET = utf8mb4;
 
 
 -- ###############
@@ -47,11 +47,14 @@ CREATE TABLE user_privilege
     privilege varchar(255),
     KEY user_id_index (user_id)
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+  DEFAULT CHARSET = utf8mb4;
 
 
-Drop table if exists user_passkey;
-CREATE TABLE user_passkey
+-- ###############
+-- Domain:  PasskeyCredential
+-- ###############
+Drop table if exists passkey_credential;
+CREATE TABLE passkey_credential
 (
     id                   int(11)      NOT NULL auto_increment,
     guid                 varchar(255) not null unique,
@@ -68,4 +71,4 @@ CREATE TABLE user_passkey
     PRIMARY KEY (id),
     index idx_user_guid (user_guid)
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+  DEFAULT CHARSET = utf8mb4;

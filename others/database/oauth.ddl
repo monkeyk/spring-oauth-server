@@ -23,7 +23,7 @@ CREATE TABLE oauth2_registered_client
     token_settings                varchar(2000)                           NOT NULL,
     PRIMARY KEY (id)
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+  DEFAULT CHARSET = utf8mb4;
 
 -- authorization
 Drop table if exists oauth2_authorization;
@@ -65,7 +65,7 @@ CREATE TABLE oauth2_authorization
     updated_time                  TIMESTAMP     DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+  DEFAULT CHARSET = utf8mb4;
 
 
 -- authorization consent
@@ -78,7 +78,6 @@ CREATE TABLE oauth2_authorization_consent
     updated_time         TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (registered_client_id, principal_name)
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
-
+  DEFAULT CHARSET = utf8mb4;
 
 

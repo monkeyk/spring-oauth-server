@@ -49,7 +49,7 @@
 
 - JDK：`17+`
 - Maven：建议使用支持 Java 17 的版本
-- 数据库：执行新增的 `user_passkey` 表结构
+- 数据库：执行新增的 `passkey_credential` 表结构
 
 项目默认运行环境请参考：
 
@@ -89,7 +89,7 @@ WebAuthn 必须运行在“受信任上下文”中，通常要求：
 
 新增表：
 
-- `user_passkey`
+- `passkey_credential`
 
 该表用于保存：
 
@@ -399,7 +399,7 @@ Passkey 只是登录方式之一，建议系统运营时保留恢复机制，例
 建议：
 
 1. 使用 JDK17 启动项目
-2. 初始化数据库并执行 `user_passkey` 表结构
+2. 初始化数据库并执行 `passkey_credential` 表结构
 3. 使用浏览器访问 `http://localhost:8080/login`
 4. 用已有账号密码登录
 5. 进入 `/passkeys` 绑定当前设备
@@ -463,7 +463,7 @@ Passkey 只是登录方式之一，建议系统运营时保留恢复机制，例
 
 对于部署人员：
 
-- 确保数据库已增加 `user_passkey` 表
+- 确保数据库已增加 `passkey_credential` 表
 - 确保运行在 `JDK17+`
 - 确保 `origin / rp-id / https` 配置正确
 
@@ -472,4 +472,3 @@ Passkey 只是登录方式之一，建议系统运营时保留恢复机制，例
 - HTTPS 配置
 - 域名与 RP 参数固定
 - 账号恢复方案设计
-
