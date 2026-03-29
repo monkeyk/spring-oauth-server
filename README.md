@@ -193,12 +193,13 @@
 <ul>    
 	   <li>
             <p>
-                Version: <strong>3.0.1</strong> [planning]
+                Version: <strong>3.0.1</strong> [developing]
                 <br/>
-                Date: 2024-xx-xx / 2024-xx-xx
+                Date: 2026-03-01 / 2026-xx-xx
             </p>
             <ol>
-                <li><p>增加Passkeys(WebAuthn) 支持, 实现浏览器无密码登录(使用设备认证)</p></li>
+                <li><p><del>增加Passkeys(WebAuthn) 支持, 实现浏览器无密码登录(使用设备认证)</del></p></li>
+                <li><p><del>MySQL encoding use utf8mb4</del></p></li>
             </ol>
        </li>
 	   <li>
