@@ -425,6 +425,7 @@
         <li><p><em>2022-05-01</em>        发布 2.1.0 版本</p></li>
         <li><p><em>2023-10-10</em>        开始全新大版本 3.0.0 开发</p></li>
         <li><p><em>2023-10-31</em>        发布 3.0.0 全新版本</p></li>
+        <li><p><em>2026-03-29</em>        Add Passkeys / WebAuthn support (see [passkeys-webauthn-user-guide.md](others/passkeys-webauthn-user-guide.md))</p></li>
     </ol>
 </div>
 
