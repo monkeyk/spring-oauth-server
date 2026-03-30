@@ -53,7 +53,8 @@
                 <td th:text="${item.createTime}"></td>
                 <td th:text="${item.lastUsedTime}"></td>
                 <td>
-                    <form th:action="@{'/webauthn/passkeys/delete/' + ${item.credentialId}}" method="post">
+                    <form th:action="@{'/webauthn/passkeys/delete/' + ${item.credentialId}}" method="post"
+                          onsubmit="return confirm('Are you sure delete?')">
                         <button type="submit" class="btn btn-danger btn-xs">Delete</button>
                     </form>
                 </td>

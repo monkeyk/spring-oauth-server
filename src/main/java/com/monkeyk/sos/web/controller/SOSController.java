@@ -2,8 +2,10 @@ package com.monkeyk.sos.web.controller;
 
 
 import com.monkeyk.sos.web.WebUtils;
+import com.monkeyk.sos.infrastructure.PasskeyProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +23,9 @@ public class SOSController {
 
 
     private static final Logger LOG = LoggerFactory.getLogger(SOSController.class);
+
+    @Autowired
+    private PasskeyProperties passkeyProperties;
 
 
     /**
@@ -40,6 +45,7 @@ public class SOSController {
         if (LOG.isInfoEnabled()) {
             LOG.info("Go to login, IP: {}", WebUtils.getIp());
         }
+        model.addAttribute("passkeyLoginRequireUsername", passkeyProperties.isPasskeyLoginRequireUsername());
         return "login";
     }
 

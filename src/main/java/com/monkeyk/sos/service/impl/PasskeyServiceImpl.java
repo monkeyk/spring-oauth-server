@@ -94,19 +94,20 @@ public class PasskeyServiceImpl implements PasskeyService {
      */
     @Override
     public PasskeyAssertionOptionsDto prepareAssertionOptions(String username, String challenge, String rpId) {
-        User user = requireUser(username);
-        List<PasskeyCredential> credentials = passkeyCredentialRepository.findPasskeyCredentialsByUserGuid(user.guid());
-        if (credentials.isEmpty()) {
-            LOG.warn("{}|Current user has no passkeys for username: {}", WebUtils.getIp(), username);
-            throw new IllegalStateException("Current user has no passkeys");
-        }
-
         PasskeyAssertionOptionsDto dto = new PasskeyAssertionOptionsDto();
         dto.setChallenge(challenge);
         dto.setRpId(rpId);
         List<CredentialDescriptorDto> allowCredentials = new ArrayList<>();
-        for (PasskeyCredential credential : credentials) {
-            allowCredentials.add(new CredentialDescriptorDto(credential.credentialId(), credential.transports()));
+        if (StringUtils.isNotBlank(username)) {
+            User user = requireUser(username);
+            List<PasskeyCredential> credentials = passkeyCredentialRepository.findPasskeyCredentialsByUserGuid(user.guid());
+            if (credentials.isEmpty()) {
+                LOG.warn("{}|Current user has no passkeys for username: {}", WebUtils.getIp(), username);
+                throw new IllegalStateException("Current user has no passkeys");
+            }
+            for (PasskeyCredential credential : credentials) {
+                allowCredentials.add(new CredentialDescriptorDto(credential.credentialId(), credential.transports()));
+            }
         }
         dto.setAllowCredentials(allowCredentials);
         if (LOG.isDebugEnabled()) {
@@ -122,8 +123,7 @@ public class PasskeyServiceImpl implements PasskeyService {
     @Override
     public String authenticate(String username, PasskeyAuthenticationRequestDto requestDto,
                                String challenge, String origin, String rpId) {
-        User user = requireUser(username);
-        passkeyAuthenticationProcessor.authenticate(user, requestDto, challenge, origin, rpId);
+        User user = passkeyAuthenticationProcessor.authenticate(username, requestDto, challenge, origin, rpId);
         return user.username();
     }
 

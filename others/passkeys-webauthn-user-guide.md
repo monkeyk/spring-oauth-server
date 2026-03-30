@@ -16,7 +16,8 @@
 
 当前实现特点：
 
-- 登录方式为：`用户名 + Passkey`
+- 默认登录方式为：`用户名 + Passkey`
+- 可通过后台配置切换为：`免输用户名 + Passkey`
 - 注册 Passkey 前，用户需要先通过原有账号密码完成一次登录
 - 登录成功后，系统仍沿用现有 Spring Security 会话机制
 
@@ -119,6 +120,7 @@ Passkey 相关配置位于：
 #sos.webauthn.rp-id=127.0.0.1
 #sos.webauthn.origin=http://127.0.0.1:${server.port}
 #sos.webauthn.rp-name=Spring OAuth Server
+#sos.webauthn.passkey-login.require-username=true
 ```
 
 说明如下：
@@ -144,6 +146,17 @@ Relying Party ID，通常应与访问域名一致或为其上级有效域。
 ### 5.3 `sos.webauthn.rp-name`
 
 Passkey 注册时展示给用户看的站点名称。
+
+### 5.4 `sos.webauthn.passkey-login.require-username`
+
+用于控制 Passkey 登录时是否必须输入用户名：
+
+- `true`：必须先输入用户名，再发起 Passkey 登录
+- `false`：允许免输用户名，直接使用可发现的 Passkey 登录
+
+默认值：
+
+- `true`
 
 ---
 

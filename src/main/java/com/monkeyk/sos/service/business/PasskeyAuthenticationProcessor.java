@@ -3,6 +3,7 @@ package com.monkeyk.sos.service.business;
 import com.monkeyk.sos.domain.passkey.PasskeyCredential;
 import com.monkeyk.sos.domain.passkey.PasskeyCredentialRepository;
 import com.monkeyk.sos.domain.user.User;
+import com.monkeyk.sos.domain.user.UserRepository;
 import com.monkeyk.sos.infrastructure.PasskeyUtils;
 import com.monkeyk.sos.service.dto.PasskeyAuthenticationRequestDto;
 import com.monkeyk.sos.web.WebUtils;
@@ -28,6 +29,9 @@ public class PasskeyAuthenticationProcessor {
     @Autowired
     private PasskeyCredentialRepository passkeyCredentialRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
 
     public PasskeyAuthenticationProcessor() {
     }
@@ -36,13 +40,15 @@ public class PasskeyAuthenticationProcessor {
     /**
      * 校验 Passkey 登录结果。
      */
-    public void authenticate(User user, PasskeyAuthenticationRequestDto requestDto,
+    public User authenticate(String username, PasskeyAuthenticationRequestDto requestDto,
                              String challenge, String origin, String rpId) {
         validateAuthenticationRequest(requestDto);
         if (StringUtils.isBlank(challenge)) {
-            LOG.warn("{}|Passkey authentication challenge missing for username: {}", WebUtils.getIp(), user.username());
+            LOG.warn("{}|Passkey authentication challenge missing for username: {}", WebUtils.getIp(), username);
             throw new IllegalStateException("Passkey authentication challenge is missing");
         }
+
+        User user = resolveUser(username, requestDto);
 
         PasskeyCredential credential = passkeyCredentialRepository.findPasskeyCredential(requestDto.getCredentialId());
         if (credential == null || !StringUtils.equals(user.guid(), credential.userGuid())) {
@@ -67,6 +73,42 @@ public class PasskeyAuthenticationProcessor {
             LOG.debug("{}|Authenticate Passkey(username: {}, credentialId: {}) success", WebUtils.getIp(),
                     user.username(), credential.credentialId());
         }
+        return user;
+    }
+
+
+    /**
+     * 根据用户名或凭据内容解析当前登录用户。
+     */
+    private User resolveUser(String username, PasskeyAuthenticationRequestDto requestDto) {
+        if (StringUtils.isNotBlank(username)) {
+            User user = userRepository.findByUsername(username);
+            if (user == null || user.archived() || !user.enabled()) {
+                LOG.warn("{}|Invalid user for passkey, username: {}", WebUtils.getIp(), username);
+                throw new IllegalStateException("Invalid user for passkey");
+            }
+            return user;
+        }
+
+        String userHandle = requestDto.getUserHandle();
+        if (StringUtils.isNotBlank(userHandle)) {
+            String userGuid = new String(PasskeyUtils.base64UrlDecode(userHandle), java.nio.charset.StandardCharsets.UTF_8);
+            User user = userRepository.findByGuid(userGuid);
+            if (user != null && !user.archived() && user.enabled()) {
+                return user;
+            }
+        }
+
+        PasskeyCredential credential = passkeyCredentialRepository.findPasskeyCredential(requestDto.getCredentialId());
+        if (credential != null) {
+            User user = userRepository.findByGuid(credential.userGuid());
+            if (user != null && !user.archived() && user.enabled()) {
+                return user;
+            }
+        }
+
+        LOG.warn("{}|Cannot resolve user from passkey credentialId: {}", WebUtils.getIp(), requestDto.getCredentialId());
+        throw new IllegalStateException("Invalid user for passkey");
     }
 
 

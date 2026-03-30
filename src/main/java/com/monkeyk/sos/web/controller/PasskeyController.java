@@ -131,13 +131,17 @@ public class PasskeyController {
     public PasskeyAssertionOptionsDto authenticationOptions(@RequestBody Map<String, String> requestBody,
                                                             HttpServletRequest request) {
         String username = requestBody.get("username");
-        if (StringUtils.isBlank(username)) {
+        if (passkeyProperties.isPasskeyLoginRequireUsername() && StringUtils.isBlank(username)) {
             LOG.warn("{}|Username is required for passkey login", WebUtils.getIp());
             throw new IllegalStateException("Username is required for passkey login");
         }
         String challenge = PasskeyUtils.newChallenge();
         request.getSession(true).setAttribute(PASSKEY_AUTHENTICATION_CHALLENGE, challenge);
-        request.getSession(true).setAttribute(PASSKEY_AUTHENTICATION_USERNAME, username);
+        if (StringUtils.isNotBlank(username)) {
+            request.getSession(true).setAttribute(PASSKEY_AUTHENTICATION_USERNAME, username);
+        } else {
+            request.getSession(true).removeAttribute(PASSKEY_AUTHENTICATION_USERNAME);
+        }
         if (LOG.isDebugEnabled()) {
             LOG.debug("{}|Prepare Passkey authentication options for username: {}", WebUtils.getIp(), username);
         }
@@ -153,14 +157,14 @@ public class PasskeyController {
                                                     HttpServletRequest request,
                                                     HttpServletResponse response) {
         String username = requestDto.getUsername();
-        if (StringUtils.isBlank(username)) {
+        if (passkeyProperties.isPasskeyLoginRequireUsername() && StringUtils.isBlank(username)) {
             LOG.warn("{}|Username is required for passkey login", WebUtils.getIp());
             throw new IllegalStateException("Username is required for passkey login");
         }
 
         String challenge = sessionAttribute(request, PASSKEY_AUTHENTICATION_CHALLENGE);
         String challengeUsername = sessionAttribute(request, PASSKEY_AUTHENTICATION_USERNAME);
-        if (!StringUtils.equals(username, challengeUsername)) {
+        if (passkeyProperties.isPasskeyLoginRequireUsername() && !StringUtils.equals(username, challengeUsername)) {
             LOG.warn("{}|Passkey authentication challenge missing for username: {}", WebUtils.getIp(), username);
             throw new IllegalStateException("Passkey authentication challenge is missing");
         }

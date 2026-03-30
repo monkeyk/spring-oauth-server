@@ -62,7 +62,7 @@
             <div class="panel-heading">Passkey Login</div>
             <div class="panel-body">
                 <div class="form-horizontal">
-                    <div class="form-group">
+                    <div class="form-group" th:if="${passkeyLoginRequireUsername}">
                         <label for="passkey_username" class="col-sm-3 control-label">Username</label>
                         <div class="col-sm-9">
                             <input type="text" id="passkey_username" value="" placeholder="Type username"
@@ -76,10 +76,41 @@
                             <span id="passkey_message" class="label label-danger" style="display:none;"></span>
                         </div>
                     </div>
-                    <p class="text-muted">先输入用户名，再使用已注册的 Passkey 完成无密码登录。</p>
+                    <p class="text-muted" th:if="${passkeyLoginRequireUsername}">先输入用户名，再使用已注册的 Passkey 完成无密码登录。</p>
+                    <p class="text-muted" th:unless="${passkeyLoginRequireUsername}">可直接使用当前设备中发现的 Passkey 完成无密码登录(设备需要先使用U+P登录后注册)。</p>
                 </div>
             </div>
         </div>
+
+    </div>
+    <div class="col-md-6">
+        <p class="text-muted">可以使用以下几个初始的U+P进行登录:</p>
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Username</th>
+                <th>Password</th>
+                <th>Remark</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>admin</td>
+                <td>Admin@2013</td>
+                <td>All privileges, allow visit [Mobile] and [Unity] resources</td>
+            </tr>
+            <tr>
+                <td>unity</td>
+                <td>Unity#2013</td>
+                <td>Only allow visit [Unity] resource</td>
+            </tr>
+            <tr>
+                <td>mobile</td>
+                <td>Mobile*2013</td>
+                <td>Only allow visit [Mobile] resource</td>
+            </tr>
+            </tbody>
+        </table>
 
         <div class="panel panel-default">
             <div class="panel-heading"> .well-known endpoint</div>
@@ -95,40 +126,12 @@
             </div>
         </div>
     </div>
-    <div class="col-md-6">
-        <p>可以使用以下几个初始的账号进行登录:</p>
-        <table class="table table-bordered">
-            <thead>
-            <tr>
-                <th>Username</th>
-                <th>Password</th>
-                <th>Remark</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>admin</td>
-                <td>Admin@2013</td>
-                <td>All privileges, allow visit [Mobile] and [Unity] resources, manage user</td>
-            </tr>
-            <tr>
-                <td>unity</td>
-                <td>Unity#2013</td>
-                <td>Only allow visit [Unity] resource, support grant_type:
-                    <em>authorization_code,refresh_token,device_code</em></td>
-            </tr>
-            <tr>
-                <td>mobile</td>
-                <td>Mobile*2013</td>
-                <td>Only allow visit [Mobile] resource, support grant_type: <em>password,refresh_token</em></td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
 </div>
 
 <div th:replace="~{fragments/main :: footer}"/>
 <script th:inline="javascript">
+    const passkeyLoginRequireUsername = [[${passkeyLoginRequireUsername}]];
+
     const base64UrlToBytes = (value) => {
         const padding = '='.repeat((4 - value.length % 4) % 4);
         const base64 = (value + padding).replace(/-/g, '+').replace(/_/g, '/');
@@ -149,8 +152,9 @@
     };
 
     document.getElementById('passkey_login_btn').addEventListener('click', async () => {
-        const username = document.getElementById('passkey_username').value.trim();
-        if (!username) {
+        const usernameInput = document.getElementById('passkey_username');
+        const username = usernameInput ? usernameInput.value.trim() : '';
+        if (passkeyLoginRequireUsername && !username) {
             showPasskeyMessage('Username is required');
             return;
         }

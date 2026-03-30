@@ -35,6 +35,13 @@ public class PasskeyProperties {
     private String origin;
 
     /**
+     * Passkey 登录时是否必须输入用户名。
+     * 默认 true。
+     */
+    @Value("${sos.webauthn.passkey-login.require-username:true}")
+    private boolean passkeyLoginRequireUsername;
+
+    /**
      * 优先读取配置中的 rpId；未配置时回退为当前请求域名。
      */
     public String resolveRpId(HttpServletRequest request) {
@@ -64,5 +71,12 @@ public class PasskeyProperties {
             builder.append(':').append(port);
         }
         return builder.toString();
+    }
+
+    /**
+     * 当前是否要求 Passkey 登录时必须输入用户名。
+     */
+    public boolean isPasskeyLoginRequireUsername() {
+        return passkeyLoginRequireUsername;
     }
 }
