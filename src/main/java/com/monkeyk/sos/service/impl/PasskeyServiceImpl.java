@@ -35,7 +35,6 @@ import java.util.List;
  * 具体的注册校验与登录校验逻辑下沉到 service.business 对象中。
  *
  * @author Shengzhao Li
- * @since 3.0.1
  */
 @Service("passkeyService")
 public class PasskeyServiceImpl implements PasskeyService {
@@ -135,6 +134,32 @@ public class PasskeyServiceImpl implements PasskeyService {
         SOSUserDetails userDetails = currentUserDetails();
         List<PasskeyCredential> credentials = passkeyCredentialRepository.findPasskeyCredentialsByUserGuid(userDetails.getUserGuid());
         return PasskeyCredentialDto.toDtos(credentials);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<PasskeyCredentialDto> loadUserPasskeys(String username) {
+        User user = requireUser(username);
+        List<PasskeyCredential> credentials = passkeyCredentialRepository.findPasskeyCredentialsByUserGuid(user.guid());
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("{}|Load Passkeys(username: {}, size: {})", WebUtils.getIp(), username, credentials.size());
+        }
+        return PasskeyCredentialDto.toDtos(credentials);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void deleteUserPasskey(String username, String credentialId) {
+        User user = requireUser(username);
+        passkeyCredentialRepository.deletePasskeyCredential(credentialId, user.guid());
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("{}|Admin delete Passkey(username: {}, credentialId: {})", WebUtils.getIp(),
+                    username, credentialId);
+        }
     }
 
     /**

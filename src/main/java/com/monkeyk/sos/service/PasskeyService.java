@@ -12,7 +12,6 @@ import java.util.List;
  * Passkey 业务服务接口。
  *
  * @author Shengzhao Li
- * @since 3.0.1
  */
 public interface PasskeyService {
 
@@ -42,6 +41,21 @@ public interface PasskeyService {
      * 查询当前登录用户的全部 Passkey。
      */
     List<PasskeyCredentialDto> loadCurrentUserPasskeys();
+
+    /**
+     * 查询指定用户名已绑定的全部 Passkey。
+     * 主要用于管理员查看用户绑定的凭据。
+     *
+     * @since 3.0.1
+     */
+    List<PasskeyCredentialDto> loadUserPasskeys(String username);
+
+    /**
+     * 管理员删除指定用户的某个 Passkey。
+     *
+     * @since 3.0.1
+     */
+    void deleteUserPasskey(String username, String credentialId);
 
     /**
      * 删除当前用户的某个 Passkey。

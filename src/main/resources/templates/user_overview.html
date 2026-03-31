@@ -38,6 +38,7 @@
         <th>Nickname</th>
         <th>Address</th>
         <th>CreateTime</th>
+        <th>Action</th>
     </tr>
     </thead>
     <tbody>
@@ -50,6 +51,9 @@
         <td th:text="${user.nickname}"></td>
         <td th:text="${user.address}"></td>
         <td th:text="${user.createTime}"></td>
+        <td>
+            <a th:href="@{'passkeys/' + ${user.username}}" class="btn btn-info btn-xs">Passkeys</a>
+        </td>
     </tr>
     </tbody>
 </table>

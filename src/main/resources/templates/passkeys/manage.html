@@ -54,7 +54,7 @@
                 <td th:text="${item.lastUsedTime}"></td>
                 <td>
                     <form th:action="@{'/webauthn/passkeys/delete/' + ${item.credentialId}}" method="post"
-                          onsubmit="return confirm('Are you sure delete?')">
+                          onsubmit="return confirm('确定删除该 Passkey 吗？删除后需要重新绑定才可再次使用。')">
                         <button type="submit" class="btn btn-danger btn-xs">Delete</button>
                     </form>
                 </td>

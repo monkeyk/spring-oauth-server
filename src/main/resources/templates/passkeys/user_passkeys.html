@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,user-scalable=no"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <link rel="shortcut icon" href="../../static/favicon.ico" th:href="@{/favicon.ico}"/>
+
+    <title>User Passkeys - Spring Security&OAuth2.1</title>
+
+    <th:block th:insert="~{fragments/main::header-css}"/>
+</head>
+<body class="container">
+<a th:href="@{/user/overview}">Back User Overview</a>
+
+<h2>User Passkeys</h2>
+
+<p>
+    Username: <strong th:text="${targetUsername}"></strong>
+</p>
+
+<div class="alert alert-danger" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+<table class="table table-bordered table-hover table-striped" th:if="${!#lists.isEmpty(passkeys)}">
+    <thead>
+    <tr>
+        <th>Label</th>
+        <th>Credential ID</th>
+        <th>Transports</th>
+        <th>Sign Count</th>
+        <th>CreateTime</th>
+        <th>LastUsedTime</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="item:${passkeys}">
+        <td th:text="${item.label}"></td>
+        <td th:text="${item.credentialId}"></td>
+        <td th:text="${item.transports}"></td>
+        <td th:text="${item.signCount}"></td>
+        <td th:text="${item.createTime}"></td>
+        <td th:text="${item.lastUsedTime}"></td>
+        <td>
+            <form th:action="@{'/user/passkeys/' + ${targetUsername} + '/delete/' + ${item.credentialId}}"
+                  method="post" onsubmit="return confirm('确定删除该用户的 Passkey 吗？删除后需要重新绑定才可再次使用。')">
+                <button type="submit" class="btn btn-danger btn-xs">Delete</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<div class="text-muted" th:if="${#lists.isEmpty(passkeys) and errorMessage == null}">
+    当前用户还没有绑定任何 Passkey。
+</div>
+
+<div th:replace="~{fragments/main :: footer}"/>
+</body>
+</html>
