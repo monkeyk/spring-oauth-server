@@ -2,6 +2,7 @@ package com.monkeyk.sos.domain.passkey;
 
 import com.monkeyk.sos.domain.AbstractDomain;
 
+import java.io.Serial;
 import java.time.LocalDateTime;
 
 /**
@@ -15,6 +16,8 @@ import java.time.LocalDateTime;
  */
 public class PasskeyCredential extends AbstractDomain {
 
+    @Serial
+    private static final long serialVersionUID = 7158786612947527990L;
     /**
      * 关联的用户 GUID。
      */

@@ -92,7 +92,7 @@
     </li>
     <li sec:authorize="hasRole('ROLE_ADMIN')">
         <p>
-            <a th:href="@{/user/overview}">User</a> <span class="text-muted">- 管理User</span>
+            <a th:href="@{/user/overview}">User</a> <span class="text-muted">- 管理User, 以及User Passkeys等</span>
         </p>
     </li>
     <li sec:authorize="isAuthenticated()">

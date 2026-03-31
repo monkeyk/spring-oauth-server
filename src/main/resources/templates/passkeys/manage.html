@@ -8,6 +8,7 @@
     <th:block th:insert="~{fragments/main::header-css}"/>
 </head>
 <body class="container">
+<a th:href="@{/}">Home</a>
 <h2 class="page-header">Passkeys</h2>
 
 <div class="alert alert-info">
@@ -65,7 +66,6 @@
     </div>
 </div>
 
-<p><a th:href="@{/}">Back Home</a></p>
 
 <div th:replace="~{fragments/main :: footer}"/>
 <script>
