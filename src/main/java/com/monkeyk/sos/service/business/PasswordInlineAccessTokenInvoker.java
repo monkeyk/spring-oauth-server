@@ -1,7 +1,6 @@
 package com.monkeyk.sos.service.business;
 
 
-
 /**
  * 2019/7/5
  * <p>
@@ -10,7 +9,9 @@ package com.monkeyk.sos.service.business;
  *
  * @author Shengzhao Li
  * @since 2.0.1
+ * @deprecated since 3.1.0
  */
+@Deprecated
 public class PasswordInlineAccessTokenInvoker extends InlineAccessTokenInvoker {
 
 
@@ -21,7 +22,6 @@ public class PasswordInlineAccessTokenInvoker extends InlineAccessTokenInvoker {
 //    protected TokenGranter getTokenGranter(OAuth2RequestFactory oAuth2RequestFactory) {
 //        return new ResourceOwnerPasswordTokenGranter(this.authenticationManager, this.tokenServices, this.clientDetailsService, oAuth2RequestFactory);
 //    }
-
 
 
 }

@@ -53,7 +53,9 @@ public class WebSecurityConfigurer {
         http.authorizeHttpRequests(matcherRegistry -> {
             // permitAll() 的URL路径属于公开访问，不需要权限
             matcherRegistry
-                    .requestMatchers("/favicon.ico*", "/oauth2/rest_token*", "*.js", "*.css").permitAll()
+                    // Spring Security 7 的 requestMatchers(String...) 使用 PathPatternRequestMatcher，
+                    // pattern 必须以 "/" 开头，因此 "*.js"/"*.css" 需改写为 "/**/*.js"/"/**/*.css"
+                    .requestMatchers("/favicon.ico*", "/oauth2/rest_token*", "/**/*.js", "/**/*.css").permitAll()
                     .requestMatchers("/api/public/**").permitAll()
                     .requestMatchers("/webauthn/authentication/**").permitAll()
                     .requestMatchers(HttpMethod.GET, "/login*").anonymous()

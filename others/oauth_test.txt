@@ -1,95 +1,159 @@
 
-适用范围：v3.0.0 之前的版本。
 
-方式1:基于浏览器  (访问时后跳到登录页面,登录成功后跳转到redirect_uri指定的地址) [GET]
-说明:只能使用admin或unity 账号登录才能有权限访问,若使用mobile账号登录将返回Access is denied
-http://localhost:8080/oauth/authorize?client_id=unity-client&redirect_uri=http%3a%2f%2flocalhost%3a8080%2fspring-oauth-server%2funity%2fdashboard&response_type=code&scope=read
+适用范围：v3.0.0+ 版本 (OAuth2.1/OIDC)
 
-说明: 由于mobile-client只支持password,refresh_token, 所以不管用哪个账号登录后都将返回 OAuth Error
-http://localhost:8080/oauth/authorize?client_id=mobile-client&redirect_uri=http%3a%2f%2flocalhost%3a8080%2fspring-oauth-server%2fm%2fdashboard&response_type=code&scope=read
+注意：此文件为 v3.0.0+ 版本的测试用例，基于 Spring Authorization Server
 
+=======================================
+测试前准备
+=======================================
 
+在数据库 oauth2_boot 的 oauth2_registered_client 表中添加客户端（或者启动服务后在界面上'client_details'进行添加）:
 
+client_id: 79763e77433640baba722e72c69e25db
+client_secret: maAXVKPcEvVL37paPC0HTZU48DCG9Lat (BCrypt 加密存储)
+client_name: Test-Client
+client_authentication_methods: client_secret_post,client_secret_basic
+authorization_grant_types: client_credentials,refresh_token,authorization_code
+redirect_uris: http://localhost:8083/oauth2/callback
+scopes: openid,profile,email
 
-响应的URL如:
-http://localhost:8080/unity/dashboard?code=hGQ8qx
+或执行以下 SQL:
+```sql
+INSERT INTO oauth2_registered_client 
+(id, create_time, client_id, client_secret, client_name, client_authentication_methods,
+ authorization_grant_types, redirect_uris, post_logout_redirect_uris, scopes, client_settings, token_settings)
+VALUES 
+('test-client-id', NOW(), '79763e77433640baba722e72c69e25db',
+ '$2a$10$xxx', -- maAXVKPcEvVL37paPC0HTZU48DCG9Lat 的 BCrypt 哈希
+ 'Test-Client',
+ 'client_secret_post,client_secret_basic',
+ 'client_credentials,refresh_token,authorization_code',
+ 'http://localhost:8083/oauth2/callback', NULL, 'openid,profile,email',
+ '{"@class":"java.util.Collections$UnmodifiableMap","settings.client.require-proof-key":false,"settings.client.require-authorization-consent":false}',
+ '{"@class":"java.util.Collections$UnmodifiableMap","settings.token.reuse-refresh-tokens":true,"settings.token.id-token-signature-algorithm":["org.springframework.security.oauth2.jose.jws.SignatureAlgorithm","RS256"],"settings.token.access-token-time-to-live":["java.time.Duration",3600.000000000],"settings.token.access-token-format":{"@class":"org.springframework.security.oauth2.server.authorization.settings.OAuth2TokenFormat","value":"self-contained"},"settings.token.refresh-token-time-to-live":["java.time.Duration",7200.000000000]}');
+```
 
-通过code换取access_token [POST]  (注意：这一步用httpclient在程序中调用，不要在浏览器中)
-http://localhost:8080/oauth/token?client_id=unity-client&client_secret=unity&grant_type=authorization_code&code=hGQ8qx&redirect_uri=http%3a%2f%2flocalhost%3a8080%2fspring-oauth-server%2funity%2fdashboard
+=======================================
+测试用例
+=======================================
 
+## 1. client_credentials flow [POST]
+URL: http://localhost:8080/oauth2/token
 
-方式2:基于客户端  (注意参数中的username,password,对应用户的账号,密码) [POST] (注意：这一步用httpclient在程序中调用，不要在浏览器中)
-http://localhost:8080/oauth/token?client_id=mobile-client&client_secret=mobile&grant_type=password&scope=read&username=mobile&password=mobile
+cURL:
+curl --location 'http://localhost:8080/oauth2/token' \
+--header 'Content-Type: application/x-www-form-urlencoded' \
+--data-urlencode 'client_id=79763e77433640baba722e72c69e25db' \
+--data-urlencode 'client_secret=maAXVKPcEvVL37paPC0HTZU48DCG9Lat' \
+--data-urlencode 'grant_type=client_credentials' \
+--data-urlencode 'scope=openid profile'
 
-说明:由于unity-client不支持password,所以若用unity-client通过password方式去授权,将返回 invalid_client
-http://localhost:8080/oauth/token?client_id=unity-client&client_secret=unity&grant_type=password&scope=read&username=mobile&password=mobile
-
-
-
-获取access_token响应的数据如:
-{"access_token":"3420d0e0-ed77-45e1-8370-2b55af0a62e8","token_type":"bearer","refresh_token":"b36f4978-a172-4aa8-af89-60f58abe3ba1","expires_in":43199,"scope":"read write"}
-
-
-获取access_token后访问资源 [GET]
-http://localhost:8080/unity/dashboard?access_token=89767569-5b78-4b26-ae2d-d361aa3e6bf9
-
-
-
-刷新access_token [POST] (注意：这一步用httpclient在程序中调用，不要在浏览器中)
-http://localhost:8080/oauth/token?client_id=mobile-client&client_secret=mobile&grant_type=refresh_token&refresh_token=b36f4978-a172-4aa8-af89-60f58abe3ba1
-
-
-Restful OAuth2 Test [POST] (注意：这一步用httpclient在程序中调用，不要在浏览器中)
-URL: /oauth/rest_token
-ContentType: application/json
-
-DEMO URL: http://localhost:8080/oauth2/rest_token
-Request Body:
-{"grant_type":"client_credentials","scope":"read","client_id":"credentials","client_secret":"credentials","username":"user","password":"123"}
-
-Response Body:
+响应:
 {
-    "access_token": "cd165ebc-562d-45df-8488-9f1ba947553e",
-    "token_type": "bearer",
-    "expires_in": 43193,
-    "scope": "read"
+  "access_token": "xxx",
+  "scope": "openid profile",
+  "token_type": "Bearer",
+  "expires_in": 3599
 }
 
 
+## 2. authorization_code flow [GET]
+
+(1) 访问授权端点 (浏览器):
+http://localhost:8080/oauth2/authorize?response_type=code&client_id=79763e77433640baba722e72c69e25db&scope=openid profile email&redirect_uri=http://localhost:8083/oauth2/callback&state=abc123
+
+登录后重定向到:
+http://localhost:8083/oauth2/callback?code=xxx&state=abc123
+
+(2) 获取 code 后换取 token:
+curl --location 'http://localhost:8080/oauth2/token' \
+--header 'Content-Type: application/x-www-form-urlencoded' \
+--data-urlencode 'client_id=79763e77433640baba722e72c69e25db' \
+--data-urlencode 'grant_type=authorization_code' \
+--data-urlencode 'code=xxx' \
+--data-urlencode 'redirect_uri=http://localhost:8083/oauth2/callback' \
+--data-urlencode 'client_secret=maAXVKPcEvVL37paPC0HTZU48DCG9Lat'
+
+响应:
+{
+  "access_token": "xxx",
+  "refresh_token": "xxx",
+  "scope": "openid profile email",
+  "id_token": "xxx",
+  "token_type": "Bearer",
+  "expires_in": 3599
+}
 
 
-更多的测试请访问
-https://gitee.com/mkk/spring-oauth-client
+## 3. refresh_token flow [POST]
+
+curl --location 'http://localhost:8080/oauth2/token' \
+--header 'Content-Type: application/x-www-form-urlencoded' \
+--data-urlencode 'client_id=79763e77433640baba722e72c69e25db' \
+--data-urlencode 'client_secret=maAXVKPcEvVL37paPC0HTZU48DCG9Lat' \
+--data-urlencode 'grant_type=refresh_token' \
+--data-urlencode 'refresh_token=xxx'
 
 
-------------------------------------------------------------------------------------------------
-grant_type(授权方式)
-1.authorization_code                      授权码模式(即先登录获取code,再获取token)
-2.password                                     密码模式(将用户名,密码传过去,直接获取token)
-3.refresh_token                            刷新token
-4.implicit                                        简化模式(在redirect_uri 的Hash传递token; Auth客户端运行在浏览器中,如JS,Flash)
-5.client_credentials                      客户端模式(无用户,用户向客户端注册,然后客户端以自己的名义向'服务端'获取资源)
+## 4. userinfo [GET]
+(需要通过 authorization_code 流程获取的 token)
+
+curl --location 'http://localhost:8080/userinfo' \
+--header 'Authorization: Bearer <ACCESS_TOKEN>'
+
+响应:
+{
+  "sub": "admin",
+  "email": "admin@andaily.com",
+  "profile": "xxx"
+}
 
 
-scope
-1.read
-2.write
-3.trust
+## 5. revoke token [POST]
+
+curl --location 'http://localhost:8080/oauth2/revoke' \
+--header 'Content-Type: application/x-www-form-urlencoded' \
+--data-urlencode 'client_id=79763e77433640baba722e72c69e25db' \
+--data-urlencode 'client_secret=maAXVKPcEvVL37paPC0HTZU48DCG9Lat' \
+--data-urlencode 'token=xxx'
+
+响应: 200 [HTTP]
 
 
-------------------------------------------------------------------------------------------------
+## 6. introspect token [POST]
 
-Resource API
-Use it get resource-server resources after auth successful. will use it in <spring-oauth-client> project.
-(retrieve current logged user information)
+curl --location 'http://localhost:8080/oauth2/introspect' \
+--header 'Content-Type: application/x-www-form-urlencoded' \
+--data-urlencode 'client_id=79763e77433640baba722e72c69e25db' \
+--data-urlencode 'client_secret=maAXVKPcEvVL37paPC0HTZU48DCG9Lat' \
+--data-urlencode 'token=xxx'
 
-[ROLE_UNITY]
-http://localhost:8080/unity/user_info?access_token=b03b99a1-f128-4d6e-b9d3-38a0ebcab5ef
-Response JSON
-{"archived":false,"email":"unity@wdcy.cc","guid":"55b713df1c6f423e842ad68668523c49","phone":"","privileges":["UNITY"],"username":"unity"}
+响应:
+{
+  "active": true,
+  "scope": "openid profile",
+  "client_id": "79763e77433640baba722e72c69e25db",
+  "token_type": "Bearer",
+  "exp": 1697724263,
+  "iat": 1697720663
+}
 
-[ROLE_MOBILE]
-http://localhost:8080/m/user_info?access_token=20837fa5-a0a1-4c76-9083-1f0e47ca0208
-Response JSON
-{"archived":false,"email":"mobile@wdcy.cc","guid":"612025cb3f964a64a48bbdf77e53c2c1","phone":"","privileges":["MOBILE"],"username":"mobile"}
+
+=======================================
+OIDC Endpoints
+=======================================
+
+OIDC Discovery: http://localhost:8080/.well-known/openid-configuration
+JWKS: http://localhost:8080/oauth2/jwks
+UserInfo: http://localhost:8080/userinfo
+EndSession: http://localhost:8080/connect/logout
+
+=======================================
+测试用户账号
+=======================================
+
+- admin / Admin@2013 (拥有 ADMIN, UNITY, MOBILE 角色)
+- unity / Unity#2013 (拥有 UNITY 角色)
+- mobile / Mobile*2013 (拥有 MOBILE 角色)
 

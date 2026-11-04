@@ -1,16 +1,15 @@
 package com.monkeyk.sos.infrastructure;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.Module;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.security.jackson2.SecurityJackson2Modules;
-import org.springframework.security.oauth2.server.authorization.jackson2.OAuth2AuthorizationServerJackson2Module;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
+import org.springframework.security.jackson.SecurityJacksonModules;
+import org.springframework.security.oauth2.server.authorization.jackson.OAuth2AuthorizationServerJacksonModule;
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
 import org.springframework.security.oauth2.server.authorization.settings.ConfigurationSettingNames;
 import org.springframework.security.oauth2.server.authorization.settings.OAuth2TokenFormat;
 import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,15 +21,13 @@ import java.util.Map;
 public abstract class SettingsUtils {
 
 
-    private static ObjectMapper objectMapper = new ObjectMapper();
-
-    static {
-//        ClassLoader classLoader = JdbcRegisteredClientRepository.class.getClassLoader();
-        ClassLoader classLoader = SettingsUtils.class.getClassLoader();
-        List<Module> securityModules = SecurityJackson2Modules.getModules(classLoader);
-        objectMapper.registerModules(securityModules);
-        objectMapper.registerModule(new OAuth2AuthorizationServerJackson2Module());
-    }
+    // Jackson 3: 包名 com.fasterxml.jackson.* -> tools.jackson.*；
+    // SecurityJackson2Modules -> SecurityJacksonModules，OAuth2AuthorizationServerJackson2Module -> OAuth2AuthorizationServerJacksonModule
+    private static final ObjectMapper objectMapper = JsonMapper.builder()
+//            ClassLoader classLoader = JdbcRegisteredClientRepository.class.getClassLoader();
+            .addModules(SecurityJacksonModules.getModules(SettingsUtils.class.getClassLoader()))
+            .addModule(new OAuth2AuthorizationServerJacksonModule())
+            .build();
 
 
     private SettingsUtils() {

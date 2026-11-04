@@ -16,10 +16,10 @@ public abstract class WebUtils {
     /**
      * Sync by pom.xml   <version></version>
      */
-    public static final String VERSION = "3.0.1";
+    public static final String VERSION = "3.1.0";
 
 
-    private static ThreadLocal<String> ipThreadLocal = new ThreadLocal<>();
+    private static final ThreadLocal<String> ipThreadLocal = new ThreadLocal<>();
 
 
     public static void setIp(String ip) {

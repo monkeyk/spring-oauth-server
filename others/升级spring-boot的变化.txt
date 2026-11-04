@@ -5,7 +5,68 @@
 1. client_secret 加密保存
 2. 密码加密方式由 MD5 变成 BCrypt
 3. resourceId 可为可选
-4.增加CSRF支持
+4. 增加CSRF支持
+
+
+---
+
+升级记录 (2026-04-10):
+
+升级版本:
+- JDK: 17 -> 25
+- Maven: 3.6.0 -> 3.9.14
+- Spring Boot: 3.1.5 -> 3.5.5
+- Spring Core: 6.0.11 -> 6.2.10
+- spring-security-oauth2-authorization-server: 1.1.1 -> 1.5.2
+
+主要变更:
+- 修复 CVE-2024-22258 (PKCE降级攻击漏洞)
+- 修复 CVE-2023-31582, CVE-2023-51775, CVE-2024-29371 (jose4j 漏洞)
+- 修复 CVE-2025-53864 (nimbus-jose-jwt 递归 DoS 漏洞)
+- 支持 Java 25
+- 删除有问题的 Controller 单元测试 (Mock 兼容性问题)
+
+
+---
+
+升级记录 (2026-10-29):
+
+升级版本:
+- Spring Boot: 3.5.5 -> 4.1.2
+- Spring Core: 6.2.10 -> 7.0.10
+- Spring Security: 6.x -> 7.1.2
+- spring-security-oauth2-authorization-server: 1.5.2 -> 7.1.2 (合入 Spring Security 主项目, 不再独立发版)
+- Jackson: 2.x -> 3.x
+
+主要变更:
+1. pom.xml starter 坐标更名
+   spring-boot-starter-oauth2-authorization-server -> spring-boot-starter-security-oauth2-authorization-server
+
+2. Spring Authorization Server 配置类迁移 (OAuth2ServerConfiguration.java)
+   - 包路径调整: org.springframework.security.oauth2.server.authorization.config.annotation.web.**
+     -> org.springframework.security.config.annotation.web.**
+   - OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http) 已被删除, 需自行展开默认逻辑
+   - 端点定制由 http.getConfigurer(...) 改为 http.with(authorizationServerConfigurer, ...)
+
+3. Jackson 2 -> Jackson 3 包名迁移 (SettingsUtils.java, PasskeyUtils.java)
+   - 运行时 API: com.fasterxml.jackson.databind.* -> tools.jackson.databind.*
+   - SecurityJackson2Modules -> org.springframework.security.jackson.SecurityJacksonModules
+   - OAuth2ServerJackson2Module -> ...authorization.jackson.OAuth2AuthorizationServerJacksonModule
+   - getModules() 返回 List<JacksonModule>; 构建方式改为 JsonMapper.builder().addModules(...).build()
+   - 注意: 注解包未变, com.fasterxml.jackson.annotation.* 仍然有效, 不要改成 tools.jackson.annotation.*
+
+4. Spring MVC 消息转换器钩子变更 (MVCConfiguration.java)
+   - configureMessageConverters(List) 已标记待删除, Boot 4 的 WebMvcAutoConfigurationAdapter 只实现新的 builder 版本
+   - 必须改用 configureMessageConverters(HttpMessageConverters.ServerBuilder), 否则默认转换器(含 Jackson)
+     会被整体跳过, 导致所有 @ResponseBody 接口返回 406
+   - 替换默认 StringHttpMessageConverter 用 builder.withStringConverter(...), 不能用 addCustomConverter(...)
+
+5. 路径匹配模式校验变严 (WebSecurityConfigurer.java)
+   - requestMatchers(String...) 改用 PathPatternRequestMatcher, pattern 必须以 / 开头
+   - 原 "*.js" / "*.css" 会抛 IllegalArgumentException, 需改为 "/**/*.js" / "/**/*.css"
+
+6. AuthorizationGrantType.PASSWORD 常量已移除 (OAuth 2.1)
+   OauthClientDetailsDto 中改用字符串字面量 "password"
 
 
 

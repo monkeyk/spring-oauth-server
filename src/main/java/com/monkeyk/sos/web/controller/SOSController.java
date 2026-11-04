@@ -11,6 +11,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import static com.monkeyk.sos.web.WebUtils.VERSION;
+
 /**
  * 2018/4/19
  * <p>
@@ -33,6 +35,7 @@ public class SOSController {
      */
     @RequestMapping(value = "/")
     public String index(Model model) {
+        model.addAttribute("version", VERSION);
         return "index";
     }
 

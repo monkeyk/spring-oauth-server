@@ -22,3 +22,10 @@ nbbuild/
 dist/
 nbdist/
 .nb-gradle/
+
+### Security: External JWKS files (private keys) ###
+# Prevent accidental commit of external JWKS files containing private keys
+jwks-production.json
+jwks-*.json
+!src/main/resources/jwks.json
+!src/test/resources/jwks.json

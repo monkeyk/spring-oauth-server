@@ -2,12 +2,10 @@ package com.monkeyk.sos.config;
 
 
 import com.monkeyk.sos.domain.oauth.ClaimsOAuth2TokenCustomizer;
-import com.nimbusds.jose.jwk.JWKSet;
-import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
-import com.nimbusds.jose.util.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -26,8 +24,7 @@ import org.springframework.security.oauth2.server.authorization.OAuth2Authorizat
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.client.JdbcRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
-import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
-import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
+import org.springframework.security.config.annotation.web.configurers.oauth2.server.authorization.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.oauth2.server.authorization.oidc.OidcProviderConfiguration;
 import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
@@ -35,10 +32,9 @@ import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.function.Consumer;
 
@@ -53,6 +49,7 @@ import static com.monkeyk.sos.domain.shared.SOSConstants.CUSTOM_CONSENT_PAGE_URI
  * @author Shengzhao Li
  */
 @Configuration
+@EnableConfigurationProperties(JwkProperties.class)
 public class OAuth2ServerConfiguration {
 
 
@@ -66,10 +63,12 @@ public class OAuth2ServerConfiguration {
 
     /**
      * keystore file name
-     * TODO: 请在不同的环境使用不同的key(即更换jwks.json中的文件内容); 如何生成不同的key请参考 JwksTest.java 类.
      *
+     * @deprecated since 3.1.0, use {@link JwkProperties} instead.
+     *             保留仅为向后兼容，新配置通过 {@code sos.jwks.*} 属性注入。
      * @since 3.0.0
      */
+    @Deprecated
     public static String KEYSTORE_NAME = "jwks.json";
 
 
@@ -107,24 +106,33 @@ public class OAuth2ServerConfiguration {
                     .requestMatchers("/m/**").hasAnyRole("MOBILE");
         });
 
-        OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
+        // Spring Security 7 起 OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http) 已删除，
+        // 改为自行构造 configurer，并通过 HttpSecurity#with(SecurityConfigurerAdapter, Customizer) 注册。
+        OAuth2AuthorizationServerConfigurer authorizationServerConfigurer = new OAuth2AuthorizationServerConfigurer();
+        RequestMatcher endpointsMatcher = authorizationServerConfigurer.getEndpointsMatcher();
 
-        http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
-//                .deviceAuthorizationEndpoint(deviceAuthorizationEndpoint ->
-//                        deviceAuthorizationEndpoint.verificationUri("/activate")
-//                )
-                .deviceVerificationEndpoint(deviceVerificationEndpoint ->
-                        deviceVerificationEndpoint.consentPage(CUSTOM_CONSENT_PAGE_URI)
-                )
-                .authorizationEndpoint(authorizationEndpoint ->
-                        authorizationEndpoint.consentPage(CUSTOM_CONSENT_PAGE_URI))
-                // Enable OpenID Connect 1.0
-                .oidc(oidcConfigurer -> {
-                    oidcConfigurer.providerConfigurationEndpoint(endpointConfigurer -> {
-                        //扩展oidc默认能力
-                        endpointConfigurer.providerConfigurationCustomizer(oidcProviderConfigurationCustomizer());
-                    });
-                });
+        http.securityMatcher(endpointsMatcher)
+                .authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated())
+                .csrf(csrf -> csrf.ignoringRequestMatchers(endpointsMatcher));
+
+        http.with(authorizationServerConfigurer, authorizationServer ->
+                authorizationServer
+//                        .deviceAuthorizationEndpoint(deviceAuthorizationEndpoint ->
+//                                deviceAuthorizationEndpoint.verificationUri("/activate")
+//                        )
+                        .deviceVerificationEndpoint(deviceVerificationEndpoint ->
+                                deviceVerificationEndpoint.consentPage(CUSTOM_CONSENT_PAGE_URI)
+                        )
+                        .authorizationEndpoint(authorizationEndpoint ->
+                                authorizationEndpoint.consentPage(CUSTOM_CONSENT_PAGE_URI))
+                        // Enable OpenID Connect 1.0
+                        .oidc(oidcConfigurer -> {
+                            oidcConfigurer.providerConfigurationEndpoint(endpointConfigurer -> {
+                                //扩展oidc默认能力
+                                endpointConfigurer.providerConfigurationCustomizer(oidcProviderConfigurationCustomizer());
+                            });
+                        })
+        );
 
         http
                 .exceptionHandling((exceptions) -> exceptions
@@ -213,20 +221,23 @@ public class OAuth2ServerConfiguration {
 
     /**
      * 提供加密/解密的 source
-     * 可多个 key, 根据不同的需要来选择使用
-     * TODO: 请在不同的环境使用不同的key(即更换jwks.json中的文件内容); 如何生成不同的key请参考 JwksTest.java 类.
-     * 更安全的建议：定期更新jwk(替换旧的jwk或新旧轮流)
+     * <p>
+     * 通过 {@link JwkProperties} 支持三种加载方式（优先级由高到低）：
+     * <ol>
+     *   <li>{@code sos.jwks.value} —— 环境变量 / Vault 注入（生产推荐）</li>
+     *   <li>{@code sos.jwks.file-path} —— 外部文件路径</li>
+     *   <li>{@code sos.jwks.classpath} —— 类路径文件（开发默认）</li>
+     * </ol>
+     * <p>
+     * 密钥轮换：替换外部文件或更新环境变量后重启服务即可。
+     * 新旧密钥轮流可在外部 JWKS 文件中同时保留多个 key（不同 kid）。
      *
      * @return JWKSource
      * @since 3.0.0
      */
     @Bean
-    public JWKSource<SecurityContext> jwkSource() throws IOException, ParseException {
-
-        try (InputStream is = getClass().getClassLoader().getResourceAsStream(KEYSTORE_NAME)) {
-            String keyJson = IOUtils.readInputStreamToString(is, StandardCharsets.UTF_8);
-            return new ImmutableJWKSet<>(JWKSet.parse(keyJson));
-        }
+    public JWKSource<SecurityContext> jwkSource(JwkProperties jwkProperties) throws IOException, ParseException {
+        return JwkSourceFactory.create(jwkProperties);
     }
 
 

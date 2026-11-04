@@ -228,11 +228,15 @@ public class OauthClientDetailsDto implements Serializable {
 
     /**
      * OAuth2.1不支持
+     * <p>
+     * Spring Security 7 已移除 {@code AuthorizationGrantType.PASSWORD}，
+     * 这里直接使用其协议字面量 "password" 以保持向后兼容判断。
      *
      * @deprecated from OAuth2.1
      */
+    @Deprecated
     public boolean isContainsPassword() {
-        return this.authorizationGrantTypes.contains(PASSWORD.getValue());
+        return this.authorizationGrantTypes.contains("password");
     }
 
 //    public boolean isContainsImplicit() {

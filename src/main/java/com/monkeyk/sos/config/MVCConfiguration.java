@@ -6,13 +6,12 @@ import jakarta.servlet.Filter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.HttpMessageConverters;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 /**
  * 2018/1/30
@@ -40,11 +39,15 @@ public class MVCConfiguration implements WebMvcConfigurer {
     /**
      * 解决乱码问题
      * For UTF-8
+     * <p>
+     * Spring Framework 7 起 {@link WebMvcConfigurer#configureMessageConverters(List)} 已过时待删除，
+     * 且 Spring Boot 4 的默认转换器（含 Jackson JSON）改为通过
+     * {@link HttpMessageConverters.ServerBuilder} 钩子注册；若继续只覆盖 List 版本，
+     * 会使转换器列表非空从而跳过全部默认转换器注册，导致所有 @ResponseBody 接口返回 406。
      */
     @Override
-    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        WebMvcConfigurer.super.configureMessageConverters(converters);
-        converters.add(new StringHttpMessageConverter(StandardCharsets.UTF_8));
+    public void configureMessageConverters(HttpMessageConverters.ServerBuilder builder) {
+        builder.withStringConverter(new StringHttpMessageConverter(StandardCharsets.UTF_8));
     }
 
 

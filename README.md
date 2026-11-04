@@ -10,12 +10,18 @@
 
 使用的主要技术与版本号
 <ol>
- <li>JDK (openjdk 17)</li>
- <li>Spring Boot(3.1.5)</li>
- <li>Spring Core(6.0.11)</li>
- <li>spring-security-oauth2-authorization-server (1.1.1)</li>
- <li>thymeleaf (3.1.1.RELEASE)</li>
+ <li>JDK (openjdk 25)</li>
+ <li>Spring Boot(4.1.2)</li>
+ <li>Spring Core(7.0.10)</li>
+ <li>Spring Security(7.1.2)</li>
+ <li>thymeleaf (3.1.5.RELEASE)</li>
+ <li>Maven (3.9.14)</li>
 </ol>
+
+> 说明：从 3.1.0 版本起, Spring Authorization Server 已合入 Spring Security 主项目,
+> 不再有独立的 <code>spring-security-oauth2-authorization-server</code> 版本号(其 artifact 版本与 Spring Security 保持一致, 当前为 7.1.2)。
+> 相应的 starter 坐标也由 <code>spring-boot-starter-oauth2-authorization-server</code>
+> 更名为 <code>spring-boot-starter-security-oauth2-authorization-server</code>。
 
 
 ## 授权协议
@@ -65,7 +71,7 @@
 
 ## 如何使用?
 
-1. 项目是Maven管理的, 需要本地安装Maven(开发用的maven版本号为3.6.0), 还有MySql(开发用的mysql版本号为5.7.22)
+1. 项目是Maven管理的, 需要本地安装Maven(开发用的maven版本号为3.9.14), 还有MySql(开发用的mysql版本号为5.7.22)
 
 2. <a href="https://gitee.com/shengzhao/spring-oauth-server">下载</a>(或clone)项目源码到本地
 
@@ -112,7 +118,7 @@
 <ol>
     <li><code>authorization_code</code> -- 授权码模式(即先登录获取code,再获取token)</li>
     <li><code>authorization_code + PKCE</code> -- 授权码模式+PKCE (即先登录获取code, 请求时增加参数<em>code_challenge</em>与<em>code_challenge_method</em>; 再获取token,增加参数<em>code_verifier</em>)</li>
-    <li><code>password</code> -- 密码模式(将用户名,密码传过去,直接获取token) <mark>OAuth2.1不推荐使用</mark></li>
+    <li><code>password</code> -- 密码模式(将用户名,密码传过去,直接获取token) <mark>OAuth2.1已移除, 本项目不支持</mark></li>
     <li><code>refresh_token</code> -- 刷新access_token</li>
     <li><code>device_code</code> -- 适用于各类无输入键盘的物联网智能设备进行认证授权, 通过类似'扫码登录'形式完成整个流程 <strong>OAuth2.1新增</strong></li>
     <li><code>client_credentials</code> -- 客户端模式(无用户,用户向客户端注册,然后客户端以自己的名义向'服务端'获取资源)</li>
@@ -161,8 +167,11 @@
         <code>改变token过期的时间的配置</code>, 请下载文件<a href="https://git.oschina.net/shengzhao/spring-oauth-server/attach_files/download?i=6589&u=http%3A%2F%2Ffiles.git.oschina.net%2Fgroup1%2FM00%2F00%2F43%2FcHwGbFRpuk6ANN2CAANJ-Rkiz_c649.jpg%3Ftoken%3D686e6d5b1e9ab04446dbfeb977c3b7a1%26ts%3D1421151523%26filename%3D%E6%94%B9%E5%8F%98token%E8%BF%87%E6%9C%9F%E7%9A%84%E6%97%B6%E9%97%B4%E7%9A%84%E9%85%8D%E7%BD%AE.jpg">改变token过期的时间的配置.jpg</a>
     </li>
     <li>
-        <code>自定义 grant_type</code>, 默认情况支持的grant_type包括 [password,authorization_code,refresh_token,device_code], 若不需要其中的某些grant_type,
-        则可以修改 oauth_client_details 表中的 authorized_grant_types 字段的值;
+        <code>自定义 grant_type</code>, 默认情况支持的grant_type包括
+        [authorization_code, refresh_token, device_code, client_credentials, urn:ietf:params:oauth:grant-type:jwt-bearer],
+        若不需要其中的某些grant_type, 则可以修改 <code>oauth2_registered_client</code> 表中的 <code>authorization_grant_types</code> 字段的值;
+        <br/>
+        <strong>注意：</strong>OAuth2.1 已移除 <code>password</code> 与 <code>implicit</code> 两种模式, 配置它们不会被受理。
     </li>
     <li>
         <div>
@@ -193,13 +202,30 @@
 <ul>    
 	   <li>
             <p>
-                Version: <strong>3.0.1</strong> [developing]
+                Version: <strong>3.1.0</strong> [developing]
                 <br/>
-                Date: 2026-03-01 / 2026-xx-xx
+                Date: 2026-04-09 / 2026-xx-xx
             </p>
             <ol>
-                <li><p><del>增加Passkeys(WebAuthn) 支持, 实现浏览器无密码登录(使用设备认证)</del></p></li>
-                <li><p><del>MySQL encoding use utf8mb4</del></p></li>
+                <li><p>Upgrade to Spring Boot 4.1.2 (from 3.5.5)</p></li>
+                <li><p>Upgrade to Spring Security 7.1.2 / Spring Framework 7.0.10; Spring Authorization Server 已合入 Security 主项目</p></li>
+                <li><p>Upgrade to Java 25</p></li>
+                <li><p>Upgrade to Maven 3.9.14</p></li>
+                <li><p>Migrate Jackson 2 to Jackson 3 (package <code>com.fasterxml.jackson</code> -&gt; <code>tools.jackson</code>)</p></li>
+                <li><p>Migrate <code>configureMessageConverters(List)</code> to <code>configureMessageConverters(HttpMessageConverters.ServerBuilder)</code></p></li>
+                <li><p>Fix CVE-2024-22258 (PKCE downgrade attack)</p></li>
+                <li><p>jwks.json support load from disk or system-env</p></li>
+            </ol>
+       </li>	   
+       <li>
+            <p>
+                Version: <strong>3.0.1</strong> [finished]
+                <br/>
+                Date: 2026-03-01 / 2026-04-08
+            </p>
+            <ol>
+                <li><p>增加Passkeys(WebAuthn) 支持, 实现浏览器无密码登录(使用设备认证)</p></li>
+                <li><p>MySQL encoding use utf8mb4</p></li>
             </ol>
        </li>
 	   <li>
@@ -426,6 +452,7 @@
         <li><p><em>2023-10-10</em>        开始全新大版本 3.0.0 开发</p></li>
         <li><p><em>2023-10-31</em>        发布 3.0.0 全新版本</p></li>
         <li><p><em>2026-03-29</em>        Add Passkeys / WebAuthn support (others/passkeys-webauthn-user-guide.md)</p></li>
+        <li><p><em>2026-10-29</em>        Upgrade to Spring Boot 4.1.2 / Spring Security 7.1.2, migrate to Jackson 3</p></li>
     </ol>
 </div>
 

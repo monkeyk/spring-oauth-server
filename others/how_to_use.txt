@@ -1,20 +1,21 @@
 
 
 使用的主要技术与版本号
-*Java (openjdk 17)
-*Spring-Boot (3.1.2)
-*spring-security-oauth2-authorization-server (1.1.1)
+*Java (openjdk 25)
+*Spring-Boot (4.1.2)
+*Spring Security (7.1.2)  -- 从 3.1.0 起 spring-security-oauth2-authorization-server 已合入 Spring Security 主项目, 版本与其保持一致
+*thymeleaf (3.1.5.RELEASE)
 
 
 如何使用?
-1.项目是Maven管理的, 需要本地安装maven(开发用的maven版本号为3.6.0), 还有MySql(开发用的mysql版本号为5.7.22)
+1.项目是Maven管理的, 需要本地安装maven(开发用的maven版本号为3.9.14), 还有MySql(开发用的mysql版本号为5.7.22)
 
 2.下载(或clone)项目到本地
 
 3.创建MySQL数据库(数据库名oauth2_boot), 并运行相应的SQL脚本(脚本文件位于others/database目录),
    运行脚本的顺序: initial_db.ddl -> oauth.ddl -> initial_data.ddl
 
-4.修改application.properties(位于src/resources目录)中的数据库连接信息(包括username, password等)
+4.修改application.properties(位于src/main/resources目录)中的数据库连接信息(包括username, password等)
 
 5.将本地项目导入到IDE(如Intellij IDEA)中,直接运行 SpringOauthServerApplication.java (默认端口为8080)
 
